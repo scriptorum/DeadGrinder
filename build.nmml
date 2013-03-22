@@ -1,0 +1,26 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+    <app title="DeadGrinder" file="DeadGrinder" main="com.grinder.Main" version="1.0.0" company="Eric W. Lund" />
+    <app swf-version="11.2"/>
+
+    <assets path="Assets/Art" rename="art" type="image" include="*.png" />
+    <assets path="Assets/Audio" rename="audio" type="sound" include="*.wav|*.mp3" />
+    <assets path="Assets/Data" rename="data" type="text" include="*.tmx|*.xml|*.txt" />
+    <assets path="Assets/Font" rename="font" type="font" include="*.ttf" />
+    <icon  path="Assets/Art/icon.svg" />
+
+    <window width="800" height="450" fps="30" orientation="landscape" background="0x000000" resizable="false" />
+
+    <set name="BUILD_DIR" value="Export" /> 
+    <classpath name="Source" />
+
+    <haxelib name="nme" />
+    <haxelib name="HaxePunk" />
+    <haxelib name="ash" />
+
+    <!-- 
+    <haxedef name="debug"/> 
+    -->
+</project>
+

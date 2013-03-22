@@ -1,0 +1,23 @@
+<catalog>
+  <object id="player" name="Player" tile="1" behavior="BPlayer" />
+  <object id="zombie" name="Zombie" tile="2" behavior="BZombie" />
+  <object id="bandit" name="Bandit" tile="0" />
+  <object id="survivor" name="Survivor" tile="0" />
+  <object id="merchant" name="Merchant" tile="0" />
+  <object id="door" name="Door" state="open">
+    <state id="open">
+      <tile>32</tile>
+      <desc>The door is open.</desc>
+    </state>
+    <state id="closed">
+      <tile>33</tile>
+      <behavior>BClosed</behavior>
+      <desc>The door is closed.</desc>
+    </state>
+    <state id="locked">
+      <tile>33</tile>
+      <behavior>BLocked</behavior>
+      <desc>The door is locked.</desc>
+    </state>
+  </object>
+</catalog>
