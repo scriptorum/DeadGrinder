@@ -1,23 +1,28 @@
 package com.grinder.world;
 
+import com.haxepunk.HXP;
+import com.haxepunk.World;
+
+import ash.core.Engine;
+import ash.core.Entity;
+import ash.core.System;
+import ash.core.SystemList;
+
 import com.grinder.SoundMan;
 import com.grinder.InputMan;
 import com.grinder.CameraMan;
-import com.grinder.zone.Outdoors;
-import com.grinder.zone.Zone;
-import com.grinder.entity.Background;
-import com.grinder.entity.Hud;
-import com.grinder.presence.Presence;
-import com.grinder.presence.Tangible;
-import com.grinder.entity.TangibleEntity;
 
-import com.haxepunk.World;
-import com.haxepunk.graphics.Backdrop;
+import com.grinder.system.RenderingSystem;
+import com.grinder.system.MovementSystem;
+import com.grinder.system.CameraSystem;
+
+import com.grinder.service.EntityService;
+import com.grinder.service.ComponentService;
 
 class GameWorld extends World
 {
-	public var map:Outdoors;
-	public var hud:Hud;
+	private var ash:Engine;
+	private var systems:SystemList;
 
 	public function new()
 	{
@@ -29,32 +34,53 @@ class GameWorld extends World
 	{
 		super.update();
 
-		hud = new Hud();
-		add(hud);
-		hud.setMessage("There's no going back now.");
+		initAsh();
+		initSystems();
+		initEntities();
 
-		map = new Outdoors();
-		map.tangibleAdded.bind(tangibleAdded);
-		
-		var bd = new Backdrop("img/rubble.png");
-		var bg = new Background(map);
-		addGraphic(bg, 1000);
-
-		map.init();
-
-		addGraphic(bd, 2000);
-	}	
-
-	public function tangibleAdded(presence:Presence)
-	{
-		if(Std.is(presence, Tangible))
-		{
-			var e = new TangibleEntity(cast(presence,Tangible));
-			add(e);		
-			presence.added();
-		}
+		updateSim();
 	}
 
+	private function initAsh()
+	{
+		ash = new Engine();
+	}
+
+	private function initSystems()
+	{
+		// Define turn-based systems.
+		// Don't add these to the engine, we'll update them when the turn advances.
+		systems = new SystemList();
+		addSystem(new MovementSystem(ash), 10);
+		addSystem(new RenderingSystem(ash), 20);
+		addSystem(new CameraSystem(ash, 32), 30);
+
+		// TODO Define real-time systems.
+		// These would be added directly to Ash, using ash.addSystem()
+	}	
+
+	private function initEntities()
+	{
+		var factory = new EntityService(ash);
+		factory.spawnEntity("player", "player");
+	}
+
+	public function updateSim(): Void
+	{
+		// Update turn-based systems
+		for(system in systems)
+			system.update(0);
+	}
+
+	// Add a new turn-based system
+    public function addSystem(system:System, priority:Int):Void
+    {
+        system.priority = priority;
+        system.addToEngine(ash);
+        systems.add(system);
+    }
+
+    // Real-time update
 	override public function update()
 	{
 		super.update();
@@ -72,15 +98,14 @@ class GameWorld extends World
 		else if(InputMan.pressed(InputMan.SE)) { oy++; ox++; }
 		if(ox != 0 || oy != 0)
 		{
-			if(map.canPlayerMoveRel(ox,oy) == false)
-				hud.setMessage("You can't find a way through.");
-			else map.player.moveRel(ox, oy);
+			var player = ash.getEntityByName("player");
+			if(player == null)
+				throw("Cannot find player component");
+			player.add(ComponentService.getComponent("GridVelocity", [ox, oy]));
 			updateSim();
 		}
-	}
 
-	public function updateSim(): Void
-	{
-		map.update();
+		// Update real-time systems.
+		ash.update(HXP.elapsed);
 	}
 }
