@@ -31,8 +31,22 @@ class EntityService
 			case "player":
 			data = [
 				["GridPosition", [3, 3]],
-				["TileImage", ["art/catalog.png", new Rectangle(32, 0, 32, 32)]],
+				["TileImage", ["art/catalog.png", tileRect(1)]],
+				["Layer", [ 50 ]],
 				["CameraFocus", null]
+			];
+
+			case "map":
+			data = [
+				["Grid", [ 15, 10 ]],
+				["Layer", [ 100 ]]
+			];
+
+			case "backdrop":
+			data = [
+				["TileImage", ["art/catalog.png", tileRect(33), true]],
+				["Repeating", null],
+				["Layer", [ 1000 ]]
 			];
 			
 			default:
@@ -43,4 +57,12 @@ class EntityService
 			e.add(ComponentService.getComponent(arr[0], arr[1]));
 	}
 
+	private static var TILES_ACROSS:Int = 8;
+	private static var TILE_SIZE:Int = 32;
+	private static function tileRect(tile): Rectangle
+	{
+		var tileX = tile % TILES_ACROSS;
+		var tileY = Std.int(Math.floor(tile / TILES_ACROSS));
+		return new Rectangle(tileX * TILE_SIZE, tileY * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+	}
 }

@@ -6,9 +6,9 @@ import ash.core.System;
 
 import com.haxepunk.HXP;
 
-import com.grinder.node.TileImageNode;
+import com.grinder.node.SpriteNode;
 import com.grinder.component.Sprite;
-import com.grinder.render.TileImageEntity;
+import com.grinder.render.SpriteEntity;
 
 class RenderingSystem extends System
 {
@@ -23,19 +23,19 @@ class RenderingSystem extends System
 	override public function update(_)
 	{
 		// Update tile-based images
-	 	for(node in engine.getNodeList(TileImageNode))
+	 	for(node in engine.getNodeList(SpriteNode))
 	 	{
 	 		var sprite = node.entity.get(Sprite);
 	 		if(sprite == null)
  			{
- 				var e = new TileImageEntity(node);
+ 				var e = new SpriteEntity(node);
 				HXP.world.add(e);
 
  				sprite = new Sprite(e);
  				node.entity.add(sprite);
  			}
  			else
- 				cast(sprite.entity, TileImageEntity).updatePosition(node);
+ 				cast(sprite.entity, SpriteEntity).updatePosition(node);
 	 	}
 	}
 }

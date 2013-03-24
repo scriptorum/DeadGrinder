@@ -1,8 +1,21 @@
 package com.grinder.service;
 
-import com.grinder.component.GridPosition;
+import com.grinder.component.Repeating;
 import com.grinder.component.TileImage;
+import com.grinder.component.Layer;
+import com.grinder.component.Grid;
 import com.grinder.component.CameraFocus;
+import com.grinder.component.Sprite;
+import com.grinder.component.Velocity;
+import com.grinder.component.GridVelocity;
+import com.grinder.component.GridPosition;
+import com.grinder.component.Position;
+import com.grinder.component.Doorway;
+import com.grinder.component.Health;
+import com.grinder.component.InputControl;
+import com.grinder.component.Inventory;
+import com.grinder.component.Orientation;
+import com.grinder.component.Wall;
 
 class ComponentService
 {
@@ -15,3 +28,4 @@ class ComponentService
 		return Type.createInstance(clazz, args == null ? [] : args);
 	}
 }
+

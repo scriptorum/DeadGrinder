@@ -1,11 +1,11 @@
 package com.grinder.node;
 
-import com.grinder.component.GridPosition;
+import com.grinder.component.Repeating;
 import com.grinder.component.TileImage;
 import ash.core.Node;
 
-class TileImageNode extends Node<TileImageNode>
+class BackdropNode extends Node<BackdropNode>
 {
-	public var position:GridPosition;
 	public var tileImage:TileImage;
+	public var repeating:Repeating;
 }
