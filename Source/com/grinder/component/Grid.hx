@@ -46,10 +46,9 @@ class Grid
 
 	public function clear(value:Int): Void
 	{
+		// trace("Filling grid with value " + value);
+		grid = new Array<Int>();
 		for(i in 0...width * height)
-		{
-			grid = new Array<Int>();
 			grid.push(value);
-		}
 	}
 }

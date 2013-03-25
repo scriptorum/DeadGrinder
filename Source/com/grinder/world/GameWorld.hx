@@ -64,6 +64,7 @@ class GameWorld extends World
 		var factory = new EntityService(ash);
 		factory.spawnEntity("player", "player");
 		factory.spawnEntity("backdrop", "backdrop");
+		factory.spawnEntity("map", "map");
 	}
 
 	public function updateSim(): Void

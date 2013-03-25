@@ -6,7 +6,6 @@ import com.haxepunk.graphics.Image;
 import com.grinder.node.ImageNode;
 import com.grinder.component.Layer;
 
-
 //  Should view classes such as this know about nodes?
 class ImageView extends Entity
 {
@@ -16,6 +15,7 @@ class ImageView extends Entity
 	{
 		super();
 
+trace("Creating new image view using node:" + node);
 		var c = node.entity.get(Layer);
 		if(c != null)
 			this.layer = c.layer;

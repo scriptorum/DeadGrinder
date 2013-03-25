@@ -33,19 +33,21 @@ class EntityService
 				["GridPosition", [3, 3]],
 				["TileImage", ["art/grimoire.png", tileRect(1)]],
 				["Layer", [ 50 ]],
-				["CameraFocus", null]
+				["CameraFocus"]
 			];
 
 			case "map":
 			data = [
-				["Grid", [ 15, 10 ]],
+				["TileImage", ["art/grimoire.png", tileRect(0)]],
+				["Grid", [ 15, 10, 36, null, null ]],
+				["Position", [ 0, 0 ]],
 				["Layer", [ 100 ]]
 			];
 
 			case "backdrop":
 			data = [
 				["Image", ["art/rubble.png"]],
-				["Repeating", null],
+				["Repeating"],
 				["Layer", [ 1000 ]]
 			];
 			
