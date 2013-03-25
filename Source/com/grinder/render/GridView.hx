@@ -3,13 +3,13 @@ package com.grinder.render;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
 
-import com.grinder.node.ImageNode;
+import com.grinder.node.GridNode;
 import com.grinder.component.Layer;
 
 //  Should view classes such as this know about nodes?
-class ImageView extends Entity
+class GridView extends Entity
 {
-	public function new(node:ImageNode)
+	public function new(grid:Grid)
 	{
 		super();
 
@@ -25,7 +25,7 @@ class ImageView extends Entity
 	}
 
 	// Move haxepunk entity to a grid position
-	public function updatePosition(node:ImageNode)
+	public function updatePosition(node:SpriteNode)
 	{
 		x = node.position.x * node.tileImage.clip.width;
 		y = node.position.y * node.tileImage.clip.height;

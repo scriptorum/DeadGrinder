@@ -6,7 +6,6 @@ import com.grinder.component.Image;
 import com.grinder.component.Layer;
 import com.grinder.component.Grid;
 import com.grinder.component.CameraFocus;
-import com.grinder.component.Sprite;
 import com.grinder.component.Velocity;
 import com.grinder.component.GridVelocity;
 import com.grinder.component.GridPosition;
