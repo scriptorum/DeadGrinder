@@ -6,9 +6,12 @@ import com.haxepunk.graphics.Image;
 import com.grinder.node.ImageNode;
 import com.grinder.component.Layer;
 
+
 //  Should view classes such as this know about nodes?
 class ImageView extends Entity
 {
+	public var node:ImageNode;
+
 	public function new(node:ImageNode)
 	{
 		super();
@@ -21,11 +24,12 @@ class ImageView extends Entity
 
 		var image = new Image(node.tileImage.path, node.tileImage.clip);
 		graphic = image;
-		updatePosition(node);
+		this.node = node;
+		updatePosition();
 	}
 
 	// Move haxepunk entity to a grid position
-	public function updatePosition(node:ImageNode)
+	public function updatePosition()
 	{
 		x = node.position.x * node.tileImage.clip.width;
 		y = node.position.y * node.tileImage.clip.height;
