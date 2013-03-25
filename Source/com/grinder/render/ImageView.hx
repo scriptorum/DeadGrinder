@@ -7,7 +7,7 @@ import com.grinder.node.SpriteNode;
 import com.grinder.component.Layer;
 
 //  Should view classes such as this know about nodes?
-class SpriteView extends Entity
+class ImageView extends Entity
 {
 	public function new(node:SpriteNode)
 	{

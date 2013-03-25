@@ -9,7 +9,7 @@ import com.haxepunk.HXP;
 import com.grinder.node.SpriteNode;
 import com.grinder.node.BackdropNode;
 import com.grinder.component.Sprite;
-import com.grinder.render.SpriteView;
+import com.grinder.render.ImageView;
 import com.grinder.render.BackdropView;
 
 class RenderingSystem extends System
@@ -30,14 +30,14 @@ class RenderingSystem extends System
 	 		var sprite = node.entity.get(Sprite);
 	 		if(sprite == null)
  			{
- 				var e = new SpriteView(node);
+ 				var e = new ImageView(node);
 				HXP.world.add(e);
 
  				sprite = new Sprite(e);
  				node.entity.add(sprite);
  			}
  			else
- 				cast(sprite.entity, SpriteView).updatePosition(node);
+ 				cast(sprite.entity, ImageView).updatePosition(node);
 	 	}
 
 	 	for(node in engine.getNodeList(BackdropNode))
