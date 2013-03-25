@@ -35,18 +35,12 @@ class RenderingSystem extends System
 		engine.getNodeList(BackdropNode).nodeAdded.add(backdropNodeAdded);
 		engine.getNodeList(BackdropViewNode).nodeRemoved.add(backdropViewNodeRemoved);
 
-		engine.getNodeList(ImageNode).nodeAdded.add(imageNodeAdded);
-		engine.getNodeList(ImageViewNode).nodeRemoved.add(imageViewNodeRemoved);
-
 		engine.getNodeList(GridNode).nodeAdded.add(gridNodeAdded);
 		engine.getNodeList(GridViewNode).nodeRemoved.add(gridViewNodeRemoved);
 	}
 
 	private function imageNodeAdded(node:ImageNode): Void
 	{
-		if(node.entity.get(ImageView) != null)
-			return;
-
 		var e = new ImageView(node);
 		HXP.world.add(e);
 		node.entity.add(e);
