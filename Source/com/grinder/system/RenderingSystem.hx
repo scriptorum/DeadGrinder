@@ -7,8 +7,10 @@ import ash.core.System;
 import com.haxepunk.HXP;
 
 import com.grinder.node.SpriteNode;
+import com.grinder.node.BackdropNode;
 import com.grinder.component.Sprite;
-import com.grinder.render.SpriteEntity;
+import com.grinder.render.SpriteView;
+import com.grinder.render.BackdropView;
 
 class RenderingSystem extends System
 {
@@ -28,14 +30,27 @@ class RenderingSystem extends System
 	 		var sprite = node.entity.get(Sprite);
 	 		if(sprite == null)
  			{
- 				var e = new SpriteEntity(node);
+ 				var e = new SpriteView(node);
 				HXP.world.add(e);
 
  				sprite = new Sprite(e);
  				node.entity.add(sprite);
  			}
  			else
- 				cast(sprite.entity, SpriteEntity).updatePosition(node);
+ 				cast(sprite.entity, SpriteView).updatePosition(node);
+	 	}
+
+	 	for(node in engine.getNodeList(BackdropNode))
+	 	{
+	 		var sprite = node.entity.get(Sprite);
+	 		if(sprite == null)
+ 			{
+ 				var e = new BackdropView(node);
+				HXP.world.add(e);
+
+ 				sprite = new Sprite(e);
+ 				node.entity.add(sprite);
+ 			}
 	 	}
 	}
 }

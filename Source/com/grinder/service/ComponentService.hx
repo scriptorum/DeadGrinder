@@ -2,6 +2,7 @@ package com.grinder.service;
 
 import com.grinder.component.Repeating;
 import com.grinder.component.TileImage;
+import com.grinder.component.Image;
 import com.grinder.component.Layer;
 import com.grinder.component.Grid;
 import com.grinder.component.CameraFocus;
@@ -25,7 +26,14 @@ class ComponentService
 		var clazz = Type.resolveClass(qualifiedName);
 		if(clazz == null)
 			throw "Cannot find component " + id;
-		return Type.createInstance(clazz, args == null ? [] : args);
+
+		try
+		{
+			return Type.createInstance(clazz, args == null ? [] : args);
+		} catch(msg:String)
+		{
+			throw("Cannot create component " + id + " with args " + args);
+		}
 	}
 }
 

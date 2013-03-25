@@ -31,7 +31,7 @@ class EntityService
 			case "player":
 			data = [
 				["GridPosition", [3, 3]],
-				["TileImage", ["art/catalog.png", tileRect(1)]],
+				["TileImage", ["art/grimoire.png", tileRect(1)]],
 				["Layer", [ 50 ]],
 				["CameraFocus", null]
 			];
@@ -44,7 +44,7 @@ class EntityService
 
 			case "backdrop":
 			data = [
-				["TileImage", ["art/catalog.png", tileRect(33), true]],
+				["Image", ["art/rubble.png"]],
 				["Repeating", null],
 				["Layer", [ 1000 ]]
 			];

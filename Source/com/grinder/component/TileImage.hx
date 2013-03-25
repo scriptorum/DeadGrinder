@@ -4,12 +4,12 @@ import nme.geom.Rectangle;
 
 class TileImage
 {
-	public var image:String;
-	public var rect:Rectangle;
+	public var path:String;
+	public var clip:Rectangle;
 
-	public function new(image:String, rect:Rectangle)
+	public function new(path:String, clip:Rectangle)
 	{
-		this.image = image;
-		this.rect = rect;
+		this.path = path;
+		this.clip = clip;
 	}
 }

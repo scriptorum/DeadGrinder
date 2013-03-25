@@ -7,17 +7,19 @@ import com.grinder.node.SpriteNode;
 import com.grinder.component.Layer;
 
 //  Should view classes such as this know about nodes?
-class SpriteEntity extends Entity
+class SpriteView extends Entity
 {
 	public function new(node:SpriteNode)
 	{
+		super();
+
 		var c = node.entity.get(Layer);
 		if(c != null)
 			this.layer = c.layer;
 
-		super();
+		// trace("Placing sprite entity at layer " + layer);
 
-		var image = new Image(node.tileImage.image, node.tileImage.rect);
+		var image = new Image(node.tileImage.path, node.tileImage.clip);
 		graphic = image;
 		updatePosition(node);
 	}
@@ -25,7 +27,7 @@ class SpriteEntity extends Entity
 	// Move haxepunk entity to a grid position
 	public function updatePosition(node:SpriteNode)
 	{
-		x = node.position.x * node.tileImage.rect.width;
-		y = node.position.y * node.tileImage.rect.height;
+		x = node.position.x * node.tileImage.clip.width;
+		y = node.position.y * node.tileImage.clip.height;
 	}
 }
