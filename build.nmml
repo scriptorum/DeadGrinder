@@ -21,6 +21,7 @@
 
     <!-- 
     <haxedef name="debug"/> 
+    <assets path="Assets/DebugGfx" rename="gfx" include="*.png|*.jpg" />
     -->
 </project>
 

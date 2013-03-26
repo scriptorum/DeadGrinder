@@ -46,7 +46,7 @@ class EntityService
 
 			case "backdrop":
 			data = [
-				["Image", ["art/rubble.png"]],
+				["Image", ["art/rubble2.png"]],
 				["Repeating"],
 				["Layer", [ 1000 ]]
 			];

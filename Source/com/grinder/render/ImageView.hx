@@ -15,12 +15,11 @@ class ImageView extends Entity
 	{
 		super();
 
-trace("Creating new image view using node:" + node);
 		var c = node.entity.get(Layer);
 		if(c != null)
 			this.layer = c.layer;
 
-		// trace("Placing sprite entity at layer " + layer);
+		// trace("Placing sprite entity at layer " + this.layer);
 
 		var image = new Image(node.tileImage.path, node.tileImage.clip);
 		graphic = image;

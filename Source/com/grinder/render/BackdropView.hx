@@ -16,7 +16,7 @@ class BackdropView extends Entity
 		if(c != null)
 			this.layer = c.layer;
 
-		// trace("Placing backdrop entity at layer " + layer);
+		// trace("Placing backdrop entity at layer " + this.layer);
 
 		var backdrop = new Backdrop(node.image.path);
 		graphic = backdrop;

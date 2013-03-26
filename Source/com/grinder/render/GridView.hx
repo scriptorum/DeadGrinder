@@ -20,9 +20,11 @@ class GridView extends Entity
 		if(c != null)
 			this.layer = c.layer;
 
-		// trace("Placing grid entity at layer " + layer + " with grid size:" + node.grid.width + "x" + node.grid.height);
 		var tileWidth = Std.int(node.tileImage.clip.width);
 		var tileHeight = Std.int(node.tileImage.clip.height);
+
+		// trace("Placing grid entity at layer " + this.layer + " with grid size:" + node.grid.width + "x" + node.grid.height + 
+		// 	" tile size:" + tileWidth + "x" + tileHeight + " and image:" + node.tileImage.path);
 
 		// TODO get standard tile dimensions from some other source than the image clipping rectangle??
 		this.tileMap = new Tilemap(node.tileImage.path, tileHeight * node.grid.width, tileWidth * node.grid.height,
