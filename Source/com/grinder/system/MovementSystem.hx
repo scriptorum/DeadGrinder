@@ -4,6 +4,7 @@ import ash.core.Engine;
 import ash.core.System;
 
 import com.grinder.node.MoveNode;
+import com.grinder.component.GridVelocity;
 
 class MovementSystem extends System
 {
@@ -22,7 +23,7 @@ class MovementSystem extends System
 	 		node.position.x += node.velocity.x;
 	 		node.position.y += node.velocity.y;
 
-	 		node.entity.remove(com.grinder.component.GridVelocity);
+	 		node.entity.remove(GridVelocity);
 	 	}
 	}
 }

@@ -16,30 +16,32 @@ class EntityService
 		this.ash = ash;
 	}
 
-	public function spawnEntity(id:String, name:String = "")
+	public function spawnEntity(id:String, name:String = ""): Entity
 	{
 		var e = new Entity(name);
 		spawnComponents(e, id);
 		ash.addEntity(e);
+		return e;
 	}
 
-	public static function spawnComponents(e:Entity, id:String)
+	public static function spawnComponents(e:Entity, id:String): Entity
 	{
 		var data;
 		switch(id)
 		{
 			case "player":
 			data = [
-				["GridPosition", [3, 3]],
+				["GridPosition", [0, 0]],
 				["TileImage", ["art/grimoire.png", tileRect(1)]],
 				["Layer", [ 50 ]],
+				["Collision", ["solid"]],
 				["CameraFocus"]
 			];
 
 			case "map":
 			data = [
 				["TileImage", ["art/grimoire.png", tileRect(0)]],
-				["Grid", [ 15, 10, 36, null, null ]],
+				["Grid", [ 11, 11, 32, null, null ]],
 				["Position", [ 0, 0 ]],
 				["Layer", [ 100 ]]
 			];
@@ -50,6 +52,14 @@ class EntityService
 				["Repeating"],
 				["Layer", [ 1000 ]]
 			];
+
+			case "wall":
+			data = [
+				["TileImage", ["art/grimoire.png", tileRect(36)]],
+				["Collision", ["solid"]],
+				["Layer", [ 50 ]],
+				["GridPosition", [ 0, 0 ]],
+			];
 			
 			default:
 			throw("Entity ID not recognized: " + id);
@@ -57,6 +67,8 @@ class EntityService
 
 		for(arr in data)
 			e.add(ComponentService.getComponent(arr[0], arr[1]));
+
+		return e;
 	}
 
 	private static var TILES_ACROSS:Int = 8;

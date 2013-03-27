@@ -15,14 +15,18 @@ import com.grinder.CameraMan;
 import com.grinder.system.RenderingSystem;
 import com.grinder.system.MovementSystem;
 import com.grinder.system.CameraSystem;
+import com.grinder.system.CollisionSystem;
 
 import com.grinder.service.EntityService;
 import com.grinder.service.ComponentService;
+
+import com.grinder.component.Grid;
 
 class GameWorld extends World
 {
 	private var ash:Engine;
 	private var systems:SystemList;
+	private var nextSystemPriority:Int = 0;
 
 	public function new()
 	{
@@ -51,9 +55,10 @@ class GameWorld extends World
 		// Define turn-based systems.
 		// Don't add these to the engine, we'll update them when the turn advances.
 		systems = new SystemList();
-		addSystem(new MovementSystem(ash), 10);
-		addSystem(new RenderingSystem(ash), 20);
-		addSystem(new CameraSystem(ash, 32), 30);
+		addSystem(new CollisionSystem(ash));
+		addSystem(new MovementSystem(ash));
+		addSystem(new RenderingSystem(ash));
+		addSystem(new CameraSystem(ash, 32));
 
 		// TODO Define real-time systems.
 		// These would be added directly to Ash, using ash.addSystem()
@@ -64,7 +69,29 @@ class GameWorld extends World
 		var factory = new EntityService(ash);
 		factory.spawnEntity("player", "player");
 		factory.spawnEntity("backdrop", "backdrop");
-		factory.spawnEntity("map", "map");
+		var map:Entity = factory.spawnEntity("map", "map");
+		var grid:Grid = map.get(Grid);
+		grid.setRect(2, 2, 7, 7, 36);
+		grid.setRect(3, 3, 5, 5, 35);
+		grid.set(5, 2, 33);
+		grid.set(5, 8, 33);
+		grid.set(2, 5, 33);
+		grid.set(8, 5, 33);
+
+		for(y in 0...grid.height)
+		for(x in 0...grid.width)
+		{
+			var value = grid.get(x,y);
+			if(value == 36)
+			{
+				var wall = factory.spawnEntity("wall");
+				var pos = wall.get(com.grinder.component.GridPosition);
+				pos.x = x;
+				pos.y = y;
+				grid.set(x, y, 34);
+			}
+		}
+
 	}
 
 	public function updateSim(): Void
@@ -75,9 +102,9 @@ class GameWorld extends World
 	}
 
 	// Add a new turn-based system
-    public function addSystem(system:System, priority:Int):Void
+    public function addSystem(system:System):Void
     {
-        system.priority = priority;
+        system.priority = nextSystemPriority++;
         system.addToEngine(ash);
         systems.add(system);
     }
@@ -107,7 +134,20 @@ class GameWorld extends World
 			updateSim();
 		}
 
+		if(InputMan.pressed(InputMan.DEBUG))
+			beginDebug();
+
 		// Update real-time systems.
 		ash.update(HXP.elapsed);
+	}
+
+	private static function beginDebug()
+	{
+		#if DEBUGGER
+			trace("Starting debugger");
+	    	new hxcpp.DebugStdio(true);
+		#else
+			trace("Debugger not enabled");
+		#end	
 	}
 }

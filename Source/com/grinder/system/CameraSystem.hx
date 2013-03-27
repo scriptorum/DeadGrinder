@@ -14,7 +14,7 @@ class CameraSystem extends System
 	public var tileSize:Int;
 	public var halfTileSize:Int;
 
-	// Pass in the tile size being used, or leave as 1 if CameraFocusNode is using Position instead of GridPosition
+	// Pass in the tile size being used, or leave as 1 if CameraFocusNode is using GridPosition instead of Position
 	public function new(engine:Engine, tileSize:Int = 1)
 	{
 		super();

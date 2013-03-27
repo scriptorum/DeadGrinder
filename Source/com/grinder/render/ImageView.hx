@@ -2,6 +2,7 @@ package com.grinder.render;
 
 import com.grinder.component.TileImage;
 import com.grinder.component.GridPosition;
+import com.grinder.component.Collision;
 
 import com.haxepunk.graphics.Image;
 
@@ -14,6 +15,13 @@ class ImageView extends View
 		var tileImage = getComponent(TileImage);	
 		var image = new Image(tileImage.path, tileImage.clip);
 		graphic = image;
+
+		if(entity.has(Collision))
+		{
+			setHitbox(image.width, image.height);
+			type = getComponent(Collision).type;
+			collidable = true;
+		}
 	}
 
 	override public function nodeUpdate()

@@ -3,7 +3,6 @@ package com.grinder;
 import com.grinder.InputMan;
 import com.haxepunk.Engine;
 import com.haxepunk.HXP;
-import com.grinder.world.IntroWorld;
 import com.grinder.world.GameWorld;
 
 // TODO Add pushWorld, which will create a world stack. Then you could popWorld() to return to the previous world.
@@ -36,7 +35,6 @@ class Main extends Engine
 	{
 		switch(++progress)
 		{
-			case 1: HXP.world = new IntroWorld();
 			case 2: HXP.world = new GameWorld();
 			// Change progression here
 			default: trace("WTF");

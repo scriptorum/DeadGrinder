@@ -20,7 +20,7 @@ class GridView extends View
 		var tileHeight = Std.int(tileImage.clip.height);
 
 		// TODO get standard tile dimensions from some other source than the image clipping rectangle??
-		this.tileMap = new Tilemap(tileImage.path, tileHeight * grid.width, tileWidth * grid.height,
+		tileMap = new Tilemap(tileImage.path, tileHeight * grid.width, tileWidth * grid.height,
 			tileWidth, tileHeight);
 		graphic = tileMap;
 	}
@@ -40,13 +40,10 @@ class GridView extends View
 			tileMap.setTile(x, y, g.get(x, y));
 	}
 
-	// Move haxepunk entity to a grid position
 	public function updatePosition()
 	{
 		var position = getComponent(Position);
-		var tileImage = getComponent(TileImage);
-
-		x = position.x * tileImage.clip.width;
-		y = position.y * tileImage.clip.height;
+		x = position.x;
+		y = position.y;
 	}
 }

@@ -51,4 +51,27 @@ class Grid
 		for(i in 0...width * height)
 			grid.push(value);
 	}
+
+	public function setRect(x:Int, y:Int, width:Int, height:Int, value:Int)
+	{
+		for(_x in x...width + x)
+		for(_y in y...height + y)
+			set(_x, _y, value);
+	}
+
+	public function load(str:String, delimiter:String = ",", eol = ";", x:Int = 0, y:Int = 0): Void
+	{
+		var _x = x;
+		var _y = y;
+		for(line in com.scriptorum.Util.split(str, eol))
+		{
+			for(n in com.scriptorum.Util.split(line, delimiter))
+			{
+				if(n != "")
+					set(_x++, _y, Std.parseInt(n));
+			}
+			_y++;
+			_x = x;
+		}
+	}
 }
