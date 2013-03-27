@@ -1,24 +1,16 @@
 package com.grinder.render;
 
-import com.haxepunk.Entity;
+import com.grinder.component.Image;
+
 import com.haxepunk.graphics.Backdrop;
 
-import com.grinder.node.BackdropNode;
-import com.grinder.component.Layer;
-
-class BackdropView extends Entity
+class BackdropView extends View
 {
-	public function new(node:BackdropNode)
+	override public function begin()
 	{
-		super();
-
-		var c = node.entity.get(Layer);
-		if(c != null)
-			this.layer = c.layer;
-
 		// trace("Placing backdrop entity at layer " + this.layer);
-
-		var backdrop = new Backdrop(node.image.path);
+		var image = getComponent(Image);
+		var backdrop = new Backdrop(image.path);
 		graphic = backdrop;
 	}
 }

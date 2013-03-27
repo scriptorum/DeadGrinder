@@ -10,15 +10,15 @@ import com.haxepunk.HXP;
 
 import com.grinder.render.ImageView;
 import com.grinder.node.ImageNode;
-import com.grinder.node.ImageViewNode;
 
 import com.grinder.render.BackdropView;
 import com.grinder.node.BackdropNode;
-import com.grinder.node.BackdropViewNode;
 
 import com.grinder.render.GridView;
 import com.grinder.node.GridNode;
-import com.grinder.node.GridViewNode;
+
+import com.grinder.component.Display;
+import com.grinder.node.DisplayNode;
 
 class RenderingSystem extends System
 {
@@ -30,58 +30,42 @@ class RenderingSystem extends System
 		this.engine = engine;
 
 		engine.getNodeList(ImageNode).nodeAdded.add(imageNodeAdded);
-		engine.getNodeList(ImageViewNode).nodeRemoved.add(imageViewNodeRemoved);
-
 		engine.getNodeList(BackdropNode).nodeAdded.add(backdropNodeAdded);
-		engine.getNodeList(BackdropViewNode).nodeRemoved.add(backdropViewNodeRemoved);
-
 		engine.getNodeList(GridNode).nodeAdded.add(gridNodeAdded);
-		engine.getNodeList(GridViewNode).nodeRemoved.add(gridViewNodeRemoved);
+
+		engine.getNodeList(DisplayNode).nodeRemoved.add(displayNodeRemoved);
 	}
 
 	private function imageNodeAdded(node:ImageNode): Void
 	{
-		var e = new ImageView(node);
+		var e = new ImageView(node.entity);
 		HXP.world.add(e);
-		node.entity.add(e);
-	}
-
-	private function imageViewNodeRemoved(node:ImageViewNode): Void
-	{
-		HXP.world.remove(node.view);
+		node.entity.add(new Display(e));
 	}
 
 	private function backdropNodeAdded(node:BackdropNode): Void
 	{
-		var e = new BackdropView(node);
+		var e = new BackdropView(node.entity);
 		HXP.world.add(e);
-		node.entity.add(e);
-	}
-
-	private function backdropViewNodeRemoved(node:BackdropViewNode): Void
-	{
-		HXP.world.remove(node.view);
+		node.entity.add(new Display(e));
 	}
 
 	private function gridNodeAdded(node:GridNode): Void
 	{
-		var e = new GridView(node);
+		var e = new GridView(node.entity);
 		HXP.world.add(e);
-		node.entity.add(e);
+		node.entity.add(new Display(e));
 	}
 
-	private function gridViewNodeRemoved(node:GridViewNode): Void
+	private function displayNodeRemoved(node:DisplayNode): Void
 	{
-		HXP.world.remove(node.view);
+		HXP.world.remove(node.display.view);
 	}
 
 	// TO DO respond to move events
 	override public function update(_)
 	{
-	 	for(node in engine.getNodeList(ImageViewNode))
-			node.view.updatePosition();
-
-	 	for(node in engine.getNodeList(GridViewNode))
-			node.view.updateNode();
+	 	for(node in engine.getNodeList(DisplayNode))
+			node.display.view.nodeUpdate();
 	}
 }

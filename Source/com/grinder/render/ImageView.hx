@@ -1,36 +1,27 @@
 package com.grinder.render;
 
-import com.haxepunk.Entity;
+import com.grinder.component.TileImage;
+import com.grinder.component.GridPosition;
+
 import com.haxepunk.graphics.Image;
 
-import com.grinder.node.ImageNode;
-import com.grinder.component.Layer;
-
 //  Should view classes such as this know about nodes?
-class ImageView extends Entity
+class ImageView extends View
 {
-	public var node:ImageNode;
-
-	public function new(node:ImageNode)
+	override public function begin()
 	{
-		super();
-
-		var c = node.entity.get(Layer);
-		if(c != null)
-			this.layer = c.layer;
-
 		// trace("Placing sprite entity at layer " + this.layer);
-
-		var image = new Image(node.tileImage.path, node.tileImage.clip);
+		var tileImage = getComponent(TileImage);	
+		var image = new Image(tileImage.path, tileImage.clip);
 		graphic = image;
-		this.node = node;
-		updatePosition();
 	}
 
-	// Move haxepunk entity to a grid position
-	public function updatePosition()
+	override public function nodeUpdate()
 	{
-		x = node.position.x * node.tileImage.clip.width;
-		y = node.position.y * node.tileImage.clip.height;
+		var position = getComponent(GridPosition);
+		var tileImage = getComponent(TileImage);
+
+		x = position.x * tileImage.clip.width;
+		y = position.y * tileImage.clip.height;
 	}
 }

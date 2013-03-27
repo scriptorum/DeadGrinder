@@ -1,42 +1,31 @@
 package com.grinder.render;
 
-import com.haxepunk.Entity;
+import com.grinder.component.TileImage;
+import com.grinder.component.Position;
+import com.grinder.component.Grid;
+
 import com.haxepunk.graphics.Tilemap;
 
-import com.grinder.node.GridNode;
-import com.grinder.component.Layer;
-
 //  Should view classes such as this know about nodes?
-class GridView extends Entity
+class GridView extends View
 {
 	public var tileMap:Tilemap;
-	public var node:GridNode;
 
-	public function new(node:GridNode)
+	override public function begin()	
 	{
-		super();
+		var tileImage = getComponent(TileImage);
+		var grid = getComponent(Grid);
 
-		var c = node.entity.get(Layer);
-		if(c != null)
-			this.layer = c.layer;
-
-		var tileWidth = Std.int(node.tileImage.clip.width);
-		var tileHeight = Std.int(node.tileImage.clip.height);
-
-		// trace("Placing grid entity at layer " + this.layer + " with grid size:" + node.grid.width + "x" + node.grid.height + 
-		// 	" tile size:" + tileWidth + "x" + tileHeight + " and image:" + node.tileImage.path);
+		var tileWidth = Std.int(tileImage.clip.width);
+		var tileHeight = Std.int(tileImage.clip.height);
 
 		// TODO get standard tile dimensions from some other source than the image clipping rectangle??
-		this.tileMap = new Tilemap(node.tileImage.path, tileHeight * node.grid.width, tileWidth * node.grid.height,
+		this.tileMap = new Tilemap(tileImage.path, tileHeight * grid.width, tileWidth * grid.height,
 			tileWidth, tileHeight);
 		graphic = tileMap;
-		this.node = node;
-
-		updateGrid();
-		updatePosition();
 	}
 
-	public function updateNode()
+	override public function nodeUpdate()
 	{
 		updateGrid();
 		updatePosition();
@@ -45,7 +34,7 @@ class GridView extends Entity
 	public function updateGrid()
 	{
 		// trace("Updating grid");
-		var g = node.grid;
+		var g = getComponent(Grid);
 		for(y in 0...g.height)
 		for(x in 0...g.width)
 			tileMap.setTile(x, y, g.get(x, y));
@@ -54,7 +43,10 @@ class GridView extends Entity
 	// Move haxepunk entity to a grid position
 	public function updatePosition()
 	{
-		x = node.position.x * node.tileImage.clip.width;
-		y = node.position.y * node.tileImage.clip.height;
+		var position = getComponent(Position);
+		var tileImage = getComponent(TileImage);
+
+		x = position.x * tileImage.clip.width;
+		y = position.y * tileImage.clip.height;
 	}
 }
