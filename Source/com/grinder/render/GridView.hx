@@ -10,14 +10,16 @@ import com.haxepunk.graphics.Tilemap;
 class GridView extends View
 {
 	public var tileMap:Tilemap;
+	public var tileWidth:Int;
+	public var tileHeight:Int;
 
 	override public function begin()	
 	{
 		var tileImage = getComponent(TileImage);
 		var grid = getComponent(Grid);
 
-		var tileWidth = Std.int(tileImage.clip.width);
-		var tileHeight = Std.int(tileImage.clip.height);
+		tileWidth = Std.int(tileImage.clip.width);
+		tileHeight = Std.int(tileImage.clip.height);
 
 		// TODO get standard tile dimensions from some other source than the image clipping rectangle??
 		tileMap = new Tilemap(tileImage.path, tileHeight * grid.width, tileWidth * grid.height,

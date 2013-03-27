@@ -6,6 +6,7 @@ import ash.core.System;
 
 import com.grinder.node.CollisionNode;
 import com.grinder.render.View;
+import com.grinder.component.Display;
 import com.grinder.component.Grid;
 import com.grinder.component.GridVelocity;
 
@@ -31,11 +32,11 @@ class CollisionSystem extends System
 			return;
 		}
 		var grid = map.get(Grid);
+		var width = map.get(Display).view.tileWidth;
+		var height = map.get(Display).view.tileHeight;
 
 	 	for(node in engine.getNodeList(CollisionNode))
 		{
-			trace("Checking for collisions with entity " + node.entity.name);
-			trace("	- Checking if stopped");
 			if(isStopped(node))
 				continue;
 
@@ -43,7 +44,7 @@ class CollisionSystem extends System
 			var dx = node.position.x + node.velocity.x;
 			var dy = node.position.y + node.velocity.y;
 
-			if(isOutOfBounds(node, dx, dy, grid) || isColliding(node, dx, dy))
+			if(isOutOfBounds(node, dx, dy, grid) || isColliding(node, dx * width, dy * height))
 			{
 				trace("You can't go that way");
 				removeVelocity(node);
@@ -70,7 +71,6 @@ class CollisionSystem extends System
 
 	public function isOutOfBounds(node:CollisionNode, dx:Float, dy:Float, grid:Grid): Bool
 	{
-			trace("	- Checking boundaries");
 		if(dx < 0 || dy < 0 || dx >= grid.width || dy >= grid.height)
 			return true;
 		return false;
@@ -78,9 +78,7 @@ class CollisionSystem extends System
 
 	public function isColliding(node:CollisionNode, dx:Float, dy:Float): Bool
 	{
-			trace("	- Checking collision at " + dx + "," + dy);
 		var collider:Entity = node.display.view.collide("solid", dx, dy);
-		trace("Collider:"+ collider);
 		if(collider != null)
 			return true;
 		return false;
