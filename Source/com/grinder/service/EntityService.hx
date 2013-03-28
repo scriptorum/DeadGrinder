@@ -89,3 +89,35 @@ class EntityService
 		return new Rectangle(tileX * TILE_SIZE, tileY * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 	}
 }
+
+/*
+				["GridPosition", [0, 0]],
+				["TileImage", ["art/grimoire.png", tileRect(1)]],
+				["Layer", [ 50 ]],
+				["Collision", [Collision.PERSON]],
+				["CameraFocus"]
+
+
+var name = "player";
+var entity = new Entity(name);
+ash.addEntity(entity);
+
+var playerFsm = new EntityStateMachine(entity);
+playerFsm.createState("alive")
+	.add(GridPosition).withInstance(new GridPosition(0,0))
+	.add(TileImage).withInstance(new TileImage("art/grimoire.png", tileRect(1))
+	.add(Layer).withInstance(new Layer(50))
+	.add("Collision").withInstance(new Collision(Collision.PERSON))
+	.add("CameraFocus");
+playerFsm.createState("dead")
+	.add(GridPosition) // will it hold the last grid position if I do it this way? Try it out!
+	.add(TileImage).withInstance(new TileImage())
+var state = new State(playerFsm);
+entity.add(state);
+
+playerFsm.changeState("alive");
+
+
+
+*/
+
