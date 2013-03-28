@@ -12,6 +12,7 @@ import com.grinder.SoundMan;
 import com.grinder.InputMan;
 import com.grinder.CameraMan;
 
+import com.grinder.system.ActionSystem;
 import com.grinder.system.RenderingSystem;
 import com.grinder.system.MovementSystem;
 import com.grinder.system.CameraSystem;
@@ -55,6 +56,7 @@ class GameWorld extends World
 		// Define turn-based systems.
 		// Don't add these to the engine, we'll update them when the turn advances.
 		systems = new SystemList();
+		addSystem(new ActionSystem(ash));
 		addSystem(new CollisionSystem(ash));
 		addSystem(new MovementSystem(ash));
 		addSystem(new RenderingSystem(ash));
@@ -139,7 +141,15 @@ class GameWorld extends World
 			var player = ash.getEntityByName("player");
 			if(player == null)
 				throw("Cannot find player component");
-			player.add(ComponentService.getComponent("GridVelocity", [ox, oy]));
+
+			if(InputMan.check(com.haxepunk.utils.Key.SHIFT))
+			{
+				var pos = player.get(com.grinder.component.GridPosition);
+				player.add(ComponentService.getComponent("Action", [com.grinder.component.Action.OPEN, 
+					ComponentService.getComponent("GridPosition", [pos.x + ox, pos.y + oy])]));
+			}
+			else player.add(ComponentService.getComponent("GridVelocity", [ox, oy]));
+
 			updateSim();
 		}
 

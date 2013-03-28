@@ -2,8 +2,8 @@ package com.grinder.component;
 
 class Size
 {
-	public var width:Float;
-	public var height:Float;
+	public var width:Float = 0;
+	public var height:Float = 0;
 
 	public function new(width:Float, height:Float)
 	{

@@ -4,11 +4,17 @@ import nme.geom.Rectangle;
 
 import ash.core.Engine;
 import ash.core.Entity;
+import ash.fsm.EntityStateMachine;
 
 import com.grinder.service.ComponentService;
 import com.grinder.service.ConfigService;
 import com.grinder.component.Collision;
 import com.grinder.component.TiledImage;
+
+import com.grinder.component.GridPosition;
+import com.grinder.component.Layer;
+import com.grinder.component.Tile;
+import com.grinder.component.State;
 
 class EntityService
 {
@@ -37,7 +43,7 @@ class EntityService
 			data = [
 				["GridPosition", [0, 0]],
 				["Tile", [tiledImage, 1]],
-				["Layer", [ 50 ]],
+				["Layer", [ 30 ]],
 				["Collision", [Collision.PERSON]],
 				["CameraFocus"]
 			];
@@ -66,11 +72,28 @@ class EntityService
 			];
 
 			case "door":
+			var fsm = new EntityStateMachine(e);
+			var pos = new GridPosition(0,0);
+			var layer = new Layer(50);
+			fsm.createState("open")
+				.add(Tile).withInstance(new Tile(tiledImage, 34))
+				.add(Layer).withInstance(layer)
+				.add(GridPosition).withInstance(pos)
+				.add(State).withInstance(new State(fsm, "open"));
+			fsm.createState("closed")
+				.add(Tile).withInstance(new Tile(tiledImage, 33))
+				.add(Collision).withInstance(new Collision(Collision.CLOSED))
+				.add(Layer).withInstance(layer)
+				.add(GridPosition).withInstance(pos)
+				.add(State).withInstance(new State(fsm, "closed"));
+			fsm.createState("locked")
+				.add(Tile).withInstance(new Tile(tiledImage, 33))
+				.add(Collision).withInstance(new Collision(Collision.LOCKED))
+				.add(Layer).withInstance(layer)
+				.add(GridPosition).withInstance(pos)
+				.add(State).withInstance(new State(fsm, "locked"));
 			data = [
-				["Tile", [tiledImage, 33]],
-				["Collision", [Collision.CLOSED]],
-				["Layer", [ 50 ]],
-				["GridPosition", [ 0, 0 ]],
+				["State", [fsm, "init", "closed"]],
 			];
 
 			default:
@@ -81,6 +104,13 @@ class EntityService
 		{
 			var c:Dynamic = (Std.is(arr[0], String) ? ComponentService.getComponent(arr[0], arr[1]) : arr[0]);
 			e.add(c);
+
+			if(e.has(State))
+			{
+				var state = e.get(State);
+				if(state.next != null)
+					state.fsm.changeState(state.next);
+			}
 		}
 
 		return e;

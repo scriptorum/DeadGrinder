@@ -2,8 +2,8 @@ package com.grinder.component;
 
 class GridSize
 {
-	public var width:Int;
-	public var height:Int;
+	public var width:Int = 0;
+	public var height:Int = 0;
 
 	public function new(width:Int, height:Int)
 	{

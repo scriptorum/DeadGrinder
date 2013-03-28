@@ -25,7 +25,7 @@ class View extends com.haxepunk.Entity
 		// trace("Created view from " + entity.name + " with position " + x + "," + y);
 	}
 
-	public function getComponent<T>(component:Class<Dynamic>): T
+	public function getComponent<T>(component:Class<T>): T
 	{
 		var instance:T = entity.get(component);
 		if(instance == null)

@@ -2,8 +2,8 @@ package com.grinder.component;
 
 class GridVelocity
 {
-	public var x:Int;
-	public var y:Int;
+	public var x:Int = 0;
+	public var y:Int = 0;
 
 	public function new(x:Int, y:Int)
 	{
