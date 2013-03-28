@@ -22,12 +22,15 @@ import com.grinder.service.EntityService;
 import com.grinder.service.ComponentService;
 
 import com.grinder.component.Grid;
+import com.grinder.component.GridPosition;
+import com.grinder.component.Action;
 
 class GameWorld extends World
 {
 	private var ash:Engine;
 	private var systems:SystemList;
 	private var nextSystemPriority:Int = 0;
+	private var factory:EntityService;
 
 	public function new()
 	{
@@ -68,7 +71,7 @@ class GameWorld extends World
 
 	private function initEntities()
 	{
-		var factory = new EntityService(ash);
+		factory = new EntityService(ash);
 		factory.spawnEntity("player", "player");
 		factory.spawnEntity("backdrop", "backdrop");
 		var map:Entity = factory.spawnEntity("map", "map");
@@ -144,9 +147,8 @@ class GameWorld extends World
 
 			if(InputMan.check(com.haxepunk.utils.Key.SHIFT))
 			{
-				var pos = player.get(com.grinder.component.GridPosition);
-				player.add(ComponentService.getComponent("Action", [com.grinder.component.Action.OPEN, 
-					ComponentService.getComponent("GridPosition", [pos.x + ox, pos.y + oy])]));
+				var pos = player.get(GridPosition);
+				factory.addActionAt(pos.x + ox, pos.y + oy, new Action(Action.OPEN));
 			}
 			else player.add(ComponentService.getComponent("GridVelocity", [ox, oy]));
 

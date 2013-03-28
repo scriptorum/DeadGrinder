@@ -8,13 +8,14 @@ import ash.fsm.EntityStateMachine;
 
 import com.grinder.service.ComponentService;
 import com.grinder.service.ConfigService;
+import com.grinder.node.GridPositionNode;
 import com.grinder.component.Collision;
 import com.grinder.component.TiledImage;
-
 import com.grinder.component.GridPosition;
 import com.grinder.component.Layer;
 import com.grinder.component.Tile;
 import com.grinder.component.State;
+import com.grinder.component.Action;
 
 class EntityService
 {
@@ -23,6 +24,25 @@ class EntityService
 	public function new(ash:Engine)
 	{
 		this.ash = ash;
+	}
+
+	public function getEntitiesAt(x:Int, y:Int): Array<Entity>
+	{
+		var a = new Array<Entity>();
+		for(node in ash.getNodeList(GridPositionNode))
+		{
+			if(node.position.matches(x,y))
+				a.push(node.entity);
+		}
+		return a;
+	}
+
+	public function addActionAt(x:Int, y:Int, action:Action): Array<Entity>
+	{
+		var list = getEntitiesAt(x, y);
+		for(entity in list)
+			entity.add(new Action(Action.OPEN));		
+		return list;
 	}
 
 	public function spawnEntity(id:String, name:String = ""): Entity
