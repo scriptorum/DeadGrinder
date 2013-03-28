@@ -22,7 +22,7 @@ class View extends com.haxepunk.Entity
 		begin();
 		nodeUpdate();
 
-		trace("Created view from " + entity.name + " with position " + x + "," + y);
+		// trace("Created view from " + entity.name + " with position " + x + "," + y);
 	}
 
 	public function getComponent<T>(component:Class<Dynamic>): T

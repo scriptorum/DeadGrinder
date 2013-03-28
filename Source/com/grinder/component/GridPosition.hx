@@ -10,4 +10,9 @@ class GridPosition
 		this.x = x;
 		this.y = y;
 	}
+
+	public function matches(x:Int, y:Int): Bool
+	{
+		return (this.x == x && this.y == y);
+	}
 }

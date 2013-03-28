@@ -73,6 +73,7 @@ class GameWorld extends World
 		var grid:Grid = map.get(Grid);
 		grid.setRect(2, 2, 7, 7, 36);
 		grid.setRect(3, 3, 5, 5, 35);
+
 		grid.set(5, 2, 33);
 		grid.set(5, 8, 33);
 		grid.set(2, 5, 33);
@@ -82,9 +83,17 @@ class GameWorld extends World
 		for(x in 0...grid.width)
 		{
 			var value = grid.get(x,y);
-			if(value == 36)
+			switch(value)
 			{
+				case 36:
 				var wall = factory.spawnEntity("wall");
+				var pos = wall.get(com.grinder.component.GridPosition);
+				pos.x = x;
+				pos.y = y;
+				grid.set(x, y, 34);
+
+				case 33:
+				var wall = factory.spawnEntity("door");
 				var pos = wall.get(com.grinder.component.GridPosition);
 				pos.x = x;
 				pos.y = y;

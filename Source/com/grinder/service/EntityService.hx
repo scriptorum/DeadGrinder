@@ -6,6 +6,7 @@ import ash.core.Engine;
 import ash.core.Entity;
 
 import com.grinder.service.ComponentService;
+import com.grinder.component.Collision;
 
 class EntityService
 {
@@ -34,7 +35,7 @@ class EntityService
 				["GridPosition", [0, 0]],
 				["TileImage", ["art/grimoire.png", tileRect(1)]],
 				["Layer", [ 50 ]],
-				["Collision", ["solid"]],
+				["Collision", [Collision.PERSON]],
 				["CameraFocus"]
 			];
 
@@ -56,11 +57,19 @@ class EntityService
 			case "wall":
 			data = [
 				["TileImage", ["art/grimoire.png", tileRect(36)]],
-				["Collision", ["solid"]],
+				["Collision", [Collision.SHEER]],
 				["Layer", [ 50 ]],
 				["GridPosition", [ 0, 0 ]],
 			];
-			
+
+			case "door":
+			data = [
+				["TileImage", ["art/grimoire.png", tileRect(33)]],
+				["Collision", [Collision.CLOSED]],
+				["Layer", [ 50 ]],
+				["GridPosition", [ 0, 0 ]],
+			];
+
 			default:
 			throw("Entity ID not recognized: " + id);
 		}
