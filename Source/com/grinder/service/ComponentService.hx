@@ -1,17 +1,20 @@
 package com.grinder.service;
 
-import com.grinder.component.Collision;
+import com.grinder.component.Tile;
+import com.grinder.component.TiledImage;
+import com.grinder.component.Size;
+import com.grinder.component.GridSize;
 import com.grinder.component.GridPosition;
 import com.grinder.component.GridVelocity;
 import com.grinder.component.Position;
+import com.grinder.component.Velocity;
+import com.grinder.component.Collision;
 import com.grinder.component.Grid;
 import com.grinder.component.Display;
-import com.grinder.component.TileImage;
 import com.grinder.component.Image;
 import com.grinder.component.CameraFocus;
 import com.grinder.component.Repeating;
 import com.grinder.component.Layer;
-import com.grinder.component.Velocity;
 import com.grinder.component.Doorway;
 import com.grinder.component.Health;
 import com.grinder.component.InputControl;

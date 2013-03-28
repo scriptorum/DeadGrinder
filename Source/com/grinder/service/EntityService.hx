@@ -6,7 +6,9 @@ import ash.core.Engine;
 import ash.core.Entity;
 
 import com.grinder.service.ComponentService;
+import com.grinder.service.ConfigService;
 import com.grinder.component.Collision;
+import com.grinder.component.TiledImage;
 
 class EntityService
 {
@@ -27,13 +29,14 @@ class EntityService
 
 	public static function spawnComponents(e:Entity, id:String): Entity
 	{
+		var tiledImage:TiledImage = ConfigService.getTiledImage();
 		var data;
 		switch(id)
 		{
 			case "player":
 			data = [
 				["GridPosition", [0, 0]],
-				["TileImage", ["art/grimoire.png", tileRect(1)]],
+				["Tile", [tiledImage, 1]],
 				["Layer", [ 50 ]],
 				["Collision", [Collision.PERSON]],
 				["CameraFocus"]
@@ -41,7 +44,7 @@ class EntityService
 
 			case "map":
 			data = [
-				["TileImage", ["art/grimoire.png", tileRect(0)]],
+				[tiledImage],
 				["Grid", [ 11, 11, 32, null, null ]],
 				["Position", [ 0, 0 ]],
 				["Layer", [ 100 ]]
@@ -56,7 +59,7 @@ class EntityService
 
 			case "wall":
 			data = [
-				["TileImage", ["art/grimoire.png", tileRect(36)]],
+				["Tile", [tiledImage, 36]],
 				["Collision", [Collision.SHEER]],
 				["Layer", [ 50 ]],
 				["GridPosition", [ 0, 0 ]],
@@ -64,7 +67,7 @@ class EntityService
 
 			case "door":
 			data = [
-				["TileImage", ["art/grimoire.png", tileRect(33)]],
+				["Tile", [tiledImage, 33]],
 				["Collision", [Collision.CLOSED]],
 				["Layer", [ 50 ]],
 				["GridPosition", [ 0, 0 ]],
@@ -75,7 +78,10 @@ class EntityService
 		}
 
 		for(arr in data)
-			e.add(ComponentService.getComponent(arr[0], arr[1]));
+		{
+			var c:Dynamic = (Std.is(arr[0], String) ? ComponentService.getComponent(arr[0], arr[1]) : arr[0]);
+			e.add(c);
+		}
 
 		return e;
 	}

@@ -1,6 +1,6 @@
 package com.grinder.render;
 
-import com.grinder.component.TileImage;
+import com.grinder.component.TiledImage;
 import com.grinder.component.Position;
 import com.grinder.component.Grid;
 
@@ -15,16 +15,19 @@ class GridView extends View
 
 	override public function begin()	
 	{
-		var tileImage = getComponent(TileImage);
+		var tiledImage = getComponent(TiledImage);
 		var grid = getComponent(Grid);
 
-		tileWidth = Std.int(tileImage.clip.width);
-		tileHeight = Std.int(tileImage.clip.height);
+		tileWidth = tiledImage.tileSize.width;
+		tileHeight = tiledImage.tileSize.height;
 
 		// TODO get standard tile dimensions from some other source than the image clipping rectangle??
-		tileMap = new Tilemap(tileImage.path, tileHeight * grid.width, tileWidth * grid.height,
+		tileMap = new Tilemap(tiledImage.imagePath, tileHeight * grid.width, tileWidth * grid.height,
 			tileWidth, tileHeight);
 		graphic = tileMap;
+
+		trace("Made a tilemap with tileDim:" + tileWidth + "x" + tileHeight + " gridDim:" + grid.width + "x" + grid.height +
+			" image:" + tiledImage.imagePath);
 	}
 
 	override public function nodeUpdate()

@@ -8,26 +8,27 @@ import ash.core.NodeList;
 
 import com.haxepunk.HXP;
 
+import com.grinder.service.ConfigService;
 import com.grinder.render.ImageView;
-import com.grinder.node.ImageNode;
-
 import com.grinder.render.BackdropView;
-import com.grinder.node.BackdropNode;
-
 import com.grinder.render.GridView;
+import com.grinder.node.ImageNode;
+import com.grinder.node.BackdropNode;
 import com.grinder.node.GridNode;
-
-import com.grinder.component.Display;
 import com.grinder.node.DisplayNode;
+import com.grinder.component.Display;
+import com.grinder.component.TiledImage;
 
 class RenderingSystem extends System
 {
 	public var engine:Engine;
+	public var tiledImage:TiledImage;
 
 	public function new(engine:Engine)
 	{
 		super();
 		this.engine = engine;
+		tiledImage = ConfigService.getTiledImage();
 
 		engine.getNodeList(ImageNode).nodeAdded.add(imageNodeAdded);
 		engine.getNodeList(BackdropNode).nodeAdded.add(backdropNodeAdded);
@@ -52,6 +53,7 @@ class RenderingSystem extends System
 
 	private function gridNodeAdded(node:GridNode): Void
 	{
+		trace("Grid node added");
 		var e = new GridView(node.entity);
 		HXP.world.add(e);
 		node.entity.add(new Display(e));
