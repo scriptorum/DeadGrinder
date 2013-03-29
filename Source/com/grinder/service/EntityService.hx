@@ -45,12 +45,15 @@ import com.grinder.service.ConfigService;
 
 class EntityService
 {
+	private var actionables:Array<Class<Actionable>>;
 	private var nextId:Int = 0;
+
 	public var ash:Engine;
 
 	public function new(ash:Engine)
 	{
 		this.ash = ash;
+		actionables = [Openable, Closeable, Lockable, Unlockable];
 	}
 
 	public function getEntitiesAt(x:Int, y:Int): Array<Entity>
@@ -60,6 +63,23 @@ class EntityService
 		{
 			if(node.position.matches(x,y))
 				a.push(node.entity);
+		}
+		return a;
+	}
+
+	public function getActionables(x:Int, y:Int): Array<Actionable>
+	{
+		var a = new Array<Actionable>();
+		for(node in ash.getNodeList(GridPositionNode))
+		{
+			if(node.position.matches(x,y))
+			{
+				for(actionable in actionables)
+				{
+					if(node.entity.has(actionable))
+						a.push(node.entity.get(actionable));
+				}
+			}
 		}
 		return a;
 	}

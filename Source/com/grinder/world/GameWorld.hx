@@ -142,6 +142,8 @@ class GameWorld extends World
 			{
 				var pos = player.get(GridPosition);
 				factory.addActionAt(pos.x + ox, pos.y + oy, new Action(Action.OPEN));
+				// var actionables = factory.getActionables(pos.x + ox, pos.y + oy);
+				// trace("Valid actions:" + actionables);
 			}
 			else player.add(new GridVelocity(ox, oy));
 
