@@ -6,19 +6,37 @@ import ash.core.Engine;
 import ash.core.Entity;
 import ash.fsm.EntityStateMachine;
 
+import com.grinder.component.Action;
+import com.grinder.component.CameraFocus;
+import com.grinder.component.Collision;
+import com.grinder.component.Display;
+import com.grinder.component.Doorway;
+import com.grinder.component.Grid;
+import com.grinder.component.GridPosition;
+import com.grinder.component.GridSize;
+import com.grinder.component.GridVelocity;
+import com.grinder.component.Health;
+import com.grinder.component.Image;
+import com.grinder.component.InputControl;
+import com.grinder.component.Inventory;
+import com.grinder.component.Layer;
+import com.grinder.component.Message;
+import com.grinder.component.Orientation;
+import com.grinder.component.Position;
+import com.grinder.component.Repeating;
+import com.grinder.component.Size;
+import com.grinder.component.Spawn;
+import com.grinder.component.State;
+import com.grinder.component.Tile;
+import com.grinder.component.TiledImage;
+import com.grinder.component.Velocity;
+import com.grinder.node.GridPositionNode;
 import com.grinder.service.ComponentService;
 import com.grinder.service.ConfigService;
-import com.grinder.node.GridPositionNode;
-import com.grinder.component.Collision;
-import com.grinder.component.TiledImage;
-import com.grinder.component.GridPosition;
-import com.grinder.component.Layer;
-import com.grinder.component.Tile;
-import com.grinder.component.State;
-import com.grinder.component.Action;
 
 class EntityService
 {
+	private var nextId:Int = 0;
 	public var ash:Engine;
 
 	public function new(ash:Engine)
@@ -49,6 +67,24 @@ class EntityService
 	{
 		var e = new Entity(name);
 		spawnComponents(e, id);
+		ash.addEntity(e);
+		return e;
+	}
+
+	public function addMessage(str:String): Entity
+	{
+		var e = new Entity("message" + nextId++);
+		e.add(new Message(str));
+		ash.addEntity(e);
+		return e;
+	}
+
+	public function addMessageHud(): Entity
+	{
+		var e = new Entity("messageHud");
+		e.add(new Spawn("messageHud"));
+		e.add(new Position(5, 5));
+		e.add(new Layer(10));
 		ash.addEntity(e);
 		return e;
 	}

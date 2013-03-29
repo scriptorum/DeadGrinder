@@ -42,26 +42,24 @@ class GameWorld extends World
 	{
 		super.update();
 
-		initAsh();
+		ash = new Engine();
+		factory = new EntityService(ash);
+
 		initSystems();
 		initEntities();
 
 		updateSim();
 	}
 
-	private function initAsh()
-	{
-		ash = new Engine();
-	}
 
 	private function initSystems()
 	{
 		// Define turn-based systems.
 		// Don't add these to the engine, we'll update them when the turn advances.
 		systems = new SystemList();
-		addSystem(new ActionSystem(ash));
-		addSystem(new CollisionSystem(ash));
-		addSystem(new MovementSystem(ash));
+		addSystem(new ActionSystem(ash, factory));
+		addSystem(new CollisionSystem(ash, factory));
+		addSystem(new MovementSystem(ash, factory));
 		addSystem(new RenderingSystem(ash));
 		addSystem(new CameraSystem(ash, 32));
 
@@ -71,7 +69,7 @@ class GameWorld extends World
 
 	private function initEntities()
 	{
-		factory = new EntityService(ash);
+		factory.addMessageHud();
 		factory.spawnEntity("player", "player");
 		factory.spawnEntity("backdrop", "backdrop");
 		var map:Entity = factory.spawnEntity("map", "map");

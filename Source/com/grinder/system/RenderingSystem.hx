@@ -12,10 +12,13 @@ import com.grinder.service.ConfigService;
 import com.grinder.render.ImageView;
 import com.grinder.render.BackdropView;
 import com.grinder.render.GridView;
+import com.grinder.render.MessageView;
 import com.grinder.node.ImageNode;
 import com.grinder.node.BackdropNode;
 import com.grinder.node.GridNode;
 import com.grinder.node.DisplayNode;
+import com.grinder.node.MessageNode;
+import com.grinder.node.SpawnNode;
 import com.grinder.component.Display;
 import com.grinder.component.TiledImage;
 
@@ -33,6 +36,8 @@ class RenderingSystem extends System
 		engine.getNodeList(ImageNode).nodeAdded.add(imageNodeAdded);
 		engine.getNodeList(BackdropNode).nodeAdded.add(backdropNodeAdded);
 		engine.getNodeList(GridNode).nodeAdded.add(gridNodeAdded);
+		engine.getNodeList(MessageNode).nodeAdded.add(messageNodeAdded);
+		engine.getNodeList(SpawnNode).nodeAdded.add(spawnNodeAdded);
 
 		engine.getNodeList(DisplayNode).nodeRemoved.add(displayNodeRemoved);
 	}
@@ -53,10 +58,30 @@ class RenderingSystem extends System
 
 	private function gridNodeAdded(node:GridNode): Void
 	{
-		trace("Grid node added");
 		var e = new GridView(node.entity);
 		HXP.world.add(e);
 		node.entity.add(new Display(e));
+	}
+
+	private function messageNodeAdded(node:MessageNode): Void
+	{
+		var messageHud = engine.getEntityByName("messageHud");
+		if(messageHud == null)
+			trace("HUD Not available: " + node.message.text);
+		else messageHud.get(Display).view.addMessage(node.message);
+		engine.removeEntity(node.entity);
+	}
+
+	// Move to SpawnSystem
+	private function spawnNodeAdded(node:SpawnNode): Void
+	{
+		switch(node.spawn.type)
+		{
+			case "messageHud":
+			var e = new MessageView(node.entity);
+			HXP.world.add(e);
+			node.entity.add(new Display(e));
+		}
 	}
 
 	private function displayNodeRemoved(node:DisplayNode): Void

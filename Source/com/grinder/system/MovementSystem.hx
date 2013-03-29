@@ -5,15 +5,18 @@ import ash.core.System;
 
 import com.grinder.node.MoveNode;
 import com.grinder.component.GridVelocity;
+import com.grinder.service.EntityService;
 
 class MovementSystem extends System
 {
+	public var factory:EntityService;
 	public var engine:Engine;
 
-	public function new(engine:Engine)
+	public function new(engine:Engine, factory:EntityService)
 	{
 		super();
 		this.engine = engine;
+		this.factory = factory;
 	}
 
 	override public function update(_)

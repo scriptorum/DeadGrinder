@@ -4,6 +4,7 @@ import ash.core.Engine;
 import ash.core.System;
 import ash.core.Node;
 
+import com.grinder.service.EntityService;
 import com.grinder.node.ActionNode;
 import com.grinder.component.Action;
 import com.grinder.component.GridPosition;
@@ -13,21 +14,24 @@ import com.grinder.component.Collision;
 class ActionSystem extends System
 {
 	public var engine:Engine;
+	public var factory:EntityService;
 
-	public function new(engine:Engine)
+	public function new(engine:Engine, factory:EntityService)
 	{
 		super();
 		this.engine = engine;
+		this.factory = factory;
 	}
 
 	override public function update(_)
 	{
 	 	for(node in engine.getNodeList(ActionNode))
 	 	{
+	 		var msg = null;
 	 		switch(node.action.type)
 	 		{
 	 			case Action.OPEN:
-	 				var msg = "You can't open that.";
+	 				msg = "You can't open that.";
 	 				if(node.entity.has(Collision))
 	 				{
 	 					var target:Collision = node.entity.get(Collision);
@@ -43,8 +47,10 @@ class ActionSystem extends System
 		 					msg = "It seems to be locked.";
 	 				}
 	 				node.entity.remove(Action);
-	 				trace(msg);
 	 		}
+
+	 		if(msg != null)
+	 			factory.addMessage(msg);
 	 	}
 	}
 }

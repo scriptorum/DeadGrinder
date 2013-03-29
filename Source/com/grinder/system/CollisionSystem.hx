@@ -10,15 +10,18 @@ import com.grinder.node.ColliderNode;
 import com.grinder.component.Display;
 import com.grinder.component.Grid;
 import com.grinder.component.GridVelocity;
+import com.grinder.service.EntityService;
 
 class CollisionSystem extends System
 {
 	public var engine:Engine;
+	public var factory:EntityService;
 
-	public function new(engine:Engine)
+	public function new(engine:Engine, factory:EntityService)
 	{
 		super();
 		this.engine = engine;
+		this.factory = factory;
 	}
 
 	override public function update(_)
@@ -41,7 +44,7 @@ class CollisionSystem extends System
 
 			if(isOutOfBounds(node, dx, dy, grid))
 			{
-				trace("That rubble is impossible to scramble over.");
+	 			factory.addMessage("That rubble is impossible to scramble over.");
 				removeVelocity(node);
 				return;
 			}
@@ -51,7 +54,7 @@ class CollisionSystem extends System
 				return;
 			
 			var message = collision.collision.type;
-			trace(message);
+			factory.addMessage(message);
 			removeVelocity(node);
 		}
 	}
