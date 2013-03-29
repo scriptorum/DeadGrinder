@@ -141,9 +141,9 @@ class GameWorld extends World
 			if(InputMan.check(com.haxepunk.utils.Key.SHIFT))
 			{
 				var pos = player.get(GridPosition);
+				var actionables = factory.getActionables(pos.x + ox, pos.y + oy);
+				trace("Valid actions:" + actionables);
 				factory.addActionAt(pos.x + ox, pos.y + oy, new Action(Action.OPEN));
-				// var actionables = factory.getActionables(pos.x + ox, pos.y + oy);
-				// trace("Valid actions:" + actionables);
 			}
 			else player.add(new GridVelocity(ox, oy));
 
