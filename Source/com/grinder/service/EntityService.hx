@@ -7,7 +7,10 @@ import ash.core.Entity;
 import ash.fsm.EntityStateMachine;
 
 import com.grinder.component.Action;
+import com.grinder.component.Actionable;
 import com.grinder.component.CameraFocus;
+import com.grinder.component.Closeable;
+import com.grinder.component.Closed;
 import com.grinder.component.Collision;
 import com.grinder.component.Display;
 import com.grinder.component.Doorway;
@@ -20,7 +23,11 @@ import com.grinder.component.Image;
 import com.grinder.component.InputControl;
 import com.grinder.component.Inventory;
 import com.grinder.component.Layer;
+import com.grinder.component.Lockable;
+import com.grinder.component.Locked;
 import com.grinder.component.Message;
+import com.grinder.component.Open;
+import com.grinder.component.Openable;
 import com.grinder.component.Orientation;
 import com.grinder.component.Position;
 import com.grinder.component.Repeating;
@@ -29,7 +36,10 @@ import com.grinder.component.Spawn;
 import com.grinder.component.State;
 import com.grinder.component.Tile;
 import com.grinder.component.TiledImage;
+import com.grinder.component.Unlockable;
+import com.grinder.component.Unlocked;
 import com.grinder.component.Velocity;
+
 import com.grinder.node.GridPositionNode;
 import com.grinder.service.ConfigService;
 
@@ -131,18 +141,27 @@ class EntityService
 		var pos = new GridPosition(x, y);
 		var layer = new Layer(50);
 		var tiledImage = ConfigService.getTiledImage();
+		// TODO Replace collision component with Blocked?
 		fsm.createState("open")
+			.add(Open).withSingleton()
+			.add(Closeable).withSingleton()
 			.add(Tile).withInstance(new Tile(tiledImage, 34))
 			.add(Layer).withInstance(layer)
 			.add(GridPosition).withInstance(pos)
 			.add(State).withInstance(new State(fsm, "open"));
 		fsm.createState("closed")
+			.add(Closed).withSingleton()
+			.add(Openable).withSingleton()
+			.add(Lockable).withSingleton()
 			.add(Tile).withInstance(new Tile(tiledImage, 33))
 			.add(Collision).withInstance(new Collision(Collision.CLOSED))
 			.add(Layer).withInstance(layer)
 			.add(GridPosition).withInstance(pos)
 			.add(State).withInstance(new State(fsm, "closed"));
 		fsm.createState("locked")
+			.add(Locked).withSingleton()
+			.add(Closed).withSingleton()
+			.add(Unlockable).withSingleton()
 			.add(Tile).withInstance(new Tile(tiledImage, 33))
 			.add(Collision).withInstance(new Collision(Collision.LOCKED))
 			.add(Layer).withInstance(layer)

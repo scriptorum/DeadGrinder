@@ -10,6 +10,11 @@ import com.grinder.component.Action;
 import com.grinder.component.GridPosition;
 import com.grinder.component.State;
 import com.grinder.component.Collision;
+import com.grinder.component.Lockable;
+import com.grinder.component.Unlockable;
+import com.grinder.component.Openable;
+import com.grinder.component.Closeable;
+import com.grinder.component.Locked;
 
 class ActionSystem extends System
 {
@@ -32,23 +37,48 @@ class ActionSystem extends System
 	 		{
 	 			case Action.OPEN:
 	 				msg = "You can't open that.";
-	 				if(node.entity.has(Collision))
+	 				if(node.entity.has(Openable))
 	 				{
-	 					var target:Collision = node.entity.get(Collision);
-		 				if(target.type == Collision.CLOSED)
-		 				{
-		 					msg = "You open the door.";
-		 					if(node.entity.has(State))
-		 						node.entity.get(State).fsm.changeState("open");
-		 					else msg = "The door is stuck";
-
-		 				}
-		 				else if(target.type == Collision.LOCKED)
-		 					msg = "It seems to be locked.";
+	 					msg = "You open it.";
+	 					if(node.entity.has(State))
+	 						node.entity.get(State).fsm.changeState("open");
+	 					else msg = "It's stuck closed!";
 	 				}
-	 				node.entity.remove(Action);
+					else if(node.entity.has(Locked))
+						msg = "It seems to be locked.";
+
+	 			case Action.CLOSE:
+	 				msg = "You can't close that.";
+	 				if(node.entity.has(Closeable))
+	 				{
+	 					msg = "You close it.";
+	 					if(node.entity.has(State))
+	 						node.entity.get(State).fsm.changeState("closed");
+	 					else msg = "It's stuck open!";
+	 				}
+
+	 			case Action.LOCK:
+	 				msg = "You can't lock that.";
+	 				if(node.entity.has(Lockable))
+	 				{
+	 					msg = "You lock it.";
+	 					if(node.entity.has(State))
+	 						node.entity.get(State).fsm.changeState("locked");
+	 					else msg = "You can't; the lock is broken!";
+	 				}
+
+	 			case Action.UNLOCK:
+	 				msg = "You can't unlock that.";
+	 				if(node.entity.has(Unlockable))
+	 				{
+	 					msg = "You unlock it.";
+	 					if(node.entity.has(State))
+	 						node.entity.get(State).fsm.changeState("closed");
+	 					else msg = "You can't; the lock is broken!";
+	 				}
 	 		}
 
+			node.entity.remove(Action);
 	 		if(msg != null)
 	 			factory.addMessage(msg);
 	 	}
