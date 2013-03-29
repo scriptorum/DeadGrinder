@@ -19,10 +19,10 @@ import com.grinder.system.CameraSystem;
 import com.grinder.system.CollisionSystem;
 
 import com.grinder.service.EntityService;
-import com.grinder.service.ComponentService;
 
 import com.grinder.component.Grid;
 import com.grinder.component.GridPosition;
+import com.grinder.component.GridVelocity;
 import com.grinder.component.Action;
 
 class GameWorld extends World
@@ -70,9 +70,10 @@ class GameWorld extends World
 	private function initEntities()
 	{
 		factory.addMessageHud();
-		factory.spawnEntity("player", "player");
-		factory.spawnEntity("backdrop", "backdrop");
-		var map:Entity = factory.spawnEntity("map", "map");
+		factory.addPlayer(5, 5);
+		factory.addBackdrop();
+
+		var map = factory.addMap();
 		var grid:Grid = map.get(Grid);
 		grid.setRect(2, 2, 7, 7, 36);
 		grid.setRect(3, 3, 5, 5, 35);
@@ -89,17 +90,11 @@ class GameWorld extends World
 			switch(value)
 			{
 				case 36:
-				var wall = factory.spawnEntity("wall");
-				var pos = wall.get(com.grinder.component.GridPosition);
-				pos.x = x;
-				pos.y = y;
+				factory.addWall(x, y);
 				grid.set(x, y, 34);
 
 				case 33:
-				var wall = factory.spawnEntity("door");
-				var pos = wall.get(com.grinder.component.GridPosition);
-				pos.x = x;
-				pos.y = y;
+				factory.addDoor(x, y);
 				grid.set(x, y, 34);
 			}
 		}
@@ -148,7 +143,7 @@ class GameWorld extends World
 				var pos = player.get(GridPosition);
 				factory.addActionAt(pos.x + ox, pos.y + oy, new Action(Action.OPEN));
 			}
-			else player.add(ComponentService.getComponent("GridVelocity", [ox, oy]));
+			else player.add(new GridVelocity(ox, oy));
 
 			updateSim();
 		}

@@ -31,7 +31,6 @@ import com.grinder.component.Tile;
 import com.grinder.component.TiledImage;
 import com.grinder.component.Velocity;
 import com.grinder.node.GridPositionNode;
-import com.grinder.service.ComponentService;
 import com.grinder.service.ConfigService;
 
 class EntityService
@@ -63,14 +62,6 @@ class EntityService
 		return list;
 	}
 
-	public function spawnEntity(id:String, name:String = ""): Entity
-	{
-		var e = new Entity(name);
-		spawnComponents(e, id);
-		ash.addEntity(e);
-		return e;
-	}
-
 	public function addMessage(str:String): Entity
 	{
 		var e = new Entity("message" + nextId++);
@@ -89,127 +80,76 @@ class EntityService
 		return e;
 	}
 
-	public static function spawnComponents(e:Entity, id:String): Entity
+	public function addPlayer(x:Int, y:Int): Entity
 	{
-		var tiledImage:TiledImage = ConfigService.getTiledImage();
-		var data;
-		switch(id)
-		{
-			case "player":
-			data = [
-				["GridPosition", [0, 0]],
-				["Tile", [tiledImage, 1]],
-				["Layer", [ 30 ]],
-				["Collision", [Collision.PERSON]],
-				["CameraFocus"]
-			];
-
-			case "map":
-			data = [
-				[tiledImage],
-				["Grid", [ 11, 11, 32, null, null ]],
-				["Position", [ 0, 0 ]],
-				["Layer", [ 100 ]]
-			];
-
-			case "backdrop":
-			data = [
-				["Image", ["art/rubble2.png"]],
-				["Repeating"],
-				["Layer", [ 1000 ]]
-			];
-
-			case "wall":
-			data = [
-				["Tile", [tiledImage, 36]],
-				["Collision", [Collision.SHEER]],
-				["Layer", [ 50 ]],
-				["GridPosition", [ 0, 0 ]],
-			];
-
-			case "door":
-			var fsm = new EntityStateMachine(e);
-			var pos = new GridPosition(0,0);
-			var layer = new Layer(50);
-			fsm.createState("open")
-				.add(Tile).withInstance(new Tile(tiledImage, 34))
-				.add(Layer).withInstance(layer)
-				.add(GridPosition).withInstance(pos)
-				.add(State).withInstance(new State(fsm, "open"));
-			fsm.createState("closed")
-				.add(Tile).withInstance(new Tile(tiledImage, 33))
-				.add(Collision).withInstance(new Collision(Collision.CLOSED))
-				.add(Layer).withInstance(layer)
-				.add(GridPosition).withInstance(pos)
-				.add(State).withInstance(new State(fsm, "closed"));
-			fsm.createState("locked")
-				.add(Tile).withInstance(new Tile(tiledImage, 33))
-				.add(Collision).withInstance(new Collision(Collision.LOCKED))
-				.add(Layer).withInstance(layer)
-				.add(GridPosition).withInstance(pos)
-				.add(State).withInstance(new State(fsm, "locked"));
-			data = [
-				["State", [fsm, "init", "closed"]],
-			];
-
-			default:
-			throw("Entity ID not recognized: " + id);
-		}
-
-		for(arr in data)
-		{
-			var c:Dynamic = (Std.is(arr[0], String) ? ComponentService.getComponent(arr[0], arr[1]) : arr[0]);
-			e.add(c);
-
-			if(e.has(State))
-			{
-				var state = e.get(State);
-				if(state.next != null)
-					state.fsm.changeState(state.next);
-			}
-		}
-
+		var e = new Entity("player");
+		e.add(new GridPosition(x, y));
+		e.add(new Layer(35));
+		e.add(new Tile(ConfigService.getTiledImage(), 1));
+		e.add(new Collision(Collision.PERSON));
+		e.add(new CameraFocus());
+		ash.addEntity(e);
 		return e;
 	}
 
-	private static var TILES_ACROSS:Int = 8;
-	private static var TILE_SIZE:Int = 32;
-	private static function tileRect(tile): Rectangle
+	public function addBackdrop(): Entity
 	{
-		var tileX = tile % TILES_ACROSS;
-		var tileY = Std.int(Math.floor(tile / TILES_ACROSS));
-		return new Rectangle(tileX * TILE_SIZE, tileY * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+		var e = new Entity("backdrop");
+		e.add(new Image("art/rubble2.png"));
+		e.add(new Repeating());
+		e.add(new Layer(1000));
+		ash.addEntity(e);
+		return e;
+	}
+
+	public function addMap(): Entity
+	{
+		var e = new Entity("map");
+		e.add(new Grid(11, 11, 32, null, null));
+		e.add(new Layer(100));
+		e.add(new Position(0,0));
+		e.add(ConfigService.getTiledImage());
+		ash.addEntity(e);
+		return e;
+	}
+
+	public function addWall(x:Int, y:Int): Entity
+	{
+		var e = new Entity();
+		e.add(new GridPosition(x, y));
+		e.add(new Layer(50));
+		e.add(new Tile(ConfigService.getTiledImage(), 36));
+		e.add(new Collision(Collision.SHEER));
+		ash.addEntity(e);
+		return e;
+	}
+
+	public function addDoor(x:Int, y:Int, state:String = "closed"): Entity
+	{
+		var e = new Entity();
+		var fsm = new EntityStateMachine(e);
+		var pos = new GridPosition(x, y);
+		var layer = new Layer(50);
+		var tiledImage = ConfigService.getTiledImage();
+		fsm.createState("open")
+			.add(Tile).withInstance(new Tile(tiledImage, 34))
+			.add(Layer).withInstance(layer)
+			.add(GridPosition).withInstance(pos)
+			.add(State).withInstance(new State(fsm, "open"));
+		fsm.createState("closed")
+			.add(Tile).withInstance(new Tile(tiledImage, 33))
+			.add(Collision).withInstance(new Collision(Collision.CLOSED))
+			.add(Layer).withInstance(layer)
+			.add(GridPosition).withInstance(pos)
+			.add(State).withInstance(new State(fsm, "closed"));
+		fsm.createState("locked")
+			.add(Tile).withInstance(new Tile(tiledImage, 33))
+			.add(Collision).withInstance(new Collision(Collision.LOCKED))
+			.add(Layer).withInstance(layer)
+			.add(GridPosition).withInstance(pos)
+			.add(State).withInstance(new State(fsm, "locked"));
+		fsm.changeState(state);
+		ash.addEntity(e);
+		return e;
 	}
 }
-
-/*
-				["GridPosition", [0, 0]],
-				["TileImage", ["art/grimoire.png", tileRect(1)]],
-				["Layer", [ 50 ]],
-				["Collision", [Collision.PERSON]],
-				["CameraFocus"]
-
-
-var name = "player";
-var entity = new Entity(name);
-ash.addEntity(entity);
-
-var playerFsm = new EntityStateMachine(entity);
-playerFsm.createState("alive")
-	.add(GridPosition).withInstance(new GridPosition(0,0))
-	.add(TileImage).withInstance(new TileImage("art/grimoire.png", tileRect(1))
-	.add(Layer).withInstance(new Layer(50))
-	.add("Collision").withInstance(new Collision(Collision.PERSON))
-	.add("CameraFocus");
-playerFsm.createState("dead")
-	.add(GridPosition) // will it hold the last grid position if I do it this way? Try it out!
-	.add(TileImage).withInstance(new TileImage())
-var state = new State(playerFsm);
-entity.add(state);
-
-playerFsm.changeState("alive");
-
-
-
-*/
-
