@@ -39,6 +39,7 @@ import com.grinder.component.TiledImage;
 import com.grinder.component.Unlockable;
 import com.grinder.component.Unlocked;
 import com.grinder.component.Velocity;
+import com.grinder.component.Description;
 
 import com.grinder.node.GridPositionNode;
 import com.grinder.service.ConfigService;
@@ -67,18 +68,21 @@ class EntityService
 		return a;
 	}
 
-	public function getActionables(x:Int, y:Int): Array<Actionable>
+	public function getLegalActions(x:Int, y:Int): Array<String>
 	{
-		var a = new Array<Actionable>();
+		var a = new Array<String>();
 		for(node in ash.getNodeList(GridPositionNode))
 		{
 			if(node.position.matches(x,y))
 			{
+				if(node.entity.has(Description))
+					a.push(Action.EXAMINE);
 				for(actionable in actionables)
 				{
 					if(node.entity.has(actionable))
-						a.push(node.entity.get(actionable));
+						a.push(node.entity.get(node.entity.get(actionable).type));
 				}
+				break;
 			}
 		}
 		return a;
@@ -87,8 +91,12 @@ class EntityService
 	public function addActionAt(x:Int, y:Int, action:Action): Array<Entity>
 	{
 		var list = getEntitiesAt(x, y);
-		for(entity in list)
-			entity.add(new Action(Action.OPEN));		
+		if(list.length > 0)
+		{
+			for(entity in list)
+				entity.add(action);
+		}
+		else addMessage("There's nothing there.");
 		return list;
 	}
 
@@ -118,6 +126,7 @@ class EntityService
 		e.add(new Tile(ConfigService.getTiledImage(), 1));
 		e.add(new Collision(Collision.PERSON));
 		e.add(new CameraFocus());
+		e.add(new Description("You have looked better."));
 		ash.addEntity(e);
 		return e;
 	}
@@ -150,6 +159,7 @@ class EntityService
 		e.add(new Layer(50));
 		e.add(new Tile(ConfigService.getTiledImage(), 36));
 		e.add(new Collision(Collision.SHEER));
+		e.add(new Description("The wall is unscalable."));
 		ash.addEntity(e);
 		return e;
 	}
@@ -168,7 +178,8 @@ class EntityService
 			.add(Tile).withInstance(new Tile(tiledImage, 34))
 			.add(Layer).withInstance(layer)
 			.add(GridPosition).withInstance(pos)
-			.add(State).withInstance(new State(fsm, "open"));
+			.add(State).withInstance(new State(fsm, "open"))
+			.add(Description).withInstance(new Description("You see an open doorway."));
 		fsm.createState("closed")
 			.add(Closed).withSingleton()
 			.add(Openable).withSingleton()
@@ -177,7 +188,8 @@ class EntityService
 			.add(Collision).withInstance(new Collision(Collision.CLOSED))
 			.add(Layer).withInstance(layer)
 			.add(GridPosition).withInstance(pos)
-			.add(State).withInstance(new State(fsm, "closed"));
+			.add(State).withInstance(new State(fsm, "closed"))
+			.add(Description).withInstance(new Description("You see a closed door."));
 		fsm.createState("locked")
 			.add(Locked).withSingleton()
 			.add(Closed).withSingleton()
@@ -186,7 +198,8 @@ class EntityService
 			.add(Collision).withInstance(new Collision(Collision.LOCKED))
 			.add(Layer).withInstance(layer)
 			.add(GridPosition).withInstance(pos)
-			.add(State).withInstance(new State(fsm, "locked"));
+			.add(State).withInstance(new State(fsm, "locked"))
+			.add(Description).withInstance(new Description("You see a closed door. It's locked."));
 		fsm.changeState(state);
 		ash.addEntity(e);
 		return e;

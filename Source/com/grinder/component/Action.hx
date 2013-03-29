@@ -8,6 +8,7 @@ class Action
 	public static inline var CLOSE:String = "close";
 	public static inline var LOCK:String = "lock";
 	public static inline var UNLOCK:String = "unlock";
+	public static inline var EXAMINE:String = "examine";
 
 	public var type:String;
 	public var target:GridPosition;

@@ -15,6 +15,7 @@ import com.grinder.component.Unlockable;
 import com.grinder.component.Openable;
 import com.grinder.component.Closeable;
 import com.grinder.component.Locked;
+import com.grinder.component.Description;
 
 class ActionSystem extends System
 {
@@ -76,6 +77,14 @@ class ActionSystem extends System
 	 						node.entity.get(State).fsm.changeState("closed");
 	 					else msg = "You can't; the lock is broken!";
 	 				}
+
+	 			case Action.EXAMINE:
+	 				if(node.entity.has(Description))
+	 					msg = node.entity.get(Description).text;
+	 				else msg = "There is nothing interesting about that.";
+
+	 			default:
+	 				msg = "This action (" + node.action.type + ") is not implemented.";
 	 		}
 
 			node.entity.remove(Action);
