@@ -20,7 +20,7 @@ import com.grinder.component.GridSize;
 import com.grinder.component.GridVelocity;
 import com.grinder.component.Health;
 import com.grinder.component.Image;
-import com.grinder.component.InputControl;
+import com.grinder.component.PlayerControl;
 import com.grinder.component.Inventory;
 import com.grinder.component.Layer;
 import com.grinder.component.Lockable;
@@ -126,6 +126,7 @@ class EntityService
 		e.add(new Tile(ConfigService.getTiledImage(), 1));
 		e.add(new Collision(Collision.PERSON));
 		e.add(new CameraFocus());
+		e.add(new PlayerControl());
 		e.add(new Description("You have looked better."));
 		ash.addEntity(e);
 		return e;

@@ -1,5 +1,0 @@
-package com.grinder.component;
-
-class InputControl
-{
-}

@@ -93,6 +93,6 @@ class RenderingSystem extends System
 	override public function update(_)
 	{
 	 	for(node in engine.getNodeList(DisplayNode))
-			node.display.view.nodeUpdate();
+			node.display.view.nodeUpdate(); // TODO call Entity.update instead
 	}
 }
