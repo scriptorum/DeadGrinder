@@ -65,32 +65,7 @@ class GameWorld extends World
 		factory.addMessageHud();
 		factory.addPlayer(5, 5);
 		factory.addBackdrop();
-
-		var map = factory.addMap();
-		var grid:Grid = map.get(Grid);
-		grid.setRect(2, 2, 7, 7, 36);
-		grid.setRect(3, 3, 5, 5, 35);
-
-		grid.set(5, 2, 33);
-		grid.set(5, 8, 33);
-		grid.set(2, 5, 33);
-		grid.set(8, 5, 33);
-
-		for(y in 0...grid.height)
-		for(x in 0...grid.width)
-		{
-			var value = grid.get(x,y);
-			switch(value)
-			{
-				case 36:
-				factory.addWall(x, y);
-				grid.set(x, y, 34);
-
-				case 33:
-				factory.addDoor(x, y);
-				grid.set(x, y, 34);
-			}
-		}
+		factory.addMap();
 	}
 
     // Real-time update

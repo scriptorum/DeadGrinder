@@ -43,6 +43,7 @@ import com.grinder.component.Description;
 
 import com.grinder.node.GridPositionNode;
 import com.grinder.service.ConfigService;
+import com.grinder.service.MapService;
 
 class EntityService
 {
@@ -145,7 +146,7 @@ class EntityService
 	public function addMap(): Entity
 	{
 		var e = new Entity("map");
-		e.add(new Grid(11, 11, 32));
+		e.add(MapService.generateGrid(this));
 		e.add(new Layer(100));
 		e.add(new Position(0,0));
 		e.add(ConfigService.getTiledImage());
