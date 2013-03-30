@@ -10,17 +10,14 @@ import ash.core.System;
 import com.grinder.SoundMan;
 import com.grinder.InputMan;
 import com.grinder.CameraMan;
-
 import com.grinder.system.ActionSystem;
 import com.grinder.system.RenderingSystem;
 import com.grinder.system.MovementSystem;
 import com.grinder.system.CameraSystem;
 import com.grinder.system.CollisionSystem;
 import com.grinder.system.InputSystem;
-
 import com.grinder.service.EntityService;
-
-import com.grinder.component.Grid;
+import com.grinder.service.MapService;
 
 class GameWorld extends World
 {
@@ -63,9 +60,10 @@ class GameWorld extends World
 	private function initEntities()
 	{
 		factory.addMessageHud();
-		factory.addPlayer(5, 5);
+		factory.addPlayer(1, 1);
 		factory.addBackdrop();
-		factory.addMap();
+		factory.addMap(); // causes doors and walls to be added
+		MapService.spawnZombies(factory, 10);
 	}
 
     // Real-time update

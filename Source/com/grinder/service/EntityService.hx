@@ -124,11 +124,23 @@ class EntityService
 		var e = new Entity("player");
 		e.add(new GridPosition(x, y));
 		e.add(new Layer(35));
-		e.add(new Tile(ConfigService.getTiledImage(), 1));
+		e.add(new Tile(ConfigService.getTiledImage(), MapService.PLAYER));
 		e.add(new Collision(Collision.PERSON));
 		e.add(new CameraFocus());
 		e.add(new PlayerControl());
 		e.add(new Description("You have looked better."));
+		ash.addEntity(e);
+		return e;
+	}
+
+	public function addZombie(x:Int, y:Int): Entity
+	{
+		var e = new Entity("zombie" + nextId++);
+		e.add(new GridPosition(x, y));
+		e.add(new Layer(40));
+		e.add(new Tile(ConfigService.getTiledImage(), MapService.ZOMBIE));
+		e.add(new Collision(Collision.CREATURE));
+		e.add(new Description("It's hideous."));
 		ash.addEntity(e);
 		return e;
 	}
