@@ -19,10 +19,12 @@
     <haxelib name="HaxePunk" />
     <haxelib name="ash" />
 
+    <section if="debug">
+        <assets path="Assets/DebugGfx" rename="gfx" include="*.png|*.jpg" />
+    </section>
+
     <!-- 
     <haxedef name="debug"/> 
-    <assets path="Assets/DebugGfx" rename="gfx" include="*.png|*.jpg" />
-
     <haxelib name="hxcpp" />
     <haxedef name="DEBUGGER" />
     -->

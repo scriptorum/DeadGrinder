@@ -80,7 +80,7 @@ class EntityService
 				for(actionable in actionables)
 				{
 					if(node.entity.has(actionable))
-						a.push(node.entity.get(node.entity.get(actionable).type));
+						a.push(node.entity.get(actionable).type);
 				}
 				break;
 			}
@@ -145,7 +145,7 @@ class EntityService
 	public function addMap(): Entity
 	{
 		var e = new Entity("map");
-		e.add(new Grid(11, 11, 32, null, null));
+		e.add(new Grid(11, 11, 32));
 		e.add(new Layer(100));
 		e.add(new Position(0,0));
 		e.add(ConfigService.getTiledImage());
@@ -153,14 +153,22 @@ class EntityService
 		return e;
 	}
 
+	private var wallDescriptions:Array<Description>;
 	public function addWall(x:Int, y:Int): Entity
 	{
+		if(wallDescriptions == null)
+		{
+			wallDescriptions = new Array<Description>();
+			wallDescriptions.push(new Description("The paint on this wall has worn down."));
+			wallDescriptions.push(new Description("The writing on this wall proclaims the end is near."));
+			wallDescriptions.push(new Description("It's just a wall. Holds up the building."));
+		}
 		var e = new Entity();
 		e.add(new GridPosition(x, y));
 		e.add(new Layer(50));
 		e.add(new Tile(ConfigService.getTiledImage(), 36));
 		e.add(new Collision(Collision.SHEER));
-		e.add(new Description("The wall is unscalable."));
+		e.add(com.haxepunk.HXP.choose(wallDescriptions));
 		ash.addEntity(e);
 		return e;
 	}
