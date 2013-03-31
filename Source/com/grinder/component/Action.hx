@@ -9,6 +9,7 @@ class Action
 	public static inline var LOCK:String = "lock";
 	public static inline var UNLOCK:String = "unlock";
 	public static inline var EXAMINE:String = "examine";
+	public static inline var ATTACK:String = "attack";
 
 	public var type:String;
 	public var target:GridPosition;

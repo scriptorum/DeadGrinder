@@ -15,6 +15,7 @@ import com.grinder.system.RenderingSystem;
 import com.grinder.system.MovementSystem;
 import com.grinder.system.CameraSystem;
 import com.grinder.system.CollisionSystem;
+import com.grinder.system.HealthSystem;
 import com.grinder.system.InputSystem;
 import com.grinder.service.EntityService;
 import com.grinder.service.MapService;
@@ -46,6 +47,7 @@ class GameWorld extends World
 	{
 		addSystem(new InputSystem(ash, factory));
 		addSystem(new ActionSystem(ash, factory));
+		addSystem(new HealthSystem(ash, factory));
 		addSystem(new CollisionSystem(ash, factory));
 		addSystem(new MovementSystem(ash, factory));
 		addSystem(new RenderingSystem(ash));

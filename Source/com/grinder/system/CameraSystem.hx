@@ -25,6 +25,8 @@ class CameraSystem extends System
 
 	override public function update(_)
 	{
+		// TODO Add PlayerMoved entity or component, so this class can avoid adjusting the camera unless the
+		// player has moved. Otherwise the RMB camera cheat doesn't work.
 	 	for(node in engine.getNodeList(CameraFocusNode))
 	 	{
 	 		HXP.camera.x = tileSize * node.position.x - HXP.halfWidth + halfTileSize;

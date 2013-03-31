@@ -16,6 +16,7 @@ import com.grinder.component.Openable;
 import com.grinder.component.Closeable;
 import com.grinder.component.Locked;
 import com.grinder.component.Description;
+import com.grinder.component.Health;
 
 class ActionSystem extends System
 {
@@ -82,6 +83,14 @@ class ActionSystem extends System
 	 				if(node.entity.has(Description))
 	 					msg = node.entity.get(Description).text;
 	 				else msg = "There is nothing interesting about that.";
+
+	 			case Action.ATTACK:
+	 				if(node.entity.has(Health))
+	 				{
+	 					node.entity.get(Health).amount -= 40;
+	 					msg = "You hit it.";
+	 				}
+	 				else msg = "You can't attack that.";
 
 	 			default:
 	 				msg = "This action (" + node.action.type + ") is not implemented.";

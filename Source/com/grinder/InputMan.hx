@@ -24,6 +24,7 @@ class InputMan
 	public static inline var CLOSE:String = "close";
 	public static inline var LOCK:String = "lock";
 	public static inline var UNLOCK:String = "unlock";
+	public static inline var ATTACK:String = "attack";
 
 	public static inline var altKeyCodes:Bool = true;
 	public static inline var NumPad0:Int = altKeyCodes ? 48 : Key.NUMPAD_0;
@@ -56,6 +57,7 @@ class InputMan
 		Input.define(CLOSE, [Key.C]);
 		Input.define(LOCK, [Key.L]);
 		Input.define(UNLOCK, [Key.U]);
+		Input.define(ATTACK, [Key.A]);
 	}
 
 	public static function onRightClick(cb:Dynamic->Void)

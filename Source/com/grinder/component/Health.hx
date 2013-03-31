@@ -2,5 +2,10 @@ package com.grinder.component;
 
 class Health
 {
-	public var value:Int;
+	public var amount:Int;
+
+	public function new(amount:Int = 100)
+	{
+		this.amount = amount;
+	}
 }

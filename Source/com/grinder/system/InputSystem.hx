@@ -38,6 +38,8 @@ class InputSystem extends System
 				pendingAction = Action.LOCK;
 			else if(InputMan.pressed(InputMan.UNLOCK))
 				pendingAction = Action.UNLOCK;
+			else if(InputMan.pressed(InputMan.ATTACK))
+				pendingAction = Action.ATTACK;
 			else if(InputMan.pressed(InputMan.ABORT))
 				pendingAction = null;
 			else if(InputMan.pressed(InputMan.MOVE_N)) { oy--; }

@@ -128,19 +128,33 @@ class EntityService
 		e.add(new Collision(Collision.PERSON));
 		e.add(new CameraFocus());
 		e.add(new PlayerControl());
+		e.add(new Health(100));
 		e.add(new Description("You have looked better."));
 		ash.addEntity(e);
 		return e;
 	}
 
-	public function addZombie(x:Int, y:Int): Entity
+	public function addZombie(x:Int, y:Int, state:String = "alive"): Entity
 	{
 		var e = new Entity("zombie" + nextId++);
-		e.add(new GridPosition(x, y));
-		e.add(new Layer(40));
-		e.add(new Tile(ConfigService.getTiledImage(), MapService.ZOMBIE));
-		e.add(new Collision(Collision.CREATURE));
-		e.add(new Description("It's hideous."));
+		var fsm = new EntityStateMachine(e);
+		var pos = new GridPosition(x, y);
+		var layer = new Layer(40);
+		var tiledImage = ConfigService.getTiledImage();
+		fsm.createState("alive")
+			.add(GridPosition).withInstance(pos)
+			.add(Tile).withInstance(new Tile(tiledImage, MapService.ZOMBIE))
+			.add(Layer).withInstance(layer)
+			.add(Collision).withInstance(new Collision(Collision.CREATURE))
+			.add(Health).withInstance(new Health(100))
+			.add(State).withInstance(new State(fsm, "alive"))
+			.add(Description).withInstance(new Description("It's hideous."));
+		fsm.createState("dead")
+			.add(GridPosition).withInstance(pos)
+			.add(Tile).withInstance(new Tile(tiledImage, MapService.CORPSE))
+			.add(Layer).withInstance(layer)
+			.add(Description).withInstance(new Description("It's dead. I mean really dead."));
+		fsm.changeState(state);
 		ash.addEntity(e);
 		return e;
 	}
