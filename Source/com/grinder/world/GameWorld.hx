@@ -66,6 +66,7 @@ class GameWorld extends World
 		factory.addBackdrop();
 		factory.addMap(); // causes doors and walls to be added
 		MapService.spawnZombies(factory, 10);
+		MapService.spawnItems(factory, 3);
 	}
 
     // Real-time update

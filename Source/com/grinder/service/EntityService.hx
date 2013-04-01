@@ -9,9 +9,13 @@ import ash.fsm.EntityStateMachine;
 import com.grinder.component.Action;
 import com.grinder.component.Actionable;
 import com.grinder.component.CameraFocus;
+import com.grinder.component.Carriable;
+import com.grinder.component.Carried;
+import com.grinder.component.Carrier;
 import com.grinder.component.Closeable;
 import com.grinder.component.Closed;
 import com.grinder.component.Collision;
+import com.grinder.component.Description;
 import com.grinder.component.Display;
 import com.grinder.component.Doorway;
 import com.grinder.component.Grid;
@@ -20,8 +24,6 @@ import com.grinder.component.GridSize;
 import com.grinder.component.GridVelocity;
 import com.grinder.component.Health;
 import com.grinder.component.Image;
-import com.grinder.component.PlayerControl;
-import com.grinder.component.Inventory;
 import com.grinder.component.Layer;
 import com.grinder.component.Lockable;
 import com.grinder.component.Locked;
@@ -29,6 +31,7 @@ import com.grinder.component.Message;
 import com.grinder.component.Open;
 import com.grinder.component.Openable;
 import com.grinder.component.Orientation;
+import com.grinder.component.PlayerControl;
 import com.grinder.component.Position;
 import com.grinder.component.Repeating;
 import com.grinder.component.Size;
@@ -39,7 +42,6 @@ import com.grinder.component.TiledImage;
 import com.grinder.component.Unlockable;
 import com.grinder.component.Unlocked;
 import com.grinder.component.Velocity;
-import com.grinder.component.Description;
 
 import com.grinder.node.GridPositionNode;
 import com.grinder.service.ConfigService;
@@ -129,6 +131,7 @@ class EntityService
 		e.add(new CameraFocus());
 		e.add(new PlayerControl());
 		e.add(new Health(100));
+		e.add(new Carrier(50, 10));
 		e.add(new Description("You have looked better."));
 		ash.addEntity(e);
 		return e;
@@ -139,12 +142,11 @@ class EntityService
 		var e = new Entity("zombie" + nextId++);
 		var fsm = new EntityStateMachine(e);
 		var pos = new GridPosition(x, y);
-		var layer = new Layer(40);
 		var tiledImage = ConfigService.getTiledImage();
 		fsm.createState("alive")
 			.add(GridPosition).withInstance(pos)
 			.add(Tile).withInstance(new Tile(tiledImage, MapService.ZOMBIE))
-			.add(Layer).withInstance(layer)
+			.add(Layer).withInstance(new Layer(35))
 			.add(Collision).withInstance(new Collision(Collision.CREATURE))
 			.add(Health).withInstance(new Health(100))
 			.add(State).withInstance(new State(fsm, "alive"))
@@ -152,7 +154,7 @@ class EntityService
 		fsm.createState("dead")
 			.add(GridPosition).withInstance(pos)
 			.add(Tile).withInstance(new Tile(tiledImage, MapService.CORPSE))
-			.add(Layer).withInstance(layer)
+			.add(Layer).withInstance(new Layer(40))
 			.add(Description).withInstance(new Description("It's dead. I mean really dead."));
 		fsm.changeState(state);
 		ash.addEntity(e);
@@ -237,6 +239,18 @@ class EntityService
 			.add(State).withInstance(new State(fsm, "locked"))
 			.add(Description).withInstance(new Description("You see a closed door. It's locked."));
 		fsm.changeState(state);
+		ash.addEntity(e);
+		return e;
+	}
+
+	public function addWeapon(x:Int, y:Int): Entity
+	{
+		var e = new Entity();
+		e.add(new GridPosition(x, y));
+		e.add(new Layer(40));
+		e.add(new Tile(ConfigService.getTiledImage(), MapService.WEAPON));
+		e.add(new Description("It's a wooden bat."));
+		e.add(new Carriable(1.8));
 		ash.addEntity(e);
 		return e;
 	}

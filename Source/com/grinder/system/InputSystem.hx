@@ -25,31 +25,36 @@ class InputSystem extends System
 
 	override public function update(_)
 	{
+		var nextPendingAction = null;
 	 	for(node in engine.getNodeList(PlayerControlNode))
 	 	{
 			var ox:Int = 0;
 			var oy:Int = 0;
 
-			if(InputMan.pressed(InputMan.OPEN))
-				pendingAction = Action.OPEN;
-			else if(InputMan.pressed(InputMan.CLOSE))
-				pendingAction = Action.CLOSE;
-			else if(InputMan.pressed(InputMan.LOCK))
-				pendingAction = Action.LOCK;
-			else if(InputMan.pressed(InputMan.UNLOCK))
-				pendingAction = Action.UNLOCK;
-			else if(InputMan.pressed(InputMan.ATTACK))
-				pendingAction = Action.ATTACK;
-			else if(InputMan.pressed(InputMan.ABORT))
+			if(InputMan.released(InputMan.OPEN))
+				nextPendingAction = Action.OPEN;
+			else if(InputMan.released(InputMan.CLOSE))
+				nextPendingAction = Action.CLOSE;
+			else if(InputMan.released(InputMan.LOCK))
+				nextPendingAction = Action.LOCK;
+			else if(InputMan.released(InputMan.UNLOCK))
+				nextPendingAction = Action.UNLOCK;
+			else if(InputMan.released(InputMan.ATTACK))
+				nextPendingAction = Action.ATTACK;
+			else if(InputMan.released(InputMan.ABORT))
+			{
 				pendingAction = null;
-			else if(InputMan.pressed(InputMan.MOVE_N)) { oy--; }
-			else if(InputMan.pressed(InputMan.MOVE_E)) { ox++; } 
-			else if(InputMan.pressed(InputMan.MOVE_W)) { ox--; }
-			else if(InputMan.pressed(InputMan.MOVE_S)) { oy++; }
-			else if(InputMan.pressed(InputMan.MOVE_NE)) { oy--; ox++; }
-			else if(InputMan.pressed(InputMan.MOVE_NW)) { oy--; ox--; }
-			else if(InputMan.pressed(InputMan.MOVE_SW)) { oy++; ox--; }
-			else if(InputMan.pressed(InputMan.MOVE_SE)) { oy++; ox++; }
+				factory.addMessage("Nevermind.");
+			}
+			else if(InputMan.released(InputMan.MOVE_N)) { oy--; }
+			else if(InputMan.released(InputMan.MOVE_E)) { ox++; } 
+			else if(InputMan.released(InputMan.MOVE_W)) { ox--; }
+			else if(InputMan.released(InputMan.MOVE_S)) { oy++; }
+			else if(InputMan.released(InputMan.MOVE_NE)) { oy--; ox++; }
+			else if(InputMan.released(InputMan.MOVE_NW)) { oy--; ox--; }
+			else if(InputMan.released(InputMan.MOVE_SW)) { oy++; ox--; }
+			else if(InputMan.released(InputMan.MOVE_SE)) { oy++; ox++; }
+
 			if(ox != 0 || oy != 0)
 			{
 				var player = engine.getEntityByName("player");
@@ -75,7 +80,12 @@ class InputSystem extends System
 				}
 
 				else player.add(new GridVelocity(ox, oy));
-			}	 		
+			}
+			else if(nextPendingAction != null && nextPendingAction != pendingAction)
+			{
+				factory.addMessage("Choose a direction."); 		
+				pendingAction = nextPendingAction;
+			}
 	 	}
 	}
 }
