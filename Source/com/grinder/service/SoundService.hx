@@ -1,5 +1,4 @@
-
-package com.grinder;
+package com.grinder.service;
 
 import com.haxepunk.HXP;
 import com.haxepunk.utils.Input;
@@ -7,7 +6,7 @@ import nme.media.SoundChannel;
 import nme.Assets;
 import nme.events.Event;
 
-class SoundMan extends Input
+class SoundService extends Input
 {
 	public static inline var BLIP1:String = "sfx/blip1.wav";
 	public static inline var BLIP2:String = "sfx/blip1.wav";

@@ -10,6 +10,10 @@ class Action
 	public static inline var UNLOCK:String = "unlock";
 	public static inline var EXAMINE:String = "examine";
 	public static inline var ATTACK:String = "attack";
+	public static inline var TAKE:String = "take";
+	public static inline var DROP:String = "drop";
+	public static inline var EQUIP:String = "equip";
+	public static inline var INVENTORY:String = "inventory";
 
 	public var type:String;
 	public var target:GridPosition;

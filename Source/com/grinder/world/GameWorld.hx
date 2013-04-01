@@ -7,9 +7,9 @@ import ash.core.Engine;
 import ash.core.Entity;
 import ash.core.System;
 
-import com.grinder.SoundMan;
-import com.grinder.InputMan;
-import com.grinder.CameraMan;
+import com.grinder.service.SoundService;
+import com.grinder.service.InputService;
+import com.grinder.service.CameraService;
 import com.grinder.system.ActionSystem;
 import com.grinder.system.RenderingSystem;
 import com.grinder.system.MovementSystem;
@@ -29,7 +29,7 @@ class GameWorld extends World
 	public function new()
 	{
 		super();
-		CameraMan.init();
+		CameraService.init();
 	}
 
 	override public function begin()
@@ -74,7 +74,7 @@ class GameWorld extends World
 	{
 		super.update();
 
-		if(InputMan.pressed(InputMan.DEBUG))
+		if(InputService.pressed(InputService.DEBUG))
 			beginDebug();
 
 		ash.update(HXP.elapsed); // update entity system

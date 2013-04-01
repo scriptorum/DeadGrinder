@@ -4,11 +4,14 @@ import ash.core.Engine;
 import ash.core.System;
 import ash.core.Node;
 
-import com.grinder.service.EntityService;
-import com.grinder.node.PlayerControlNode;
+import com.haxepunk.utils.Key;
+
 import com.grinder.component.Action;
 import com.grinder.component.GridPosition;
 import com.grinder.component.GridVelocity;
+import com.grinder.node.PlayerControlNode;
+import com.grinder.service.EntityService;
+import com.grinder.service.InputService;
 
 class InputSystem extends System
 {
@@ -31,29 +34,48 @@ class InputSystem extends System
 			var ox:Int = 0;
 			var oy:Int = 0;
 
-			if(InputMan.released(InputMan.OPEN))
-				nextPendingAction = Action.OPEN;
-			else if(InputMan.released(InputMan.CLOSE))
-				nextPendingAction = Action.CLOSE;
-			else if(InputMan.released(InputMan.LOCK))
-				nextPendingAction = Action.LOCK;
-			else if(InputMan.released(InputMan.UNLOCK))
-				nextPendingAction = Action.UNLOCK;
-			else if(InputMan.released(InputMan.ATTACK))
-				nextPendingAction = Action.ATTACK;
-			else if(InputMan.released(InputMan.ABORT))
+			switch(InputService.lastKey())
 			{
-				pendingAction = null;
-				factory.addMessage("Nevermind.");
+				case Key.O:
+					nextPendingAction = Action.OPEN;
+				case Key.C:
+					nextPendingAction = Action.CLOSE;
+				case Key.L:
+					nextPendingAction = Action.LOCK;
+				case Key.U:
+					nextPendingAction = Action.UNLOCK;
+				case Key.A:
+					nextPendingAction = Action.ATTACK;
+				case '.'.charCodeAt(0), Key.NUMPAD_DECIMAL:
+					// TODO wait
+				case ','.charCodeAt(0), Key.P, Key.T:
+					// TODO Take
+				case Key.ESCAPE:
+					pendingAction = null;
+					factory.addMessage("Nevermind.");
+
+				case Key.UP, Key.DIGIT_8, Key.NUMPAD_8:
+					oy--;
+				case Key.DOWN, Key.DIGIT_2, Key.NUMPAD_2:
+					oy++;
+				case Key.RIGHT, Key.DIGIT_6, Key.NUMPAD_6:
+					ox++;
+				case Key.LEFT, Key.DIGIT_4, Key.NUMPAD_4:
+					ox--;
+				case Key.DIGIT_7, Key.NUMPAD_7:
+					ox--;
+					oy--;
+				case Key.DIGIT_9, Key.NUMPAD_9:
+					ox++;
+					oy--;
+				case Key.DIGIT_1, Key.NUMPAD_1:
+					ox++;
+					oy--;
+				case Key.DIGIT_3, Key.NUMPAD_3:
+					ox++;
+					oy++;
 			}
-			else if(InputMan.released(InputMan.MOVE_N)) { oy--; }
-			else if(InputMan.released(InputMan.MOVE_E)) { ox++; } 
-			else if(InputMan.released(InputMan.MOVE_W)) { ox--; }
-			else if(InputMan.released(InputMan.MOVE_S)) { oy++; }
-			else if(InputMan.released(InputMan.MOVE_NE)) { oy--; ox++; }
-			else if(InputMan.released(InputMan.MOVE_NW)) { oy--; ox--; }
-			else if(InputMan.released(InputMan.MOVE_SW)) { oy++; ox--; }
-			else if(InputMan.released(InputMan.MOVE_SE)) { oy++; ox++; }
+			InputService.clearLastKey();
 
 			if(ox != 0 || oy != 0)
 			{
@@ -64,7 +86,7 @@ class InputSystem extends System
 				var dx = pos.x + ox;
 				var dy = pos.y + oy;
 
-				if(InputMan.check(com.haxepunk.utils.Key.SHIFT))
+				if(InputService.check(com.haxepunk.utils.Key.SHIFT))
 				{
 					// TODO put up action selector
 					var actionTypes = factory.getLegalActions(dx, dy);
@@ -81,6 +103,7 @@ class InputSystem extends System
 
 				else player.add(new GridVelocity(ox, oy));
 			}
+
 			else if(nextPendingAction != null && nextPendingAction != pendingAction)
 			{
 				factory.addMessage("Choose a direction."); 		

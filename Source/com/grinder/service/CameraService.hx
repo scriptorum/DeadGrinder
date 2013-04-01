@@ -1,24 +1,24 @@
-package com.grinder;
+package com.grinder.service;
 
-import com.grinder.InputMan;
+import com.grinder.service.InputService;
 import com.haxepunk.HXP;
 import com.haxepunk.utils.Ease;
 import com.haxepunk.Tween;
 import com.haxepunk.tweens.TweenEvent;
 import nme.events.MouseEvent;
 
-class CameraMan
+class CameraService
 {
 	private static var _camTween:Tween;
 
 	public static function init()
 	{
-		InputMan.onRightClick(rightClick);
+		InputService.onRightClick(rightClick);
 	}
 
 	public static function rightClick(evt:MouseEvent)
 	{
-		animCameraRel(InputMan.mouseX - HXP.halfWidth, InputMan.mouseY - HXP.halfHeight, .65);
+		animCameraRel(InputService.mouseX - HXP.halfWidth, InputService.mouseY - HXP.halfHeight, .65);
 	}
 
 	public static function animCameraRel(x, y, duration)

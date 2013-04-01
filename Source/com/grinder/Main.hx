@@ -1,6 +1,6 @@
 package com.grinder;
 
-import com.grinder.InputMan;
+import com.grinder.service.InputService;
 import com.haxepunk.Engine;
 import com.haxepunk.HXP;
 import com.grinder.world.GameWorld;
@@ -27,7 +27,7 @@ class Main extends Engine
 				HXP.console.enable();
 		#end
 
-		InputMan.init();
+		InputService.init();
 		nextWorld();
 	}
 
