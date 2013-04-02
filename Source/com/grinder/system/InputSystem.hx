@@ -9,7 +9,9 @@ import com.haxepunk.utils.Key;
 import com.grinder.component.Action;
 import com.grinder.component.GridPosition;
 import com.grinder.component.GridVelocity;
+import com.grinder.component.Description;
 import com.grinder.node.PlayerControlNode;
+import com.grinder.node.InventoryNode;
 import com.grinder.service.EntityService;
 import com.grinder.service.InputService;
 
@@ -48,12 +50,23 @@ class InputSystem extends System
 					nextPendingAction = Action.ATTACK;
 				case '.'.charCodeAt(0), Key.NUMPAD_DECIMAL:
 					// TODO wait
-				case ','.charCodeAt(0), Key.P, Key.T:
-					// TODO Take
+				case 188, Key.P, Key.T: // 188=","" ??? that's odd
+					var pos = engine.getEntityByName("player").get(GridPosition);
+					factory.addActionAt(pos.x, pos.y, new Action(Action.TAKE));
 				case Key.ESCAPE:
-					pendingAction = null;
-					factory.addMessage("Nevermind.");
-
+					if(pendingAction != null)
+					{
+						pendingAction = null;
+						factory.addMessage("Nevermind.");
+					}
+				case Key.I:
+					var player = engine.getEntityByName("player");
+					var carrier = player.get(com.grinder.component.Carrier);
+					for(node in engine.getNodeList(InventoryNode))
+					{
+						if(node.carried.carrier == carrier.id)
+							trace(" - " + node.entity.get(Description).text);
+					}
 				case Key.UP, Key.DIGIT_8, Key.NUMPAD_8:
 					oy--;
 				case Key.DOWN, Key.DIGIT_2, Key.NUMPAD_2:
@@ -69,11 +82,14 @@ class InputSystem extends System
 					ox++;
 					oy--;
 				case Key.DIGIT_1, Key.NUMPAD_1:
-					ox++;
-					oy--;
+					ox--;
+					oy++;
 				case Key.DIGIT_3, Key.NUMPAD_3:
 					ox++;
 					oy++;
+				// default:
+				// if(InputService.lastKey() != null)
+				// 	trace("Untrapped key:" + InputService.lastKey() + " char:" + String.fromCharCode(InputService.lastKey()));
 			}
 			InputService.clearLastKey();
 
@@ -111,4 +127,5 @@ class InputSystem extends System
 			}
 	 	}
 	}
+
 }

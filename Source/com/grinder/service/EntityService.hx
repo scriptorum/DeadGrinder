@@ -245,7 +245,7 @@ class EntityService
 
 	public function addWeapon(x:Int, y:Int): Entity
 	{
-		var e = new Entity();
+		var e = new Entity("weapon" + nextId++);
 		e.add(new GridPosition(x, y));
 		e.add(new Layer(40));
 		e.add(new Tile(ConfigService.getTiledImage(), MapService.WEAPON));

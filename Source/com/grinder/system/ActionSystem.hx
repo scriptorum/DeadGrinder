@@ -17,6 +17,10 @@ import com.grinder.component.Closeable;
 import com.grinder.component.Locked;
 import com.grinder.component.Description;
 import com.grinder.component.Health;
+import com.grinder.component.Carriable;
+import com.grinder.component.Carrier;
+import com.grinder.component.Carried;
+import com.grinder.component.Display;
 
 class ActionSystem extends System
 {
@@ -91,6 +95,22 @@ class ActionSystem extends System
 	 					msg = "You hit it.";
 	 				}
 	 				else msg = "You can't attack that.";
+
+	 			case Action.TAKE:
+	 				if(node.entity.has(Carriable))
+	 				{
+	 					var player = engine.getEntityByName("player");
+	 					if(player.has(Carrier))
+	 					{
+	 						var carrier = player.get(Carrier);
+	 						node.entity.add(new Carried(carrier.id)); // now being carried
+	 						node.entity.remove(GridPosition); // not on the grid any more
+	 						node.entity.remove(Display); // not displayed any more
+	 						// TODO handle weight and item limits
+	 						msg = "You pick it up.";
+	 					}
+	 					else msg = "You can't pick anything up!";
+	 				}
 
 	 			default:
 	 				msg = "This action (" + node.action.type + ") is not implemented.";
