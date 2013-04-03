@@ -1,3 +1,4 @@
+
 package com.grinder.world;
 
 import com.haxepunk.HXP;
@@ -64,7 +65,8 @@ class GameWorld extends World
 		factory.addMessageHud();
 		factory.addPlayer(1, 1);
 		factory.addBackdrop();
-		factory.addMap(); // causes doors and walls to be added
+		factory.addMap(); // causes doors and walls to be added		
+		factory.addList();
 		MapService.spawnZombies(factory, 10);
 		MapService.spawnItems(factory, 3);
 	}

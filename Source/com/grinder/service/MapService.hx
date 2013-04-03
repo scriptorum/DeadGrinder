@@ -101,7 +101,7 @@ class MapService
 			if(obstacles.length == 0)
 			{
 				++spawned;
-				factory.addWeapon(x, y);
+				factory.addWeaponTo(x, y);
 				continue;
 			}
 			if(++fails > 1000)

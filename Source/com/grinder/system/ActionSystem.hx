@@ -91,6 +91,9 @@ class ActionSystem extends System
 	 			case Action.ATTACK:
 	 				if(node.entity.has(Health))
 	 				{
+	 					// TODO Determine weapon equipped, get damage from that
+	 					// TODO Check for weapon break
+	 					// TODO Check for knockback
 	 					node.entity.get(Health).amount -= 40;
 	 					msg = "You hit it.";
 	 				}

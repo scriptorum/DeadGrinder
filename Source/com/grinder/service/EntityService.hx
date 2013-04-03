@@ -1,6 +1,6 @@
 package com.grinder.service;
 
-import nme.geom.Rectangle;
+import com.haxepunk.HXP;
 
 import ash.core.Engine;
 import ash.core.Entity;
@@ -18,6 +18,9 @@ import com.grinder.component.Collision;
 import com.grinder.component.Description;
 import com.grinder.component.Display;
 import com.grinder.component.Doorway;
+import com.grinder.component.Equipment;
+import com.grinder.component.Equipped;
+import com.grinder.component.Equipper;
 import com.grinder.component.Grid;
 import com.grinder.component.GridPosition;
 import com.grinder.component.GridSize;
@@ -28,12 +31,14 @@ import com.grinder.component.Layer;
 import com.grinder.component.Lockable;
 import com.grinder.component.Locked;
 import com.grinder.component.Message;
+import com.grinder.component.Name;
 import com.grinder.component.Open;
 import com.grinder.component.Openable;
 import com.grinder.component.Orientation;
 import com.grinder.component.PlayerControl;
 import com.grinder.component.Position;
 import com.grinder.component.Repeating;
+import com.grinder.component.ScrollFactor;
 import com.grinder.component.Size;
 import com.grinder.component.Spawn;
 import com.grinder.component.State;
@@ -116,7 +121,7 @@ class EntityService
 		var e = new Entity("messageHud");
 		e.add(new Spawn("messageHud"));
 		e.add(new Position(5, 5));
-		e.add(new Layer(10));
+		e.add(new Layer(30));
 		ash.addEntity(e);
 		return e;
 	}
@@ -132,6 +137,7 @@ class EntityService
 		e.add(new PlayerControl());
 		e.add(new Health(100));
 		e.add(new Carrier(50, 10));
+		e.add(new Equipper({ weapon:1, armor:0 }));
 		e.add(new Description("You have looked better."));
 		ash.addEntity(e);
 		return e;
@@ -150,12 +156,14 @@ class EntityService
 			.add(Collision).withInstance(new Collision(Collision.CREATURE))
 			.add(Health).withInstance(new Health(100))
 			.add(State).withInstance(new State(fsm, "alive"))
-			.add(Description).withInstance(new Description("It's hideous."));
+			.add(Description).withInstance(new Description("It's hideous."))
+			.add(Name).withInstance(new Name("zombie"));
 		fsm.createState("dead")
 			.add(GridPosition).withInstance(pos)
 			.add(Tile).withInstance(new Tile(tiledImage, MapService.CORPSE))
 			.add(Layer).withInstance(new Layer(40))
-			.add(Description).withInstance(new Description("It's dead. I mean really dead."));
+			.add(Description).withInstance(new Description("It's dead. I mean really dead."))
+			.add(Name).withInstance(new Name("corpse"));
 		fsm.changeState(state);
 		ash.addEntity(e);
 		return e;
@@ -167,6 +175,17 @@ class EntityService
 		e.add(new Image("art/rubble2.png"));
 		e.add(new Repeating());
 		e.add(new Layer(1000));
+		ash.addEntity(e);
+		return e;
+	}
+
+	public function addList(): Entity
+	{
+		var e = new Entity("list");
+		e.add(new Image("art/list.png"));
+		e.add(new Layer(25)); // In front of everyone
+		// e.add(new Position(0,0));
+		e.add(new ScrollFactor());
 		ash.addEntity(e);
 		return e;
 	}
@@ -243,15 +262,27 @@ class EntityService
 		return e;
 	}
 
-	public function addWeapon(x:Int, y:Int): Entity
+	public function addWeapon(): Entity
 	{
+		var weapons = ["wooden bat", "tree branch", "aluminum bat", "piece of wood", "hammer",
+			"crowbar", "knife", "axe", "pipe wrench", "rolling pin", "shovel"];
+		var weapon = HXP.choose(weapons);
+
 		var e = new Entity("weapon" + nextId++);
-		e.add(new GridPosition(x, y));
 		e.add(new Layer(40));
 		e.add(new Tile(ConfigService.getTiledImage(), MapService.WEAPON));
-		e.add(new Description("It's a wooden bat."));
+		e.add(new Description("It's a " + weapon));
+		e.add(new Name(weapon));
+		e.add(new Equipment(Equipment.WEAPON));
 		e.add(new Carriable(1.8));
 		ash.addEntity(e);
+		return e;
+	}
+
+	public function addWeaponTo(x:Int, y:Int): Entity
+	{
+		var e = addWeapon();
+		e.add(new GridPosition(x, y));
 		return e;
 	}
 }

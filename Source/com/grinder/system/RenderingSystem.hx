@@ -14,6 +14,7 @@ import com.grinder.render.BackdropView;
 import com.grinder.render.GridView;
 import com.grinder.render.MessageView;
 import com.grinder.node.ImageNode;
+import com.grinder.node.TileNode;
 import com.grinder.node.BackdropNode;
 import com.grinder.node.GridNode;
 import com.grinder.node.DisplayNode;
@@ -34,12 +35,20 @@ class RenderingSystem extends System
 		tiledImage = ConfigService.getTiledImage();
 
 		engine.getNodeList(ImageNode).nodeAdded.add(imageNodeAdded);
+		engine.getNodeList(TileNode).nodeAdded.add(tileNodeAdded);
 		engine.getNodeList(BackdropNode).nodeAdded.add(backdropNodeAdded);
 		engine.getNodeList(GridNode).nodeAdded.add(gridNodeAdded);
 		engine.getNodeList(MessageNode).nodeAdded.add(messageNodeAdded);
 		engine.getNodeList(SpawnNode).nodeAdded.add(spawnNodeAdded);
 
 		engine.getNodeList(DisplayNode).nodeRemoved.add(displayNodeRemoved);
+	}
+
+	private function tileNodeAdded(node:TileNode): Void
+	{
+		var e = new ImageView(node.entity);
+		HXP.world.add(e);
+		node.entity.add(new Display(e));
 	}
 
 	private function imageNodeAdded(node:ImageNode): Void
