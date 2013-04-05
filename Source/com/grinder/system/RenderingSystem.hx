@@ -13,6 +13,7 @@ import com.grinder.render.ImageView;
 import com.grinder.render.BackdropView;
 import com.grinder.render.GridView;
 import com.grinder.render.MessageView;
+import com.grinder.render.InventoryView;
 import com.grinder.node.ImageNode;
 import com.grinder.node.TileNode;
 import com.grinder.node.BackdropNode;
@@ -88,6 +89,11 @@ class RenderingSystem extends System
 		{
 			case "messageHud":
 			var e = new MessageView(node.entity);
+			HXP.world.add(e);
+			node.entity.add(new Display(e));
+
+			case "inventory":
+			var e = new InventoryView(node.entity, node.spawn.parameters);
 			HXP.world.add(e);
 			node.entity.add(new Display(e));
 		}

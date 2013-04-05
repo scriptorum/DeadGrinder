@@ -10,7 +10,10 @@ import com.grinder.component.Action;
 import com.grinder.component.GridPosition;
 import com.grinder.component.GridVelocity;
 import com.grinder.component.Description;
+import com.grinder.component.InventoryControl;
+import com.grinder.component.PlayerControl;
 import com.grinder.node.PlayerControlNode;
+import com.grinder.node.InventoryControlNode;
 import com.grinder.node.InventoryNode;
 import com.grinder.service.EntityService;
 import com.grinder.service.InputService;
@@ -29,6 +32,29 @@ class InputSystem extends System
 	}
 
 	override public function update(_)
+	{
+		handlePlayerControl();
+		handleInventoryControl();
+	}
+
+	public function handleInventoryControl()
+	{
+	 	for(node in engine.getNodeList(InventoryControlNode))
+	 	{
+			switch(InputService.lastKey())
+			{
+				case '.'.charCodeAt(0), 190, Key.NUMPAD_DECIMAL, Key.SPACE, Key.DIGIT_5, Key.NUMPAD_5:
+
+				case Key.ESCAPE:
+					factory.closeInventory();
+				case Key.UP, Key.DIGIT_8, Key.NUMPAD_8:
+
+				case Key.DOWN, Key.DIGIT_2, Key.NUMPAD_2:
+			}
+		}
+	}
+
+	public function handlePlayerControl()
 	{
 		var shiftIsDown = InputService.check(com.haxepunk.utils.Key.SHIFT);
 		var nextPendingAction = null;
@@ -61,13 +87,14 @@ class InputSystem extends System
 						factory.addMessage("Nevermind.");
 					}
 				case Key.I:
-					var player = engine.getEntityByName("player");
-					var carrier = player.get(com.grinder.component.Carrier);
-					for(node in engine.getNodeList(InventoryNode))
-					{
-						if(node.carried.carrier == carrier.id)
-							trace(" - " + node.entity.get(Description).text);
-					}
+					factory.popupInventory();
+					// var player = engine.getEntityByName("player");
+					// var carrier = player.get(com.grinder.component.Carrier);
+					// for(node in engine.getNodeList(InventoryNode))
+					// {
+					// 	if(node.carried.carrier == carrier.id)
+					// 		trace(" - " + node.entity.get(Description).text);
+					// }
 				case Key.UP, Key.DIGIT_8, Key.NUMPAD_8:
 					pos = [0, -1];
 				case Key.DOWN, Key.DIGIT_2, Key.NUMPAD_2:

@@ -66,9 +66,8 @@ class GameWorld extends World
 		factory.addPlayer(1, 1);
 		factory.addBackdrop();
 		factory.addMap(); // causes doors and walls to be added		
-		factory.addList();
 		MapService.spawnZombies(factory, 10);
-		MapService.spawnItems(factory, 3);
+		MapService.spawnItems(factory, 15);
 	}
 
     // Real-time update
@@ -77,18 +76,27 @@ class GameWorld extends World
 		super.update();
 
 		if(InputService.pressed(InputService.DEBUG))
-			beginDebug();
+		{
+			for(e in ash.get_entities())
+			{
+				trace(e.name + ":");
+				for(c in e.getAll())
+					trace (" - " + Type.getClassName(Type.getClass(c)));
+			}
+
+			// beginDebug();
+		}
 
 		ash.update(HXP.elapsed); // update entity system
 	}
 
-	private static function beginDebug()
-	{
-		#if DEBUGGER
-			trace("Starting debugger");
-	    	new hxcpp.DebugStdio(true);
-		#else
-			trace("Debugger not enabled");
-		#end	
-	}
+	// private static function beginDebug()
+	// {
+	// 	#if DEBUGGER
+	// 		trace("Starting debugger");
+	//     	new hxcpp.DebugStdio(true);
+	// 	#else
+	// 		trace("Debugger not enabled");
+	// 	#end	
+	// }
 }

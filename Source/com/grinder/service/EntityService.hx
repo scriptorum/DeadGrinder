@@ -4,6 +4,7 @@ import com.haxepunk.HXP;
 
 import ash.core.Engine;
 import ash.core.Entity;
+import ash.core.Node;
 import ash.fsm.EntityStateMachine;
 
 import com.grinder.component.Action;
@@ -36,6 +37,7 @@ import com.grinder.component.Open;
 import com.grinder.component.Openable;
 import com.grinder.component.Orientation;
 import com.grinder.component.PlayerControl;
+import com.grinder.component.InventoryControl;
 import com.grinder.component.Position;
 import com.grinder.component.Repeating;
 import com.grinder.component.ScrollFactor;
@@ -49,6 +51,7 @@ import com.grinder.component.Unlocked;
 import com.grinder.component.Velocity;
 
 import com.grinder.node.GridPositionNode;
+import com.grinder.node.InventoryNode;
 import com.grinder.service.ConfigService;
 import com.grinder.service.MapService;
 
@@ -130,7 +133,7 @@ class EntityService
 	{
 		var e = new Entity("player");
 		e.add(new GridPosition(x, y));
-		e.add(new Layer(35));
+		e.add(new Layer(34));
 		e.add(new Tile(ConfigService.getTiledImage(), MapService.PLAYER));
 		e.add(new Collision(Collision.PERSON));
 		e.add(new CameraFocus());
@@ -179,16 +182,86 @@ class EntityService
 		return e;
 	}
 
-	public function addList(): Entity
+   	public function popupInventory(equipmentType:String = null): Void
 	{
-		var e = new Entity("list");
-		e.add(new Image("art/list.png"));
-		e.add(new Layer(25)); // In front of everyone
-		// e.add(new Position(0,0));
-		e.add(new ScrollFactor());
+		var player = ash.getEntityByName("player");
+		var carrierId = player.get(Carrier).id;
+		var entities:Array<Entity> = new Array<Entity>();
+		for(node in ash.getNodeList(InventoryNode))
+		{
+			if(node.carried.carrier != carrierId)
+			{
+				trace("Removing " + node.entity.name + " from inventory; it's not held by the player.");
+				continue; // not held by player
+			}
+
+			if(equipmentType != null)
+			{
+				if(!node.entity.has(Equipment))
+				{
+					trace("Removing " + node.entity.name + " from inventory; it's not equipment, and we're filtering on equipment.");
+					continue; // This carried item is not "equipment"
+				}
+
+				var equipment = node.entity.get(Equipment);
+				if(equipment.type != equipmentType)
+				{
+					trace("Removing " + node.entity.name + " from inventory; the equipment does not match the filter.");
+					continue; // This carried equipment is of a different "type"
+				}
+			}
+
+			entities.push(node.entity);
+		}
+
+		addMessage(entities.length > 0 ? 
+			"Opening inventory..." :
+			(equipmentType == null ? "Nothing" : "No " + equipmentType) + " in inventory.");
+
+		if(entities.length == 0)
+			return;
+
+		player.remove(PlayerControl);
+		player.add(new InventoryControl());
+
+		var e = new Entity("inventory");
+		e.add(new Spawn("inventory", { filter:equipmentType, entities:entities } ));
+		e.add(new Position(0, 0));
+		e.add(new Layer(25));
+		// e.add(new Description("Select a weapon to equip"));
 		ash.addEntity(e);
-		return e;
 	}
+
+	public function closeInventory(): Void
+	{
+		ash.removeEntity(ash.getEntityByName("inventory"));
+		var player = ash.getEntityByName("player");
+		player.remove(InventoryControl);
+		player.add(new PlayerControl());
+		addMessage("Never mind.");
+	}
+
+	// public function addList(): Entity
+	// {
+	// 	var e = new Entity("list");
+	// 	e.add(new Image("art/list.png"));
+	// 	e.add(new Layer(25)); // In front of everyone
+	// 	// e.add(new Position(0,0));
+	// 	e.add(new ScrollFactor());
+	// 	ash.addEntity(e);
+	// 	return e;
+	// }
+
+	// public function addText(text:String, x:Float, y:Float): Entity
+	// {
+	// 	var e = new Entity("list");
+	// 	e.add(new Text(text));
+	// 	e.add(new Layer(20)); // In front of everyone
+	// 	e.add(new Position(x,y));
+	// 	e.add(new ScrollFactor());
+	// 	ash.addEntity(e);
+	// 	return e;
+	// }
 
 	public function addMap(): Entity
 	{
@@ -211,7 +284,7 @@ class EntityService
 			wallDescriptions.push(new Description("The writing on this wall proclaims the end is near."));
 			wallDescriptions.push(new Description("It's just a wall. Holds up the building."));
 		}
-		var e = new Entity();
+		var e = new Entity("wall" + nextId++);
 		e.add(new GridPosition(x, y));
 		e.add(new Layer(50));
 		e.add(new Tile(ConfigService.getTiledImage(), 36));
@@ -223,7 +296,7 @@ class EntityService
 
 	public function addDoor(x:Int, y:Int, state:String = "closed"): Entity
 	{
-		var e = new Entity();
+		var e = new Entity("door" + nextId++);
 		var fsm = new EntityStateMachine(e);
 		var pos = new GridPosition(x, y);
 		var layer = new Layer(50);

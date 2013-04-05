@@ -43,7 +43,8 @@ class MessageView extends View
 			var size = (i == 0 ? fontSize : fontSize - 4);
 			var view = new FancyText(queue[i], 
 				(i == 0 ? 0x18ED00 : 0x11A800), size, 
-				offsetX, offsetY + i * lineOffset + (i > 0 ? 4 : 0), 0);
+				offsetX, offsetY + i * lineOffset + (i > 0 ? 4 : 0), 0, 
+				"font/GruntReaper.ttf");
 			view.setAlpha(i == 0 ? 1 : .65);
 			list.add(view);
 		}

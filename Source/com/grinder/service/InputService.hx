@@ -37,5 +37,5 @@ class InputService
 	public static function released(input:Dynamic):Bool { return Input.released(input); }
 	public static function lastKey(): Int { return Input.lastKey; }
 
-	public static function clearLastKey(): Void { Input.lastKey = null; }
+	public static function clearLastKey(): Void { Input.lastKey = 0; }
 }

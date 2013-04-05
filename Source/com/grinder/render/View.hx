@@ -9,12 +9,14 @@ import ash.core.Entity;
 class View extends com.haxepunk.Entity
 {
 	public var entity:Entity;
+	public var parameters:Dynamic;
 
-	public function new(entity:Entity)
+	public function new(entity:Entity, parameters:Dynamic = null)
 	{
 		super();
 
 		this.entity = entity;
+		this.parameters = parameters;
 
 		var c = entity.get(Layer);
 		if(c != null)

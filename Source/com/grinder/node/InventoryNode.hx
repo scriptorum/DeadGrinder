@@ -3,10 +3,10 @@ package com.grinder.node;
 import ash.core.Node;
 
 import com.grinder.component.Carried;
-import com.grinder.component.Carriable;
+import com.grinder.component.Name;
 
 class InventoryNode extends Node<InventoryNode>
 {
 	public var carried:Carried;
-	public var carriable:Carriable;
+	public var name:Name;
 }
