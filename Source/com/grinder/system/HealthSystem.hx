@@ -5,7 +5,8 @@ import ash.core.System;
 
 import com.grinder.node.HealthNode;
 import com.grinder.component.Health;
-import com.grinder.component.State;
+import com.grinder.component.Name;
+import com.grinder.component.GridPosition;
 import com.grinder.service.EntityService;
 
 class HealthSystem extends System
@@ -26,10 +27,12 @@ class HealthSystem extends System
 	 	{
 	 		if(node.health.amount < 0)
  			{
-				if(node.entity.has(State))
+				if(node.entity.has(Name) && node.entity.get(Name).text == "zombie")
 				{
 					factory.addMessage("It falls down and stops moving.");
-					node.entity.get(State).fsm.changeState("dead");
+					var pos = node.entity.get(GridPosition);
+					engine.removeEntity(node.entity);
+					factory.addCorpse(pos.x, pos.y);
 				}
 				else 
 				{

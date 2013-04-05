@@ -21,6 +21,7 @@ class View extends com.haxepunk.Entity
 		var c = entity.get(Layer);
 		if(c != null)
 			this.layer = c.layer;
+		trace("View created. " + (c == null ? "Using default layer." : "Using supplied Layer:" + c.layer));
 
 		begin();
 

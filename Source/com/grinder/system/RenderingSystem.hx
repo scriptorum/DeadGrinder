@@ -23,6 +23,7 @@ import com.grinder.node.MessageNode;
 import com.grinder.node.SpawnNode;
 import com.grinder.component.Display;
 import com.grinder.component.TiledImage;
+import com.grinder.component.Layer;
 
 class RenderingSystem extends System
 {
@@ -47,6 +48,8 @@ class RenderingSystem extends System
 
 	private function tileNodeAdded(node:TileNode): Void
 	{
+		trace("Adding image view (tile) for entity " + node.entity.name);
+		trace("Layer is " + (node.entity.has(Layer) ? node.entity.get(Layer).layer : "default"));
 		var e = new ImageView(node.entity);
 		HXP.world.add(e);
 		node.entity.add(new Display(e));
@@ -54,6 +57,8 @@ class RenderingSystem extends System
 
 	private function imageNodeAdded(node:ImageNode): Void
 	{
+		trace("Adding image view (clip) for entity " + node.entity.name);
+		trace("Layer is " + (node.entity.has(Layer) ? node.entity.get(Layer).layer : "default"));
 		var e = new ImageView(node.entity);
 		HXP.world.add(e);
 		node.entity.add(new Display(e));
@@ -101,6 +106,7 @@ class RenderingSystem extends System
 
 	private function displayNodeRemoved(node:DisplayNode): Void
 	{
+		trace("Removing a display node for entity " + node.entity.name);
 		HXP.world.remove(node.display.view);
 	}
 
