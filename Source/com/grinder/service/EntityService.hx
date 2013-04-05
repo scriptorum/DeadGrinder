@@ -124,7 +124,7 @@ class EntityService
 		var e = new Entity("messageHud");
 		e.add(new Spawn("messageHud"));
 		e.add(new Position(5, 5));
-		e.add(new Layer(30));
+		e.add(new Layer(Layer.HUD));
 		ash.addEntity(e);
 		return e;
 	}
@@ -155,7 +155,7 @@ class EntityService
 		fsm.createState("alive")
 			.add(GridPosition).withInstance(pos)
 			.add(Tile).withInstance(new Tile(tiledImage, MapService.ZOMBIE))
-			.add(Layer).withInstance(new Layer(35))
+			.add(Layer).withInstance(new Layer(Layer.ABOVE))
 			.add(Collision).withInstance(new Collision(Collision.CREATURE))
 			.add(Health).withInstance(new Health(100))
 			.add(State).withInstance(new State(fsm, "alive"))
@@ -164,7 +164,7 @@ class EntityService
 		fsm.createState("dead")
 			.add(GridPosition).withInstance(pos)
 			.add(Tile).withInstance(new Tile(tiledImage, MapService.CORPSE))
-			.add(Layer).withInstance(new Layer(40))
+			.add(Layer).withInstance(new Layer(Layer.BELOW))
 			.add(Description).withInstance(new Description("It's dead. I mean really dead."))
 			.add(Name).withInstance(new Name("corpse"));
 		fsm.changeState(state);
@@ -227,7 +227,7 @@ class EntityService
 		var e = new Entity("inventory");
 		e.add(new Spawn("inventory", { filter:equipmentType, entities:entities } ));
 		e.add(new Position(0, 0));
-		e.add(new Layer(25));
+		e.add(new Layer(Layer.POPUP));
 		// e.add(new Description("Select a weapon to equip"));
 		ash.addEntity(e);
 	}
@@ -245,7 +245,7 @@ class EntityService
 	// {
 	// 	var e = new Entity("list");
 	// 	e.add(new Image("art/list.png"));
-	// 	e.add(new Layer(25)); // In front of everyone
+	// 	e.add(new Layer(Layer.POPUP)); // In front of everyone
 	// 	// e.add(new Position(0,0));
 	// 	e.add(new ScrollFactor());
 	// 	ash.addEntity(e);
@@ -256,7 +256,7 @@ class EntityService
 	// {
 	// 	var e = new Entity("list");
 	// 	e.add(new Text(text));
-	// 	e.add(new Layer(20)); // In front of everyone
+	// 	e.add(new Layer(Layer.HUD)); // In front of everyone
 	// 	e.add(new Position(x,y));
 	// 	e.add(new ScrollFactor());
 	// 	ash.addEntity(e);
@@ -267,7 +267,7 @@ class EntityService
 	{
 		var e = new Entity("map");
 		e.add(MapService.generateGrid(this));
-		e.add(new Layer(100));
+		e.add(new Layer(Layer.MAP));
 		e.add(new Position(0,0));
 		e.add(ConfigService.getTiledImage());
 		ash.addEntity(e);
@@ -286,7 +286,7 @@ class EntityService
 		}
 		var e = new Entity("wall" + nextId++);
 		e.add(new GridPosition(x, y));
-		e.add(new Layer(50));
+		e.add(new Layer(Layer.ABOVE));
 		e.add(new Tile(ConfigService.getTiledImage(), 36));
 		e.add(new Collision(Collision.SHEER));
 		e.add(com.haxepunk.HXP.choose(wallDescriptions));
@@ -299,7 +299,7 @@ class EntityService
 		var e = new Entity("door" + nextId++);
 		var fsm = new EntityStateMachine(e);
 		var pos = new GridPosition(x, y);
-		var layer = new Layer(50);
+		var layer = new Layer(Layer.BELOW);
 		var tiledImage = ConfigService.getTiledImage();
 		// TODO Replace collision component with Blocked?
 		fsm.createState("open")
@@ -342,7 +342,7 @@ class EntityService
 		var weapon = HXP.choose(weapons);
 
 		var e = new Entity("weapon" + nextId++);
-		e.add(new Layer(40));
+		e.add(new Layer(Layer.BELOW));
 		e.add(new Tile(ConfigService.getTiledImage(), MapService.WEAPON));
 		e.add(new Description("It's a " + weapon));
 		e.add(new Name(weapon));

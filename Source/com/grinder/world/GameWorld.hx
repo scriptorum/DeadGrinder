@@ -20,6 +20,7 @@ import com.grinder.system.HealthSystem;
 import com.grinder.system.InputSystem;
 import com.grinder.service.EntityService;
 import com.grinder.service.MapService;
+import com.grinder.service.ArchiveService;
 
 class GameWorld extends World
 {
@@ -79,9 +80,7 @@ class GameWorld extends World
 		{
 			for(e in ash.get_entities())
 			{
-				trace(e.name + ":");
-				for(c in e.getAll())
-					trace (" - " + Type.getClassName(Type.getClass(c)));
+				trace(e.name + ":" + ArchiveService.serializeEntity(e));
 			}
 
 			// beginDebug();
