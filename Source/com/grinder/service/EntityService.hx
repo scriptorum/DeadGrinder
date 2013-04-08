@@ -28,28 +28,28 @@ import com.grinder.component.GridSize;
 import com.grinder.component.GridVelocity;
 import com.grinder.component.Health;
 import com.grinder.component.Image;
+import com.grinder.component.Inventory;
+import com.grinder.component.InventoryControl;
 import com.grinder.component.Layer;
 import com.grinder.component.Lockable;
 import com.grinder.component.Locked;
 import com.grinder.component.Message;
+import com.grinder.component.MessageHud;
 import com.grinder.component.Name;
 import com.grinder.component.Open;
 import com.grinder.component.Openable;
 import com.grinder.component.Orientation;
 import com.grinder.component.PlayerControl;
-import com.grinder.component.InventoryControl;
 import com.grinder.component.Position;
 import com.grinder.component.Repeating;
 import com.grinder.component.ScrollFactor;
 import com.grinder.component.Size;
-import com.grinder.component.Spawn;
 import com.grinder.component.State;
 import com.grinder.component.Tile;
 import com.grinder.component.TiledImage;
 import com.grinder.component.Unlockable;
 import com.grinder.component.Unlocked;
 import com.grinder.component.Velocity;
-import com.grinder.component.Inventory;
 
 import com.grinder.node.GridPositionNode;
 import com.grinder.node.CarriedNode;
@@ -123,7 +123,7 @@ class EntityService
 	public function addMessageHud(): Entity
 	{
 		var e = new Entity("messageHud");
-		e.add(new Spawn("messageHud"));
+		e.add(new MessageHud());
 		e.add(new Position(5, 5));
 		e.add(new Layer(Layer.HUD));
 		ash.addEntity(e);

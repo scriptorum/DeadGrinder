@@ -25,7 +25,7 @@ import com.grinder.node.InventoryNode;
 import com.grinder.node.GridNode;
 import com.grinder.node.DisplayNode;
 import com.grinder.node.MessageNode;
-import com.grinder.node.SpawnNode;
+import com.grinder.node.MessageHudNode;
 
 import com.grinder.component.Display;
 import com.grinder.component.TiledImage;
@@ -41,10 +41,9 @@ class RenderingSystem extends System
 		super();
 		this.engine = engine;
 		tiledImage = ConfigService.getTiledImage();
+		engine.getNodeList(DisplayNode).nodeRemoved.add(displayNodeRemoved);
 
 		engine.getNodeList(MessageNode).nodeAdded.add(messageNodeAdded);
-		engine.getNodeList(SpawnNode).nodeAdded.add(spawnNodeAdded);
-		engine.getNodeList(DisplayNode).nodeRemoved.add(displayNodeRemoved);
 	}
 
 	private function messageNodeAdded(node:MessageNode): Void
@@ -54,18 +53,6 @@ class RenderingSystem extends System
 			trace("HUD Not available: " + node.message.text);
 		else messageHud.get(Display).view.addMessage(node.message);
 		engine.removeEntity(node.entity);
-	}
-
-	// Move to SpawnSystem
-	private function spawnNodeAdded(node:SpawnNode): Void
-	{
-		switch(node.spawn.type)
-		{
-			case "messageHud":
-			var e = new MessageView(node.entity);
-			HXP.world.add(e);
-			node.entity.add(new Display(e));
-		}
 	}
 
 	private function displayNodeRemoved(node:DisplayNode): Void
@@ -91,6 +78,9 @@ class RenderingSystem extends System
 
 	 	for(node in engine.getNodeList(InventoryNode))
 	 		updateNode(node.entity, InventoryView);
+
+	 	for(node in engine.getNodeList(MessageHudNode))
+	 		updateNode(node.entity, MessageView);
 	}
 
 	private function updateNode(entity:Entity, viewClass:Class<View>)
