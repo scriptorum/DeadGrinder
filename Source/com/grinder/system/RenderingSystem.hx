@@ -46,44 +46,38 @@ class RenderingSystem extends System
 
 	private function displayNodeRemoved(node:DisplayNode): Void
 	{
-		trace("Removing a display node for entity " + node.entity.name);
+		// trace("Removing a display node for entity " + node.entity.name);
 		HXP.world.remove(node.display.view);
 	}
 
 	// TO DO respond to move events
 	override public function update(_)
 	{
-	 	for(node in engine.getNodeList(BackdropNode))
-	 		updateNode(node.entity, BackdropView);
-
-	 	for(node in engine.getNodeList(GridNode))
-	 		updateNode(node.entity, GridView);
-
-	 	for(node in engine.getNodeList(TileNode))
-	 		updateNode(node.entity, ImageView);
-
-	 	for(node in engine.getNodeList(ImageNode))
-	 		updateNode(node.entity, ImageView);
-
-	 	for(node in engine.getNodeList(InventoryNode))
-	 		updateNode(node.entity, InventoryView);
-
-	 	for(node in engine.getNodeList(MessageHudNode))
-	 		updateNode(node.entity, MessageView);
+		updateViews(BackdropNode, BackdropView);
+		updateViews(GridNode, GridView);
+		updateViews(TileNode, ImageView);
+		updateViews(ImageNode, ImageView);
+		updateViews(InventoryNode, InventoryView);
+		updateViews(MessageHudNode, MessageView);
 	}
 
-	private function updateNode(entity:Entity, viewClass:Class<View>)
+	private function updateViews<TNode:Node<TNode>>(nodeClass:Class<TNode>, viewClass:Class<View>)
 	{
-		// Create view if it does not exist
- 		if(!entity.has(Display))
- 		{
- 			var view:View = Type.createInstance(viewClass, [entity]);
-			HXP.world.add(view);
-			entity.add(new Display(view));
- 		}
+		// Loop through all nodes for this node class
+	 	for(node in engine.getNodeList(nodeClass))
+	 	{
+	 		var entity = node.entity;
 
- 		//  Update view 
- 		// TODO Call update() instead?
- 		entity.get(Display).view.nodeUpdate();
-	}
+			// Create view if it does not exist
+	 		if(!entity.has(Display))
+	 		{
+	 			var view:View = Type.createInstance(viewClass, [entity]);
+				HXP.world.add(view);
+				entity.add(new Display(view));
+	 		}
+
+	 		// Update the view
+	 		entity.get(Display).view.nodeUpdate();
+		}
+	}	
 }
