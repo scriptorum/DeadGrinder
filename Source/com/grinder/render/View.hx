@@ -9,19 +9,17 @@ import ash.core.Entity;
 class View extends com.haxepunk.Entity
 {
 	public var entity:Entity;
-	public var parameters:Dynamic;
 
-	public function new(entity:Entity, parameters:Dynamic = null)
+	public function new(entity:Entity)
 	{
 		super();
 
 		this.entity = entity;
-		this.parameters = parameters;
 
 		var c = entity.get(Layer);
 		if(c != null)
 			this.layer = c.layer;
-		trace("View created. " + (c == null ? "Using default layer." : "Using supplied Layer:" + c.layer));
+		// trace("View created. " + (c == null ? "Using default layer." : "Using supplied Layer:" + c.layer));
 
 		begin();
 

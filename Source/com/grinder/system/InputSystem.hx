@@ -16,7 +16,6 @@ import com.grinder.component.InventoryControl;
 import com.grinder.component.PlayerControl;
 import com.grinder.node.PlayerControlNode;
 import com.grinder.node.InventoryControlNode;
-import com.grinder.node.InventoryNode;
 import com.grinder.service.EntityService;
 import com.grinder.service.InputService;
 
@@ -104,13 +103,6 @@ class InputSystem extends System
 					}
 				case Key.I:
 					factory.popupInventory();
-					// var player = engine.getEntityByName("player");
-					// var carrier = player.get(com.grinder.component.Carrier);
-					// for(node in engine.getNodeList(InventoryNode))
-					// {
-					// 	if(node.carried.carrier == carrier.id)
-					// 		trace(" - " + node.entity.get(Description).text);
-					// }
 				case Key.UP, Key.DIGIT_8, Key.NUMPAD_8:
 					pos = [0, -1];
 				case Key.DOWN, Key.DIGIT_2, Key.NUMPAD_2:
