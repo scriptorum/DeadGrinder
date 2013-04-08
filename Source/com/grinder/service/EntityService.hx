@@ -361,3 +361,50 @@ class EntityService
 		return e;
 	}
 }
+
+/*
+Weapons:
+
+Swingable, Throwable, Thrustable, Fireable
+
+DoesDamage
+DoesKnockback
+
+SliceDamage
+BluntDamage
+Knockback
+
+
+Items:
+
+Arrows
+Bullets
+
+
+-Player:
+Carrier(50, 10)
+
+
+-Bat Entity:
+Description("A wooden bat.");
+Carryable(1.8); // A bat weighs about 1.8 pounds
+Damaging(10, 50); // A bat does 10-50 points of damage per swing
+Sturdiness(100); // Likely to break 1 out of every 100 uses (contrast with aluminum bat, perhaps 200 uses)
+
+Or maybe: 
+Swingable(10, 50, 100);
+Throwable()
+
+
+
+State(fsm);
+fsm.setState("broken"); // Turns into a shark, short stick, or just disappear
+...
+
+- Bat picked up:
+Carried(ash.getEntityByName("player").get(Carrier).id)
+
+
+- Inventory:
+filterService.filter(CarriedNode, { c = { id:10 }});
+*/

@@ -11,6 +11,10 @@ import ash.core.System;
 import com.grinder.service.SoundService;
 import com.grinder.service.InputService;
 import com.grinder.service.CameraService;
+import com.grinder.service.EntityService;
+import com.grinder.service.MapService;
+import com.grinder.service.ArchiveService;
+
 import com.grinder.system.ActionSystem;
 import com.grinder.system.RenderingSystem;
 import com.grinder.system.MovementSystem;
@@ -18,9 +22,7 @@ import com.grinder.system.CameraSystem;
 import com.grinder.system.CollisionSystem;
 import com.grinder.system.HealthSystem;
 import com.grinder.system.InputSystem;
-import com.grinder.service.EntityService;
-import com.grinder.service.MapService;
-import com.grinder.service.ArchiveService;
+import com.grinder.system.MessageSystem;
 
 class GameWorld extends World
 {
@@ -54,6 +56,7 @@ class GameWorld extends World
 		addSystem(new MovementSystem(ash, factory));
 		addSystem(new RenderingSystem(ash));
 		addSystem(new CameraSystem(ash, 32));
+		addSystem(new MessageSystem(ash));
 	}	
 
     public function addSystem(system:System):Void

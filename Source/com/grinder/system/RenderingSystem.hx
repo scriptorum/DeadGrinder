@@ -42,17 +42,6 @@ class RenderingSystem extends System
 		this.engine = engine;
 		tiledImage = ConfigService.getTiledImage();
 		engine.getNodeList(DisplayNode).nodeRemoved.add(displayNodeRemoved);
-
-		engine.getNodeList(MessageNode).nodeAdded.add(messageNodeAdded);
-	}
-
-	private function messageNodeAdded(node:MessageNode): Void
-	{
-		var messageHud = engine.getEntityByName("messageHud");
-		if(messageHud == null)
-			trace("HUD Not available: " + node.message.text);
-		else messageHud.get(Display).view.addMessage(node.message);
-		engine.removeEntity(node.entity);
 	}
 
 	private function displayNodeRemoved(node:DisplayNode): Void
