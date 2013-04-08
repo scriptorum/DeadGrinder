@@ -49,6 +49,7 @@ import com.grinder.component.TiledImage;
 import com.grinder.component.Unlockable;
 import com.grinder.component.Unlocked;
 import com.grinder.component.Velocity;
+import com.grinder.component.Inventory;
 
 import com.grinder.node.GridPositionNode;
 import com.grinder.node.InventoryNode;
@@ -187,6 +188,7 @@ class EntityService
 		var player = ash.getEntityByName("player");
 		var carrierId = player.get(Carrier).id;
 		var entities:Array<Entity> = new Array<Entity>();
+		var selected = 0;
 		for(node in ash.getNodeList(InventoryNode))
 		{
 			if(node.carried.carrier != carrierId)
@@ -225,9 +227,10 @@ class EntityService
 		player.add(new InventoryControl());
 
 		var e = new Entity("inventory");
-		e.add(new Spawn("inventory", { filter:equipmentType, entities:entities } ));
+		e.add(new Spawn("inventory"));
 		e.add(new Position(0, 0));
 		e.add(new Layer(Layer.POPUP));
+		e.add(new Inventory(entities, equipmentType, selected));
 		// e.add(new Description("Select a weapon to equip"));
 		ash.addEntity(e);
 	}

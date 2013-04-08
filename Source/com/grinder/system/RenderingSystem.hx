@@ -98,7 +98,7 @@ class RenderingSystem extends System
 			node.entity.add(new Display(e));
 
 			case "inventory":
-			var e = new InventoryView(node.entity, node.spawn.parameters);
+			var e = new InventoryView(node.entity);
 			HXP.world.add(e);
 			node.entity.add(new Display(e));
 		}
