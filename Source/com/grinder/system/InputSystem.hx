@@ -101,8 +101,12 @@ class InputSystem extends System
 						pendingAction = null;
 						factory.addMessage("Nevermind.");
 					}
-				case Key.I:
+				case Key.I: // inventory
 					factory.popupInventory();
+				case Key.W: // wield
+					factory.popupInventory("weapon");					
+				case Key.E: // eat
+					factory.popupInventory("food");					
 				case Key.UP, Key.DIGIT_8, Key.NUMPAD_8:
 					pos = [0, -1];
 				case Key.DOWN, Key.DIGIT_2, Key.NUMPAD_2:

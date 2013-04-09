@@ -337,9 +337,32 @@ class EntityService
 		return e;
 	}
 
+	public function addFood(): Entity
+	{
+		var foods = ["candy bar", "bag of potato chips", "cookies", "can of soup", "can of stew", "spoiled food"];
+		var food = HXP.choose(foods);
+
+		var e = new Entity("food" + nextId++);
+		e.add(new Layer(Layer.BELOW));
+		e.add(new Tile(ConfigService.getTiledImage(), MapService.FOOD));
+		e.add(new Description("It's a " + food));
+		e.add(new Name(food));
+		e.add(new Equipment(Equipment.FOOD));
+		e.add(new Carriable(.4));
+		ash.addEntity(e);
+		return e;
+	}
+
+	public function addFoodTo(x:Int, y:Int): Entity
+	{
+		var e = addFood();
+		e.add(new GridPosition(x, y));
+		return e;
+	}
+
 	public function addWeapon(): Entity
 	{
-		var weapons = ["wooden bat", "tree branch", "aluminum bat", "piece of wood", "hammer",
+		var weapons = ["wooden bat", "tree branch", "aluminum bat", "hammer",
 			"crowbar", "knife", "axe", "pipe wrench", "rolling pin", "shovel"];
 		var weapon = HXP.choose(weapons);
 
