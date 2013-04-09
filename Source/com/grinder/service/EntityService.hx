@@ -36,6 +36,7 @@ import com.grinder.component.Locked;
 import com.grinder.component.Message;
 import com.grinder.component.MessageHud;
 import com.grinder.component.Name;
+import com.grinder.component.Nutrition;
 import com.grinder.component.Open;
 import com.grinder.component.Openable;
 import com.grinder.component.Orientation;
@@ -43,7 +44,9 @@ import com.grinder.component.PlayerControl;
 import com.grinder.component.Position;
 import com.grinder.component.Repeating;
 import com.grinder.component.ScrollFactor;
+import com.grinder.component.Selector;
 import com.grinder.component.Size;
+import com.grinder.component.Spawn;
 import com.grinder.component.State;
 import com.grinder.component.Tile;
 import com.grinder.component.TiledImage;
@@ -51,6 +54,7 @@ import com.grinder.component.Unlockable;
 import com.grinder.component.Unlocked;
 import com.grinder.component.Velocity;
 
+import com.grinder.node.EquippedNode;
 import com.grinder.node.GridPositionNode;
 import com.grinder.node.CarriedNode;
 import com.grinder.service.ConfigService;
@@ -192,25 +196,16 @@ class EntityService
 		for(node in ash.getNodeList(CarriedNode))
 		{
 			if(node.carried.carrier != carrierId)
-			{
-				trace("Removing " + node.entity.name + " from inventory; it's not held by the player.");
 				continue; // not held by player
-			}
 
 			if(equipmentType != null)
 			{
 				if(!node.entity.has(Equipment))
-				{
-					trace("Removing " + node.entity.name + " from inventory; it's not equipment, and we're filtering on equipment.");
 					continue; // This carried item is not "equipment"
-				}
 
 				var equipment = node.entity.get(Equipment);
 				if(equipment.type != equipmentType)
-				{
-					trace("Removing " + node.entity.name + " from inventory; the equipment does not match the filter.");
 					continue; // This carried equipment is of a different "type"
-				}
 			}
 
 			entities.push(node.entity);
@@ -240,7 +235,6 @@ class EntityService
 		var player = ash.getEntityByName("player");
 		player.remove(InventoryControl);
 		player.add(new PlayerControl());
-		addMessage("Never mind.");
 	}
 
 	// public function addList(): Entity
@@ -348,6 +342,7 @@ class EntityService
 		e.add(new Description("It's a " + food));
 		e.add(new Name(food));
 		e.add(new Equipment(Equipment.FOOD));
+		e.add(new Nutrition(1000));
 		e.add(new Carriable(.4));
 		ash.addEntity(e);
 		return e;
@@ -358,6 +353,33 @@ class EntityService
 		var e = addFood();
 		e.add(new GridPosition(x, y));
 		return e;
+	}
+
+	public function eat(e:Entity): Void
+	{
+		if(!e.has(Nutrition))
+		{
+			addMessage("You can't eat the " + getName(e));
+			return;
+		}
+		var nutrition = e.get(Nutrition).amount;
+		// TODO apply nutrition
+		addMessage("You eat a " + getName(e));
+		ash.removeEntity(e);
+	}
+
+	public function getName(e:Entity, def:String = "thing"): String
+	{
+		if(e.has(Name))
+			return e.get(Name).text;
+		if(e.has(Equipment))
+			return e.get(Equipment).type;
+		return def;
+	}
+
+	public function player(): Entity
+	{
+		return ash.getEntityByName("player");
 	}
 
 	public function addWeapon(): Entity
@@ -382,6 +404,72 @@ class EntityService
 		var e = addWeapon();
 		e.add(new GridPosition(x, y));
 		return e;
+	}
+
+	public function unwield(e:Entity): Void
+	{
+		var player = player();
+		var weaponsEquipped = getEquipmentFor(player, "weapon");
+
+		for(weapon in weaponsEquipped)
+		{
+			if(weapon == e)
+			{
+				e.remove(Equipped);
+				addMessage("You are no longer wielding the " + getName(e));
+				return;
+			}
+		}
+
+		addMessage("You are not wielding the " + getName(e) + ". You never did.");
+	}
+
+	public function wield(e:Entity): Void
+	{
+		if(!e.has(Equipment) || e.get(Equipment).type != Equipment.WEAPON)
+		{
+			addMessage("You can't wield the " + getName(e));
+			return;
+		}
+		var player = player();
+		var weaponLimit = player.get(Equipper).getLimit("weapon");
+		var weaponsEquipped = getEquipmentFor(player, "weapon");
+		if(weaponsEquipped.length > weaponLimit)
+		{
+			if(weaponLimit == 0)
+			{
+				addMessage("You can't wield anything!");
+				return;
+			}
+
+			else if(weaponLimit == 1) // auto dequip
+				unwield(weaponsEquipped[0]);
+			
+			else 
+			{
+				addMessage("You are already wielding the maximum number of weapons.");
+				return;
+			}
+		}
+
+		e.add(new Equipped(player.get(Carrier).id));
+		addMessage("You are now wielding a " + getName(e));
+	}
+
+	// Returns equipment that is equipped for a given equipper (usually the player) and an optional equipment type (e.g., weapon)
+	public function getEquipmentFor(entity:Entity, type:String = null): Array<Entity>
+	{
+		var arr = new Array<Entity>();
+		var equipper = entity.get(Equipper);
+		if(equipper == null)
+			return arr;
+
+		for(node in ash.getNodeList(EquippedNode))
+		{
+			if(node.equipped.equipper == equipper.id && (type == null || node.entity.get(Equipment).type == type))
+				arr.push(node.entity);
+		}
+		return arr;
 	}
 }
 

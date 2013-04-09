@@ -12,6 +12,7 @@ import com.grinder.component.GridVelocity;
 import com.grinder.component.Inventory;
 import com.grinder.component.Description;
 import com.grinder.component.Name;
+import com.grinder.component.Equipment;
 import com.grinder.component.InventoryControl;
 import com.grinder.component.PlayerControl;
 import com.grinder.node.PlayerControlNode;
@@ -44,14 +45,25 @@ class InputSystem extends System
 	 	{
 			switch(InputService.lastKey())
 			{
-				case '.'.charCodeAt(0), 190, Key.NUMPAD_DECIMAL, Key.SPACE, Key.DIGIT_5, Key.NUMPAD_5:
+				case '.'.charCodeAt(0), 190, Key.NUMPAD_DECIMAL, Key.SPACE, Key.DIGIT_5, Key.NUMPAD_5, Key.ENTER:
 					var inventory = engine.getEntityByName("inventory").get(Inventory);
-					trace("TODO: You selected " + inventory.entities[inventory.selected].get(Name).text);
-					// TODO If selected and equipmentType specified, add Equipped ... probably deequip first.
+					var item = inventory.entities[inventory.selected];
+					switch(inventory.equipmentType)
+					{
+						case Equipment.WEAPON: // wield it
+						factory.wield(item);
+
+						case Equipment.FOOD: // eat it
+						factory.eat(item);
+
+						default: 
+						// do nothing
+					}
 					factory.closeInventory();
 
 				case Key.ESCAPE:
-					factory.closeInventory();
+					var entity = factory.closeInventory();
+					factory.addMessage("Never mind.");
 
 				case Key.UP, Key.DIGIT_8, Key.NUMPAD_8:
 					var inventory = engine.getEntityByName("inventory").get(Inventory);
@@ -99,7 +111,7 @@ class InputSystem extends System
 					if(pendingAction != null)
 					{
 						pendingAction = null;
-						factory.addMessage("Nevermind.");
+						factory.addMessage("Never mind.");
 					}
 				case Key.I: // inventory
 					factory.popupInventory();

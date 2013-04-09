@@ -1,3 +1,8 @@
+/*
+   - Add article selector to getName()
+   - Move wield/unwield/eat to actions
+   - Create ActionService to handle most of these actions, leaving EntityService to handle factory stuff only
+*/
 
 package com.grinder.world;
 
@@ -70,8 +75,8 @@ class GameWorld extends World
 		factory.addPlayer(1, 1);
 		factory.addBackdrop();
 		factory.addMap(); // causes doors and walls to be added		
-		MapService.spawnZombies(factory, 10);
-		MapService.spawnItems(factory, 15);
+		MapService.spawnZombies(factory, 1);
+		MapService.spawnItems(factory, 3);
 	}
 
     // Real-time update

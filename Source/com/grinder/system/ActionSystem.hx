@@ -110,10 +110,18 @@ class ActionSystem extends System
 	 						node.entity.remove(GridPosition); // not on the grid any more
 	 						node.entity.remove(Display); // not displayed any more
 	 						// TODO handle weight and item limits
-	 						msg = "You pick it up.";
+
+	 						var name = factory.getName(node.entity,null);
+	 						msg = (name == null ? "You pick it up." : "You pick up a " + name);
 	 					}
 	 					else msg = "You can't pick anything up!";
 	 				}
+
+	 			// TODO Refactor InputSystem to inject actions on the selected item
+	 			// TODO Refactor most of these action details into an ActionService
+	 			// case Action.WIELD:
+	 			// case Action.EAT:
+	 			// case Action.UNWIELD
 
 	 			default:
 	 				msg = "This action (" + node.action.type + ") is not implemented.";
