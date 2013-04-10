@@ -1,12 +1,18 @@
 package com.grinder.system;
 
+import nme.geom.Rectangle;
+
+import com.haxepunk.HXP;
+
 import ash.core.Engine;
 import ash.core.System;
 
 import com.grinder.node.HealthNode;
 import com.grinder.component.Health;
 import com.grinder.component.Name;
+import com.grinder.component.Image;
 import com.grinder.component.GridPosition;
+import com.grinder.component.Position;
 import com.grinder.service.EntityService;
 
 class HealthSystem extends System
@@ -40,6 +46,17 @@ class HealthSystem extends System
 			 		node.entity.remove(Health);
 				}
  			}
+
+ 			// Update player health hud ... fugly ... TODO check for changed prop
+ 			if(node.entity.name == "player")
+ 			{
+	 			var healthHud = engine.getEntityByName("healthHud");
+	 			var hudImage = healthHud.get(Image);
+	 			var bm = HXP.getBitmap(hudImage.path);
+	 			var hudWidth = node.health.amount / 100 * bm.width;
+	 			hudImage.clip = new Rectangle(bm.width - hudWidth, 0, hudWidth, bm.height);
+	 			healthHud.add(new Position(HXP.width - hudWidth - 20, HXP.height - bm.height - 20));
+	 		}
 	 	}
 	}
 }

@@ -143,7 +143,7 @@ class EntityService
 		e.add(new Collision(Collision.PERSON));
 		e.add(new CameraFocus());
 		e.add(new PlayerControl());
-		e.add(new Health(100));
+		e.add(new Health(75));
 		e.add(new Carrier(50, 10));
 		e.add(new Equipper({ weapon:1, armor:0 }));
 		e.add(new Description("You have looked better."));
@@ -156,7 +156,7 @@ class EntityService
 		var e = new Entity("zombie" + nextId++);
 		e.add(new GridPosition(x, y));
 		e.add(new Collision(Collision.CREATURE));
-		e.add(new Health(100));
+		e.add(new Health(Std.random(90) + 10));
 		e.add(new Description("It's hideous."));
 		e.add(new Name("zombie"));
 		e.add(new Layer(Layer.ABOVE));
@@ -183,6 +183,17 @@ class EntityService
 		e.add(new Image("art/rubble2.png"));
 		e.add(new Repeating());
 		e.add(new Layer(1000));
+		ash.addEntity(e);
+		return e;
+	}
+
+	public function addHealthHud(): Entity
+	{
+		var e = new Entity("healthHud");
+		e.add(new Image("art/health.png"));
+		e.add(new Layer(Layer.HUD));
+		e.add(new Position(0,0)); // TODO add Registration component for aligning images
+		e.add(new ScrollFactor());
 		ash.addEntity(e);
 		return e;
 	}
@@ -363,7 +374,10 @@ class EntityService
 			return;
 		}
 		var nutrition = e.get(Nutrition).amount;
-		// TODO apply nutrition
+		var health = player().get(Health);
+		health.amount += nutrition;
+		if(health.amount > health.max)
+			health.amount = health.max;
 		addMessage("You eat a " + getName(e));
 		ash.removeEntity(e);
 	}

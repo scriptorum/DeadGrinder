@@ -22,16 +22,19 @@ class View extends com.haxepunk.Entity
 		// trace("View created. " + (c == null ? "Using default layer." : "Using supplied Layer:" + c.layer));
 
 		begin();
+		updateScrollFactor();
+		nodeUpdate();
 
+		// trace("Created view from " + entity.name + " with position " + x + "," + y);
+	}
+
+	public function updateScrollFactor(): Void
+	{
 		if(hasComponent(ScrollFactor))
 		{
 			var graphic = cast(graphic, com.haxepunk.Graphic);
 			graphic.scrollX = graphic.scrollY = getComponent(ScrollFactor).amount;
 		}
-
-		nodeUpdate();
-
-		// trace("Created view from " + entity.name + " with position " + x + "," + y);
 	}
 
 	public function hasComponent<T>(component:Class<T>): Bool

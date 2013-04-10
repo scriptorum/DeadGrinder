@@ -56,9 +56,9 @@ class GameWorld extends World
 	{
 		addSystem(new InputSystem(ash, factory));
 		addSystem(new ActionSystem(ash, factory));
-		addSystem(new HealthSystem(ash, factory));
 		addSystem(new CollisionSystem(ash, factory));
 		addSystem(new MovementSystem(ash, factory));
+		addSystem(new HealthSystem(ash, factory));
 		addSystem(new RenderingSystem(ash));
 		addSystem(new CameraSystem(ash, 32));
 		addSystem(new MessageSystem(ash));
@@ -71,9 +71,10 @@ class GameWorld extends World
 
 	private function initEntities()
 	{
-		factory.addMessageHud();
-		factory.addPlayer(1, 1);
 		factory.addBackdrop();
+		factory.addMessageHud();
+		factory.addHealthHud();
+		factory.addPlayer(1, 1);
 		factory.addMap(); // causes doors and walls to be added		
 		MapService.spawnZombies(factory, 1);
 		MapService.spawnItems(factory, 3);

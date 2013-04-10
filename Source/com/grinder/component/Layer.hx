@@ -8,6 +8,7 @@ class Layer
 	public static var ABOVE:Int = 30;
 	public static var HUD:Int = 20;
 	public static var POPUP:Int = 10;
+
 	public var layer:Int;
 
 	public function new(layer:Int)

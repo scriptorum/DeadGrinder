@@ -4,11 +4,13 @@ import com.grinder.component.Tile;
 import com.grinder.component.GridPosition;
 import com.grinder.component.Position;
 import com.grinder.component.Image;
+import nme.geom.Rectangle;
 
 class ImageView extends View
 {
 	private var tile:Tile;
 	private var image:Image;
+	private var clip:Rectangle;
 
 	override public function begin()
 	{
@@ -36,12 +38,15 @@ class ImageView extends View
 	{
 		tile = getComponent(Tile);
 		graphic = new com.haxepunk.graphics.Image(tile.tiledImage.imagePath, tile.rect());
+		updateScrollFactor();
 	}
 
 	private function setImage()
 	{
 		image = getComponent(Image);
-		graphic = new com.haxepunk.graphics.Image(image.path);
+		graphic = new com.haxepunk.graphics.Image(image.path, image.clip);
+		clip = image.clip;
+		updateScrollFactor();
 	}
 
 	override public function nodeUpdate()
@@ -59,9 +64,10 @@ class ImageView extends View
 		}
 
 		// ImageNode
-		else if(hasComponent(Position))
+		else if(hasComponent(Position) && hasComponent(Image))
 		{
-			if(this.image != getComponent(Image))
+			var nextImage = getComponent(Image);
+			if(this.image != nextImage || nextImage.clip != this.clip)
 				setImage();
 			var pos = getComponent(Position);
 			x = pos.x;
@@ -69,6 +75,6 @@ class ImageView extends View
 			visible = true;
 		}
 
-		else { visible = false;}
+		else { visible = false; }
 	}
 }
