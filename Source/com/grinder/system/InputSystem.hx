@@ -54,7 +54,7 @@ class InputSystem extends System
 						factory.wield(item);
 
 						case Equipment.FOOD: // eat it
-						factory.eat(item);
+						item.add(new Action(Action.EAT));
 
 						default: 
 						// do nothing

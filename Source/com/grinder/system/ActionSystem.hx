@@ -21,6 +21,7 @@ import com.grinder.component.Carriable;
 import com.grinder.component.Carrier;
 import com.grinder.component.Carried;
 import com.grinder.component.Display;
+import com.grinder.component.Nutrition;
 
 class ActionSystem extends System
 {
@@ -102,7 +103,7 @@ class ActionSystem extends System
 	 			case Action.TAKE:
 	 				if(node.entity.has(Carriable))
 	 				{
-	 					var player = engine.getEntityByName("player");
+	 					var player = factory.player();
 	 					if(player.has(Carrier))
 	 					{
 	 						var carrier = player.get(Carrier);
@@ -120,8 +121,24 @@ class ActionSystem extends System
 	 			// TODO Refactor InputSystem to inject actions on the selected item
 	 			// TODO Refactor most of these action details into an ActionService
 	 			// case Action.WIELD:
-	 			// case Action.EAT:
 	 			// case Action.UNWIELD
+
+	 			case Action.EAT:
+ 					if(!node.entity.has(Nutrition))
+						factory.addMessage("You can't eat the " + factory.getName(node.entity));
+					else
+					{
+						var nutrition = node.entity.get(Nutrition).amount;
+						var health = factory.player().get(Health);
+						health.amount += nutrition;
+						if(health.amount > health.max)
+						{
+							health.amount = health.max;
+							factory.addMessage("You eat a " + factory.getName(node.entity) + " and feel healthy");
+						}
+						else factory.addMessage("You eat a " + factory.getName(node.entity) + " for " + nutrition + " HP");
+						engine.removeEntity(node.entity);
+					}
 
 	 			default:
 	 				msg = "This action (" + node.action.type + ") is not implemented.";

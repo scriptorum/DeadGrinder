@@ -353,7 +353,7 @@ class EntityService
 		e.add(new Description("It's a " + food));
 		e.add(new Name(food));
 		e.add(new Equipment(Equipment.FOOD));
-		e.add(new Nutrition(1000));
+		e.add(new Nutrition(20)); // 100 = miracle total heal
 		e.add(new Carriable(.4));
 		ash.addEntity(e);
 		return e;
@@ -364,22 +364,6 @@ class EntityService
 		var e = addFood();
 		e.add(new GridPosition(x, y));
 		return e;
-	}
-
-	public function eat(e:Entity): Void
-	{
-		if(!e.has(Nutrition))
-		{
-			addMessage("You can't eat the " + getName(e));
-			return;
-		}
-		var nutrition = e.get(Nutrition).amount;
-		var health = player().get(Health);
-		health.amount += nutrition;
-		if(health.amount > health.max)
-			health.amount = health.max;
-		addMessage("You eat a " + getName(e));
-		ash.removeEntity(e);
 	}
 
 	public function getName(e:Entity, def:String = "thing"): String

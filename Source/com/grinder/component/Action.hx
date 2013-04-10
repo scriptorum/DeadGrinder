@@ -14,6 +14,8 @@ class Action
 	public static inline var DROP:String = "drop";
 	public static inline var EQUIP:String = "equip";
 	public static inline var INVENTORY:String = "inventory";
+	public static inline var EAT:String = "eat";
+	public static inline var WIELD:String = "wield";
 
 	public var type:String;
 	public var target:GridPosition;
