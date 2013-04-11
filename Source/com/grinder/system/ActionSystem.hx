@@ -1,5 +1,11 @@
+/*
+ * Much of the below should be broken down into subsystems, but I haven't decided how I should do that yet.trace
+ * Also much of this assumes the player is the source doing the action to the target, but that won't always be
+ * true. Probably need to create a LanguageService that puts together messages more smartly than this.
+ */
 package com.grinder.system;
 
+import ash.core.Entity;
 import ash.core.Engine;
 import ash.core.System;
 import ash.core.Node;
@@ -21,7 +27,11 @@ import com.grinder.component.Carriable;
 import com.grinder.component.Carrier;
 import com.grinder.component.Carried;
 import com.grinder.component.Display;
+import com.grinder.component.Damager;
 import com.grinder.component.Nutrition;
+import com.grinder.component.Equipment;
+import com.grinder.component.Equipped;
+import com.grinder.component.Equipper;
 
 class ActionSystem extends System
 {
@@ -39,6 +49,8 @@ class ActionSystem extends System
 	{
 	 	for(node in engine.getNodeList(ActionNode))
 	 	{
+	 		// trace("Action " + node.action.type + " on  " + node.entity.name);
+	 		var persist = false;
 	 		var msg = null;
 	 		switch(node.action.type)
 	 		{
@@ -93,20 +105,25 @@ class ActionSystem extends System
 	 				if(node.entity.has(Health))
 	 				{
 	 					// TODO Determine weapon equipped, get damage from that
-	 					// TODO Check for weapon break
-	 					// TODO Check for knockback
-	 					node.entity.get(Health).amount -= 40;
-	 					msg = "You hit it.";
+	 					var source:Entity = node.action.source;
+	 					if(source.has(Damager))
+	 					{
+	 						var damage = source.get(Damager).rand();
+		 					// TODO Check for weapon break
+		 					// TODO Check for knockback
+		 					node.entity.get(Health).amount -= damage;
+		 					msg = "You hit it.";
+		 				}
+		 				else msg = "You couldn't hurt a fly in your condition";
 	 				}
 	 				else msg = "You can't attack that.";
 
 	 			case Action.TAKE:
 	 				if(node.entity.has(Carriable))
 	 				{
-	 					var player = factory.player();
-	 					if(player.has(Carrier))
+	 					if(node.action.source.has(Carrier))
 	 					{
-	 						var carrier = player.get(Carrier);
+	 						var carrier = node.action.source.get(Carrier);
 	 						node.entity.add(new Carried(carrier.id)); // now being carried
 	 						node.entity.remove(GridPosition); // not on the grid any more
 	 						node.entity.remove(Display); // not displayed any more
@@ -118,10 +135,52 @@ class ActionSystem extends System
 	 					else msg = "You can't pick anything up!";
 	 				}
 
-	 			// TODO Refactor InputSystem to inject actions on the selected item
-	 			// TODO Refactor most of these action details into an ActionService
-	 			// case Action.WIELD:
-	 			// case Action.UNWIELD
+	 			// TODO Refactor most of these action details into an ActionService, or WeaponSystem .. or what??
+	 			case Action.UNWIELD:
+					var weaponsEquipped = factory.getEquipmentFor(node.action.source, "weapon");
+					for(weapon in weaponsEquipped)
+					{
+						if(weapon == node.entity)
+						{
+							node.entity.remove(Equipped);
+							msg = "You are no longer wielding the " + factory.getName(node.entity);
+							break;
+						}
+					}
+
+					if(msg == null)
+						msg = "You must wield something in order to unwield it";
+
+	 			case Action.WIELD:
+					if(node.entity.has(Equipment) && node.entity.get(Equipment).type == Equipment.WEAPON)
+					{
+						var weaponLimit = node.action.source.get(Equipper).getLimit("weapon");
+						var weaponsEquipped = factory.getEquipmentFor(node.action.source, "weapon");
+
+						// Auto dequip only weapon
+						var unequipped = null;
+						if(weaponsEquipped.length == weaponLimit && weaponLimit == 1)
+						{
+							unequipped = weaponsEquipped[0];
+							weaponsEquipped[0].remove(Equipped);
+						}
+
+						if(unequipped == null && weaponsEquipped.length >= weaponLimit)
+						{
+							if(weaponLimit == 0)
+								msg = "You can't wield anything!";
+							else msg = "You are already wielding the maximum number of weapons.";
+						}
+						else
+						{
+							// Equip the weapon
+							node.entity.add(new Equipped(node.action.source.get(Carrier).id));
+							msg = (unequipped == null ? "" : "(Unequipping " + factory.getName(unequipped) + " first) ");
+							msg += "You are now wielding a " + factory.getName(node.entity);	 
+						}
+					}	
+					if(msg == null)
+						msg = "You can't wield the " + factory.getName(node.entity);
 
 	 			case Action.EAT:
  					if(!node.entity.has(Nutrition))
@@ -129,14 +188,20 @@ class ActionSystem extends System
 					else
 					{
 						var nutrition = node.entity.get(Nutrition).amount;
-						var health = factory.player().get(Health);
-						health.amount += nutrition;
-						if(health.amount > health.max)
+						var health = node.action.source.get(Health);
+						if(health == null)
+							msg = "The " + factory.getName(node.action.source) + 
+								" is trying to eat the " + factory.getName(node.entity);
+						else
 						{
-							health.amount = health.max;
-							factory.addMessage("You eat a " + factory.getName(node.entity) + " and feel healthy");
+							health.amount += nutrition;
+							if(health.amount > health.max)
+							{
+								health.amount = health.max;
+								factory.addMessage("Eating the " + factory.getName(node.entity) + " brings you to full health");
+							}
+							else factory.addMessage("You eat a " + factory.getName(node.entity) + " for " + nutrition + " HP");
 						}
-						else factory.addMessage("You eat a " + factory.getName(node.entity) + " for " + nutrition + " HP");
 						engine.removeEntity(node.entity);
 					}
 
@@ -144,7 +209,8 @@ class ActionSystem extends System
 	 				msg = "This action (" + node.action.type + ") is not implemented.";
 	 		}
 
-			node.entity.remove(Action);
+	 		if(!persist)
+				node.entity.remove(Action);
 	 		if(msg != null)
 	 			factory.addMessage(msg);
 	 	}

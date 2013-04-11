@@ -1,6 +1,6 @@
 package com.grinder.component;
 
-import com.grinder.component.GridPosition;
+import ash.core.Entity;
 
 class Action
 {
@@ -16,13 +16,14 @@ class Action
 	public static inline var INVENTORY:String = "inventory";
 	public static inline var EAT:String = "eat";
 	public static inline var WIELD:String = "wield";
+	public static inline var UNWIELD:String = "unwield";
 
 	public var type:String;
-	public var target:GridPosition;
+	public var source:Entity;
 
-	public function new(type:String, target:GridPosition = null)
+	public function new(type:String, source:Entity = null)
 	{
 		this.type = type;
-		this.target = target;
+		this.source = source;
 	}
 }

@@ -3,6 +3,7 @@ package com.grinder.system;
 import ash.core.Engine;
 import ash.core.System;
 import ash.core.Node;
+import ash.core.Entity;
 
 import com.haxepunk.utils.Key;
 
@@ -24,7 +25,7 @@ class InputSystem extends System
 {
 	public var engine:Engine;
 	public var factory:EntityService;
-	private var pendingAction:String = null;
+	private var pendingAction:Action = null;
 
 	public function new(engine:Engine, factory:EntityService)
 	{
@@ -35,26 +36,37 @@ class InputSystem extends System
 
 	override public function update(_)
 	{
-		handlePlayerControl();
-		handleInventoryControl();
+		var key = InputService.lastKey();
+		if(key == 0)
+			return;
+
+		handlePlayerControl(key);
+		handleInventoryControl(key);
+
+		InputService.clearLastKey();
 	}
 
-	public function handleInventoryControl()
+	public function handleInventoryControl(key:Int)
 	{
-	 	for(node in engine.getNodeList(InventoryControlNode))
+		if(key == 0)
+			return;
+
+	 	for(node in engine.getNodeList(InventoryControlNode)) // Should only be 0-1
 	 	{
-			switch(InputService.lastKey())
+			switch(key)
 			{
 				case '.'.charCodeAt(0), 190, Key.NUMPAD_DECIMAL, Key.SPACE, Key.DIGIT_5, Key.NUMPAD_5, Key.ENTER:
 					var inventory = engine.getEntityByName("inventory").get(Inventory);
-					var item = inventory.entities[inventory.selected];
+					var item:Entity = inventory.entities[inventory.selected];
+					// TODO to support dropping, you must know the inventory's context, not just equipmentFilter
+					// Maybe store a pending action in the inventory object, so you can use it here?
 					switch(inventory.equipmentType)
 					{
 						case Equipment.WEAPON: // wield it
-						factory.wield(item);
+						item.add(new Action(Action.WIELD, factory.player()));
 
 						case Equipment.FOOD: // eat it
-						item.add(new Action(Action.EAT));
+						item.add(new Action(Action.EAT, factory.player()));
 
 						default: 
 						// do nothing
@@ -62,7 +74,7 @@ class InputSystem extends System
 					factory.closeInventory();
 
 				case Key.ESCAPE:
-					var entity = factory.closeInventory();
+					factory.closeInventory();
 					factory.addMessage("Never mind.");
 
 				case Key.UP, Key.DIGIT_8, Key.NUMPAD_8:
@@ -77,36 +89,37 @@ class InputSystem extends System
 						inventory.selected = 0;
 					inventory.changed = true;
 			}
-			InputService.clearLastKey();
 		}
 	}
 
-	public function handlePlayerControl()
+	public function handlePlayerControl(key:Int)
 	{
 		var shiftIsDown = InputService.check(com.haxepunk.utils.Key.SHIFT);
-		var nextPendingAction = null;
 	 	for(node in engine.getNodeList(PlayerControlNode))
 	 	{
 	 		var pos:Array<Int> = null;
-			switch(InputService.lastKey())
+			switch(key)
 			{
 				case Key.O:
-					nextPendingAction = Action.OPEN;
+					pendingAction = new Action(Action.OPEN, factory.player());
 				case Key.C:
-					nextPendingAction = Action.CLOSE;
+					pendingAction = new Action(Action.CLOSE, factory.player());
 				case Key.L:
-					nextPendingAction = Action.LOCK;
+					pendingAction = new Action(Action.LOCK, factory.player());
 				case Key.U:
-					nextPendingAction = Action.UNLOCK;
+					pendingAction = new Action(Action.UNLOCK, factory.player());
 				case Key.A:
-					nextPendingAction = Action.ATTACK;
+					var weapons = factory.getEquipmentFor(factory.player(), Equipment.WEAPON);
+					var damager = (weapons.length == 0 ? factory.player() : weapons[0]); // Player can wield only one weapon
+					pendingAction = new Action(Action.ATTACK, damager);
 				case '.'.charCodeAt(0), 190, Key.NUMPAD_DECIMAL: // 190="." ....wtf
 					if(shiftIsDown)
 						pos = [0, 0];
 					else factory.addMessage("Waiting..."); // TODO
-				case 188, Key.P, Key.T: // 188=","" ??? that's odd
-					var gp = engine.getEntityByName("player").get(GridPosition);
-					factory.addActionAt(gp.x, gp.y, new Action(Action.TAKE));
+				case 188, Key.P, Key.T: // 188="," ??? that's odd
+					var source = factory.player();
+					var gp = source.get(GridPosition);
+					factory.addActionAt(gp.x, gp.y, new Action(Action.TAKE, source));
 				case Key.ESCAPE:
 					if(pendingAction != null)
 					{
@@ -135,14 +148,7 @@ class InputSystem extends System
 					pos = [-1, 1];
 				case Key.DIGIT_3, Key.NUMPAD_3:
 					pos = [1, 1];
-				default:
-				// if(InputService.lastKey() != null)
-				// {
-				// 	trace("Untrapped key:" + InputService.lastKey());
-				// 	trace("As char:" + String.fromCharCode(InputService.lastKey()));
-				// }
 			}
-			InputService.clearLastKey();
 
 			if(pos != null)
 			{
@@ -153,30 +159,28 @@ class InputSystem extends System
 				var dx = playerPos.x + pos[0];
 				var dy = playerPos.y + pos[1];
 
+				// Right now SHIFT is only be used for an EXAMINE action
+				// I think I'm going to keep it that way for a while
 				if(shiftIsDown)
 				{
 					// TODO put up action selector
 					var actionTypes = factory.getLegalActions(dx, dy);
 					var chosenActionType = actionTypes[0];
 					// trace("Valid actions:" + actionTypes + " Chose:" + chosenActionType);
-					factory.addActionAt(dx, dy, new Action(chosenActionType));
+					factory.addActionAt(dx, dy, new Action(chosenActionType, factory.player()));
 				}
 
 				else if(pendingAction != null)
 				{
-					factory.addActionAt(dx,dy, new Action(pendingAction));
+					factory.addActionAt(dx,dy, pendingAction);
 					pendingAction = null;
 				}
 
 				else player.add(new GridVelocity(pos[0], pos[1]));
 			}
 
-			else if(nextPendingAction != null && nextPendingAction != pendingAction)
-			{
+			else if(pendingAction != null)
 				factory.addMessage("Choose a direction."); 		
-				pendingAction = nextPendingAction;
-			}
 	 	}
 	}
-
 }

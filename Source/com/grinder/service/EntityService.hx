@@ -16,6 +16,7 @@ import com.grinder.component.Carrier;
 import com.grinder.component.Closeable;
 import com.grinder.component.Closed;
 import com.grinder.component.Collision;
+import com.grinder.component.Damager;
 import com.grinder.component.Description;
 import com.grinder.component.Display;
 import com.grinder.component.Doorway;
@@ -112,7 +113,7 @@ class EntityService
 			for(entity in list)
 				entity.add(action);
 		}
-		else addMessage("There's nothing there.");
+		else addMessage("There's nothing there to " + action.type);
 		return list;
 	}
 
@@ -145,6 +146,7 @@ class EntityService
 		e.add(new PlayerControl());
 		e.add(new Health(75));
 		e.add(new Carrier(50, 10));
+		e.add(new Damager(5,15)); // You can do very little damage without a weapon
 		e.add(new Equipper({ weapon:1, armor:0 }));
 		e.add(new Description("You have looked better."));
 		ash.addEntity(e);
@@ -156,7 +158,7 @@ class EntityService
 		var e = new Entity("zombie" + nextId++);
 		e.add(new GridPosition(x, y));
 		e.add(new Collision(Collision.CREATURE));
-		e.add(new Health(Std.random(90) + 10));
+		e.add(new Health(Std.random(70) + 30));
 		e.add(new Description("It's hideous."));
 		e.add(new Name("zombie"));
 		e.add(new Layer(Layer.ABOVE));
@@ -392,6 +394,7 @@ class EntityService
 		e.add(new Description("It's a " + weapon));
 		e.add(new Name(weapon));
 		e.add(new Equipment(Equipment.WEAPON));
+		e.add(new Damager(15, 35));
 		e.add(new Carriable(1.8));
 		ash.addEntity(e);
 		return e;
@@ -402,56 +405,6 @@ class EntityService
 		var e = addWeapon();
 		e.add(new GridPosition(x, y));
 		return e;
-	}
-
-	public function unwield(e:Entity): Void
-	{
-		var player = player();
-		var weaponsEquipped = getEquipmentFor(player, "weapon");
-
-		for(weapon in weaponsEquipped)
-		{
-			if(weapon == e)
-			{
-				e.remove(Equipped);
-				addMessage("You are no longer wielding the " + getName(e));
-				return;
-			}
-		}
-
-		addMessage("You are not wielding the " + getName(e) + ". You never did.");
-	}
-
-	public function wield(e:Entity): Void
-	{
-		if(!e.has(Equipment) || e.get(Equipment).type != Equipment.WEAPON)
-		{
-			addMessage("You can't wield the " + getName(e));
-			return;
-		}
-		var player = player();
-		var weaponLimit = player.get(Equipper).getLimit("weapon");
-		var weaponsEquipped = getEquipmentFor(player, "weapon");
-		if(weaponsEquipped.length > weaponLimit)
-		{
-			if(weaponLimit == 0)
-			{
-				addMessage("You can't wield anything!");
-				return;
-			}
-
-			else if(weaponLimit == 1) // auto dequip
-				unwield(weaponsEquipped[0]);
-			
-			else 
-			{
-				addMessage("You are already wielding the maximum number of weapons.");
-				return;
-			}
-		}
-
-		e.add(new Equipped(player.get(Carrier).id));
-		addMessage("You are now wielding a " + getName(e));
 	}
 
 	// Returns equipment that is equipped for a given equipper (usually the player) and an optional equipment type (e.g., weapon)
@@ -470,50 +423,3 @@ class EntityService
 		return arr;
 	}
 }
-
-/*
-Weapons:
-
-Swingable, Throwable, Thrustable, Fireable
-
-DoesDamage
-DoesKnockback
-
-SliceDamage
-BluntDamage
-Knockback
-
-
-Items:
-
-Arrows
-Bullets
-
-
--Player:
-Carrier(50, 10)
-
-
--Bat Entity:
-Description("A wooden bat.");
-Carryable(1.8); // A bat weighs about 1.8 pounds
-Damaging(10, 50); // A bat does 10-50 points of damage per swing
-Sturdiness(100); // Likely to break 1 out of every 100 uses (contrast with aluminum bat, perhaps 200 uses)
-
-Or maybe: 
-Swingable(10, 50, 100);
-Throwable()
-
-
-
-State(fsm);
-fsm.setState("broken"); // Turns into a shark, short stick, or just disappear
-...
-
-- Bat picked up:
-Carried(ash.getEntityByName("player").get(Carrier).id)
-
-
-- Inventory:
-filterService.filter(CarriedNode, { c = { id:10 }});
-*/

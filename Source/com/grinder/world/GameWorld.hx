@@ -76,8 +76,8 @@ class GameWorld extends World
 		factory.addHealthHud();
 		factory.addPlayer(1, 1);
 		factory.addMap(); // causes doors and walls to be added		
-		MapService.spawnZombies(factory, 1);
-		MapService.spawnItems(factory, 3);
+		MapService.spawnZombies(factory, 5);
+		MapService.spawnItems(factory, 5);
 	}
 
     // Real-time update
@@ -88,9 +88,7 @@ class GameWorld extends World
 		if(InputService.pressed(InputService.DEBUG))
 		{
 			for(e in ash.get_entities())
-			{
 				trace(e.name + ":" + ArchiveService.serializeEntity(e));
-			}
 
 			// beginDebug();
 		}
