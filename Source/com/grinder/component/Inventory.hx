@@ -8,14 +8,16 @@ import ash.core.Entity;
 
 class Inventory
 {
+	public var actionType:String;
 	public var equipmentType:String;
 	public var entities:Array<Entity>;
 	public var selected:Int;
 	public var changed:Bool = true;
 
-	public function new(entities:Array<Entity>, equipmentType:String = null, selected:Int = 0)
+	public function new(entities:Array<Entity>, actionType:String = null, equipmentType:String = null, selected:Int = 0)
 	{
 		this.entities = entities;
+		this.actionType = actionType;
 		this.equipmentType = equipmentType;
 		this.selected = selected;
 		this.changed = true;

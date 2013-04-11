@@ -15,12 +15,12 @@ class Carrier
 
 	public var id:Int;
 	public var maxWeight:Float;
-	public var maxSize:Int;
+	public var maxCount:Int;
 
-	public function new(maxWeight:Float = UNRESTRICTED, maxSize:Int = UNRESTRICTED)
+	public function new(maxWeight:Float = UNRESTRICTED, maxCount:Int = UNRESTRICTED)
 	{
 		id = nextId++;
 		this.maxWeight = maxWeight;
-		this.maxSize = maxSize;
+		this.maxCount = maxCount;
 	}
 }

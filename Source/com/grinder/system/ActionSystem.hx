@@ -135,6 +135,30 @@ class ActionSystem extends System
 	 					else msg = "You can't pick anything up!";
 	 				}
 
+	 			case Action.DROP:
+	 				if(node.entity.has(Carried))
+	 				{
+	 					if(node.action.source.has(Carrier))
+	 					{
+	 						var name = factory.getName(node.entity,null);
+	 						var carrier = node.action.source.get(Carrier);
+	 						if(carrier.id == node.entity.get(Carried).carrier)
+	 						{
+	 							node.entity.remove(Equipped); // unequip if necessary
+	 							node.entity.remove(Carried); // remove from inventory
+	 							var gp = node.action.source.get(GridPosition);
+	 							if(gp != null)
+	 							{
+		 							node.entity.add(new GridPosition(gp.x, gp.y)); // add to floor
+		 							msg = "You drop the " + name;
+		 						}
+		 						else msg = "You drop the " + name + " and it disappears!";
+	 						}
+	 						else msg = "You're not carrying the " + name + " " + carrier.id + "/" + node.entity.get(Carried).id;
+	 					}
+	 					else msg = "You can't drop anything!";
+	 				}
+
 	 			// TODO Refactor most of these action details into an ActionService, or WeaponSystem .. or what??
 	 			case Action.UNWIELD:
 					var weaponsEquipped = factory.getEquipmentFor(node.action.source, "weapon");

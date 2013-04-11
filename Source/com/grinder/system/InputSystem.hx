@@ -58,19 +58,8 @@ class InputSystem extends System
 				case '.'.charCodeAt(0), 190, Key.NUMPAD_DECIMAL, Key.SPACE, Key.DIGIT_5, Key.NUMPAD_5, Key.ENTER:
 					var inventory = engine.getEntityByName("inventory").get(Inventory);
 					var item:Entity = inventory.entities[inventory.selected];
-					// TODO to support dropping, you must know the inventory's context, not just equipmentFilter
-					// Maybe store a pending action in the inventory object, so you can use it here?
-					switch(inventory.equipmentType)
-					{
-						case Equipment.WEAPON: // wield it
-						item.add(new Action(Action.WIELD, factory.player()));
-
-						case Equipment.FOOD: // eat it
-						item.add(new Action(Action.EAT, factory.player()));
-
-						default: 
-						// do nothing
-					}
+					if(inventory.actionType != null)
+						item.add(new Action(inventory.actionType, factory.player()));
 					factory.closeInventory();
 
 				case Key.ESCAPE:
@@ -129,9 +118,11 @@ class InputSystem extends System
 				case Key.I: // inventory
 					factory.popupInventory();
 				case Key.W: // wield
-					factory.popupInventory("weapon");					
+					factory.popupInventory(Action.WIELD, Equipment.WEAPON);					
 				case Key.E: // eat
-					factory.popupInventory("food");					
+					factory.popupInventory(Action.EAT, Equipment.FOOD);
+				case Key.D: // drop
+					factory.popupInventory(Action.DROP);
 				case Key.UP, Key.DIGIT_8, Key.NUMPAD_8:
 					pos = [0, -1];
 				case Key.DOWN, Key.DIGIT_2, Key.NUMPAD_2:

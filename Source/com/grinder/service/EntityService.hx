@@ -200,7 +200,7 @@ class EntityService
 		return e;
 	}
 
-   	public function popupInventory(equipmentType:String = null): Void
+   	public function popupInventory(actionType:String = null, equipmentType:String = null): Void
 	{
 		var player = ash.getEntityByName("player");
 		var carrierId = player.get(Carrier).id;
@@ -237,7 +237,7 @@ class EntityService
 		var e = new Entity("inventory");
 		e.add(new Position(0, 0));
 		e.add(new Layer(Layer.POPUP));
-		e.add(new Inventory(entities, equipmentType, selected));
+		e.add(new Inventory(entities, actionType, equipmentType, selected));
 		// e.add(new Description("Select a weapon to equip"));
 		ash.addEntity(e);
 	}
