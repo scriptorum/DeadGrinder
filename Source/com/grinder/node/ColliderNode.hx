@@ -10,6 +10,5 @@ class ColliderNode extends Node<ColliderNode>
 {
 	public var position:GridPosition;
 	public var velocity:GridVelocity;
-	public var display:Display;
 	public var collision:Collision;
 }

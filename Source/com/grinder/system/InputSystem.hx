@@ -190,5 +190,6 @@ class InputSystem extends System
 	private function advanceTurn()
 	{
 		ConfigService.advanceTurn();
+		// trace("New turn:" + ConfigService.getTurn());
 	}
 }

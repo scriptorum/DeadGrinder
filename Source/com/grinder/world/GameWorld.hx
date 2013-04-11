@@ -57,10 +57,10 @@ class GameWorld extends World
 	{
 		addSystem(new InputSystem(ash, factory));
 		addSystem(new ActionSystem(ash, factory));
+		addSystem(new HealthSystem(ash, factory));
+		addSystem(new ZombieSystem(ash, factory));
 		addSystem(new CollisionSystem(ash, factory));
 		addSystem(new MovementSystem(ash, factory));
-		addSystem(new ZombieSystem(ash, factory));
-		addSystem(new HealthSystem(ash, factory));
 		addSystem(new RenderingSystem(ash));
 		addSystem(new CameraSystem(ash, 32));
 		addSystem(new MessageSystem(ash));

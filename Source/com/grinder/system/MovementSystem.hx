@@ -8,6 +8,11 @@ import com.grinder.component.GridVelocity;
 import com.grinder.service.EntityService;
 import com.grinder.system.TurnBasedSystem;
 
+/*
+ * Anything with a GridPosition and a GridVelocity will be touched by this turn-based system.
+ * The velocity component is removed by this action bringing it to stop. It's turn-based after all.
+ * TODO Rename to TurnMovementSystem
+ */
 class MovementSystem extends TurnBasedSystem
 {
 	public var factory:EntityService;
@@ -24,6 +29,7 @@ class MovementSystem extends TurnBasedSystem
 	{
 	 	for(node in engine.getNodeList(MoveNode))
 	 	{
+	 		// trace("Adjusting movement for " + node.entity.name + " pos:" + node.position + " vel:" + node.velocity);
 	 		node.position.x += node.velocity.x;
 	 		node.position.y += node.velocity.y;
 

@@ -10,6 +10,8 @@ import com.grinder.node.ColliderNode;
 import com.grinder.component.Display;
 import com.grinder.component.Grid;
 import com.grinder.component.GridVelocity;
+import com.grinder.component.Player;
+import com.grinder.component.Zombie;
 import com.grinder.service.EntityService;
 import com.grinder.system.TurnBasedSystem;
 
@@ -37,6 +39,7 @@ class CollisionSystem extends TurnBasedSystem
 
 	 	for(node in engine.getNodeList(ColliderNode))
 		{
+			// trace("Checking collision for " + node.entity.name);
 			if(isStopped(node))
 				continue;
 
@@ -45,17 +48,26 @@ class CollisionSystem extends TurnBasedSystem
 
 			if(isOutOfBounds(node, dx, dy, grid))
 			{
-	 			factory.addMessage("That rubble is impossible to scramble over.");
+				if(node.entity.has(Player))
+	 				factory.addMessage("That rubble is impossible to scramble over.");
+	 			// else if(node.entity.has(Zombie)) && YouCanSeeZombie
+	 			// 	factory.addMessage("The zombie slips on the rubble.");
+	 			// else trace("Zombie tried to go out of bounds");
 				removeVelocity(node);
-				return;
+				continue;
 			}
+
 
 			var collision = getCollision(node, dx, dy);
 			if(collision == null)
-				return;
+				continue;
 			
-			var message = collision.collision.type;
-			factory.addMessage(message);
+			if(node.entity.has(Player))
+			{
+				var message = collision.collision.type; // Ugh, refactor this
+				factory.addMessage(message);
+			}
+			// else trace("Zombie collided into something:" + collision.collision.type);
 			removeVelocity(node);
 		}
 	}

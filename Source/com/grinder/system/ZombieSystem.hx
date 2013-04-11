@@ -8,6 +8,7 @@ import ash.core.Node;
 import com.grinder.service.EntityService;
 import com.grinder.node.ZombieNode;
 import com.grinder.component.GridPosition;
+import com.grinder.component.GridVelocity;
 import com.grinder.component.Collision;
 
 class ZombieSystem extends TurnBasedSystem
@@ -28,16 +29,20 @@ class ZombieSystem extends TurnBasedSystem
 	 	for(node in engine.getNodeList(ZombieNode))
 	 	{
 	 		var blocked:Bool = false;
-	 		for(pos in plotCourse(node.position.x, node.position.y, player.get(GridPosition).x, player.get(GridPosition).y))
+	 		var course:Array<GridPosition> = plotCourse(node.position.x, node.position.y, player.get(GridPosition).x, player.get(GridPosition).y);
+			course.shift(); // remove zombie's position 		
+			var zedway:GridPosition = course[0]; // could be intervening space, could be player space
+			course.pop(); // remove player's position
+	 		for(pos in course)
 	 		{
-	 			trace("Checking pos " + pos.x + "," + pos.y);
+	 			// trace("Checking pos " + pos.x + "," + pos.y);
 	 			for(entity in factory.getEntitiesAt(pos.x, pos.y))
 	 			{
-	 				trace("- Found entity " + entity.name);
+	 				// trace("- Found entity " + entity.name);
 	 				if(entity.has(Collision))
 	 				{
 	 					var c = entity.get(Collision);
-	 					trace("  * Entity has collision:" + c.type);
+	 					// trace("  * Entity has collision:" + c.type);
 	 					if(c.type == Collision.SHEER || c.type == Collision.CLOSED || c.type == Collision.LOCKED)
 	 					{
 	 						blocked = true;
@@ -51,11 +56,26 @@ class ZombieSystem extends TurnBasedSystem
 	 		}
 	 		if(blocked)
 	 		{
-	 			trace("Zombie " + node.entity.name + " is meandering");
+	 			if(true)//Math.random() < .5) // 50% chance he doesn't do anything
+	 			{
+	 				var ox = rndRange(-1,1);
+	 				var oy = rndRange(-1,1);
+	 				if(!(ox == 0 && oy == 0))
+	 					node.entity.add(new GridVelocity(ox,oy)); // zed moves randomly
+	 				// else trace("Zombie confused");
+	 			}
+	 			// trace("Zombie " + node.entity.name + " does not see you");
 	 		}
+	 		else if(course.length == 0)
+			{
+				// TODO
+				trace("Zombie is attacking you!");
+			}
 	 		else 
 	 		{
-	 			trace("Zombie " + node.entity.name + " can see you");
+	 			if(Math.random() < .8) // 80% chance he shuffles towards yo
+	 				node.entity.add(zedway);
+	 			// trace("Zombie " + node.entity.name + " can see you");
 	 		}
 	 	}
 	}
@@ -63,42 +83,46 @@ class ZombieSystem extends TurnBasedSystem
 	// Refactor out, or better yet use someone else's already tested implementation...
 	private function plotCourse(x0:Int, y0:Int, x1:Int, y1:Int): Array<GridPosition>
 	{
-		trace("Plotting a course from " + x0 +"," + y0 + " to " + x1 + "," + y1);
+		// trace("Plotting a course from " + x0 +"," + y0 + " to " + x1 + "," + y1);
 		var line:Array<GridPosition> = new Array<GridPosition>();
-		var steep:Bool = Math.abs(y1 - y0) > Math.abs(x1 - x0);
-		if(steep)
+		var dx:Int = abs(x1 - x0);
+		var dy:Int = abs(y1 - y0);
+		var sx = (x0 < x1 ? 1 : -1);
+		var sy = (y0 < y1 ? 1 : -1);
+		var err:Int = dx - dy;
+		while(true)
 		{
-			var t0 = x0; x0 = y0; y0 = t0;
-			var t1 = x1; x1 = y1; y1 = t1;
-		}
-		if(x0 > x1)
-		{
-			var tx = x0; x0 = x1; x0 = tx;
-			var ty = y0; y0 = y1; y0 = ty;
-		}
-		var deltax:Int = x1 - x0;
-		var deltay:Int = Math.floor(Math.abs(y1 - y0));
-		var error:Int = Math.floor(deltax / 2);
-		var ystep:Int = (y0 < y1 ? 1 : -1);
-		var xstep:Int = (x0 < x1 ? 1 : -1);
-		var y:Int = y0;
-		var x:Int = x0;
-		trace("Start error:" +error);
-		// trace(" - (Adjusted) " + x0 +"," + y0 + " to " + x1 + "," + y1);
-		while(x != x1 + xstep)
-		{
-			line.push(new GridPosition(steep ? y : x, steep ? x : y));
-			error -= deltay;	
-			trace("Loop over " + x + "," + y + " with error:" + error);
-			if(error < 0)
+			line.push(new GridPosition(x0, y0));
+			if(x0 == x1 && y0 == y1)
+				break;
+			var e2:Int = 2 * err;
+			if(e2 > -dy)
 			{
-				y += ystep;
-				error += deltax;
+				err -= dy;
+				x0 += sx;
 			}
-			else trace("Loop over " + x + "," + y + " ERROR IS NEGATIVE, so skipping y increment");
-			x += xstep;
+			if(e2 < dx)
+			{
+				err += dx;
+				y0 += sy;
+			}
 		}
-		trace("Plotted a course:" + line);
+
 		return line;
+	}
+
+	private function abs(num:Int): Int
+	{
+		return (num < 0 ? -num : num);
+	}
+
+	private function diff(a:Int, b:Int): Int
+	{
+		return (a > b ? a - b : b - a);
+	}
+
+	private function rndRange(start:Int, end:Int): Int
+	{
+		return Math.floor(Math.random() * (diff(end, start) + 1)) + start;
 	}
 }

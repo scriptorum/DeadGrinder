@@ -41,6 +41,7 @@ import com.grinder.component.Nutrition;
 import com.grinder.component.Open;
 import com.grinder.component.Openable;
 import com.grinder.component.Orientation;
+import com.grinder.component.Player;
 import com.grinder.component.PlayerControl;
 import com.grinder.component.Position;
 import com.grinder.component.Repeating;
@@ -139,6 +140,7 @@ class EntityService
 	public function addPlayer(x:Int, y:Int): Entity
 	{
 		var e = new Entity("player");
+		e.add(new Player());
 		e.add(new GridPosition(x, y));
 		e.add(new Layer(34));
 		e.add(new Tile(ConfigService.getTiledImage(), MapService.PLAYER));
