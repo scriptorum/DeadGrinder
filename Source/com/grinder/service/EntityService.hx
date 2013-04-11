@@ -145,7 +145,7 @@ class EntityService
 		e.add(new CameraFocus());
 		e.add(new PlayerControl());
 		e.add(new Health(75));
-		e.add(new Carrier(50, 10));
+		e.add(new Carrier(20, 10));
 		e.add(new Damager(5,15)); // You can do very little damage without a weapon
 		e.add(new Equipper({ weapon:1, armor:0 }));
 		e.add(new Description("You have looked better."));

@@ -12,6 +12,7 @@ import ash.core.Node;
 
 import com.grinder.service.EntityService;
 import com.grinder.node.ActionNode;
+import com.grinder.node.CarriedNode;
 import com.grinder.component.Action;
 import com.grinder.component.GridPosition;
 import com.grinder.component.State;
@@ -114,7 +115,7 @@ class ActionSystem extends System
 		 					node.entity.get(Health).amount -= damage;
 		 					msg = "You hit it.";
 		 				}
-		 				else msg = "You couldn't hurt a fly in your condition";
+		 				else msg = "You couldn't hurt a fly in your condition.";
 	 				}
 	 				else msg = "You can't attack that.";
 
@@ -124,13 +125,33 @@ class ActionSystem extends System
 	 					if(node.action.source.has(Carrier))
 	 					{
 	 						var carrier = node.action.source.get(Carrier);
-	 						node.entity.add(new Carried(carrier.id)); // now being carried
-	 						node.entity.remove(GridPosition); // not on the grid any more
-	 						node.entity.remove(Display); // not displayed any more
-	 						// TODO handle weight and item limits
+	 						var carriable = node.entity.get(Carriable);
 
-	 						var name = factory.getName(node.entity,null);
-	 						msg = (name == null ? "You pick it up." : "You pick up a " + name);
+	 						// Get some inventory limit stats
+	 						var holding = factory.getEquipmentFor(node.action.source);
+	 						var quantity = carriable.quantity;
+	 						var weight = carriable.weight;
+							for(inv in engine.getNodeList(CarriedNode))
+	 						{
+	 							if(inv.carried.carrier == carrier.id)
+	 							{
+		 							quantity += inv.carriable.quantity;
+		 							weight += inv.carriable.weight;
+	 							}
+	 						}
+
+	 						if(carrier.maxQuantity != Carrier.UNRESTRICTED && quantity > carrier.maxQuantity)
+	 							msg = "Your backpack is too full.";
+	 						else if(carrier.maxWeight != Carrier.UNRESTRICTED && weight > carrier.maxWeight)
+	 							msg = "It's just too heavy.";
+	 						else
+	 						{
+		 						node.entity.add(new Carried(carrier.id)); // now being carried
+		 						node.entity.remove(GridPosition); // not on the grid any more
+		 						node.entity.remove(Display); // not displayed any more
+		 						var name = factory.getName(node.entity,null);
+		 						msg = (name == null ? "You pick it up." : "You pick up a " + name);
+		 					}
 	 					}
 	 					else msg = "You can't pick anything up!";
 	 				}

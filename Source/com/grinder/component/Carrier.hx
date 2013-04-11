@@ -10,17 +10,17 @@ package com.grinder.component;
 
 class Carrier
 {
-	public static inline var UNRESTRICTED = -1;
+	public static inline var UNRESTRICTED = 999999;
 	public static var nextId:Int = 0;
 
 	public var id:Int;
 	public var maxWeight:Float;
-	public var maxCount:Int;
+	public var maxQuantity:Int;
 
-	public function new(maxWeight:Float = UNRESTRICTED, maxCount:Int = UNRESTRICTED)
+	public function new(maxWeight:Float = UNRESTRICTED, maxQuantity:Int = UNRESTRICTED)
 	{
 		id = nextId++;
 		this.maxWeight = maxWeight;
-		this.maxCount = maxCount;
+		this.maxQuantity = maxQuantity;
 	}
 }
