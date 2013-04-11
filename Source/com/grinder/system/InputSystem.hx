@@ -20,6 +20,7 @@ import com.grinder.node.PlayerControlNode;
 import com.grinder.node.InventoryControlNode;
 import com.grinder.service.EntityService;
 import com.grinder.service.InputService;
+import com.grinder.service.ConfigService;
 
 class InputSystem extends System
 {
@@ -59,7 +60,10 @@ class InputSystem extends System
 					var inventory = engine.getEntityByName("inventory").get(Inventory);
 					var item:Entity = inventory.entities[inventory.selected];
 					if(inventory.actionType != null)
+					{
 						item.add(new Action(inventory.actionType, factory.player()));
+						advanceTurn();
+					}
 					factory.closeInventory();
 
 				case Key.ESCAPE:
@@ -104,11 +108,16 @@ class InputSystem extends System
 				case '.'.charCodeAt(0), 190, Key.NUMPAD_DECIMAL: // 190="." ....wtf
 					if(shiftIsDown)
 						pos = [0, 0];
-					else factory.addMessage("Waiting..."); // TODO
+					else 
+					{
+						factory.addMessage("Waiting...");
+						advanceTurn();
+					}
 				case 188, Key.P, Key.T: // 188="," ??? that's odd
 					var source = factory.player();
 					var gp = source.get(GridPosition);
 					factory.addActionAt(gp.x, gp.y, new Action(Action.TAKE, source));
+					advanceTurn();
 				case Key.ESCAPE:
 					if(pendingAction != null)
 					{
@@ -143,9 +152,7 @@ class InputSystem extends System
 
 			if(pos != null)
 			{
-				var player = engine.getEntityByName("player");
-				if(player == null)
-					throw("Cannot find player component");
+				var player = factory.player();
 				var playerPos = player.get(GridPosition);
 				var dx = playerPos.x + pos[0];
 				var dy = playerPos.y + pos[1];
@@ -158,20 +165,30 @@ class InputSystem extends System
 					var actionTypes = factory.getLegalActions(dx, dy);
 					var chosenActionType = actionTypes[0];
 					// trace("Valid actions:" + actionTypes + " Chose:" + chosenActionType);
-					factory.addActionAt(dx, dy, new Action(chosenActionType, factory.player()));
+					factory.addActionAt(dx, dy, new Action(chosenActionType, player));
 				}
 
 				else if(pendingAction != null)
 				{
 					factory.addActionAt(dx,dy, pendingAction);
 					pendingAction = null;
+					advanceTurn();
 				}
 
-				else player.add(new GridVelocity(pos[0], pos[1]));
+				else 
+				{
+					player.add(new GridVelocity(pos[0], pos[1]));
+					advanceTurn();
+				}
 			}
 
 			else if(pendingAction != null)
-				factory.addMessage("Choose a direction."); 		
+				factory.addMessage("Choose a direction.");		
 	 	}
+	}
+
+	private function advanceTurn()
+	{
+		ConfigService.advanceTurn();
 	}
 }

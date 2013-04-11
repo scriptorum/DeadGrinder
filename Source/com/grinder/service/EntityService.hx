@@ -54,6 +54,7 @@ import com.grinder.component.TiledImage;
 import com.grinder.component.Unlockable;
 import com.grinder.component.Unlocked;
 import com.grinder.component.Velocity;
+import com.grinder.component.Zombie;
 
 import com.grinder.node.EquippedNode;
 import com.grinder.node.GridPositionNode;
@@ -161,6 +162,7 @@ class EntityService
 		e.add(new Health(Std.random(70) + 30));
 		e.add(new Description("It's hideous."));
 		e.add(new Name("zombie"));
+		e.add(new Zombie());
 		e.add(new Layer(Layer.ABOVE));
 		e.add(new Tile(ConfigService.getTiledImage(), MapService.ZOMBIE));
 		ash.addEntity(e);
@@ -249,28 +251,6 @@ class EntityService
 		player.remove(InventoryControl);
 		player.add(new PlayerControl());
 	}
-
-	// public function addList(): Entity
-	// {
-	// 	var e = new Entity("list");
-	// 	e.add(new Image("art/list.png"));
-	// 	e.add(new Layer(Layer.POPUP)); // In front of everyone
-	// 	// e.add(new Position(0,0));
-	// 	e.add(new ScrollFactor());
-	// 	ash.addEntity(e);
-	// 	return e;
-	// }
-
-	// public function addText(text:String, x:Float, y:Float): Entity
-	// {
-	// 	var e = new Entity("list");
-	// 	e.add(new Text(text));
-	// 	e.add(new Layer(Layer.HUD)); // In front of everyone
-	// 	e.add(new Position(x,y));
-	// 	e.add(new ScrollFactor());
-	// 	ash.addEntity(e);
-	// 	return e;
-	// }
 
 	public function addMap(): Entity
 	{

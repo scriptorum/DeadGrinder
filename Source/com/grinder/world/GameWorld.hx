@@ -23,6 +23,7 @@ import com.grinder.service.ArchiveService;
 import com.grinder.system.ActionSystem;
 import com.grinder.system.RenderingSystem;
 import com.grinder.system.MovementSystem;
+import com.grinder.system.ZombieSystem;
 import com.grinder.system.CameraSystem;
 import com.grinder.system.CollisionSystem;
 import com.grinder.system.HealthSystem;
@@ -58,6 +59,7 @@ class GameWorld extends World
 		addSystem(new ActionSystem(ash, factory));
 		addSystem(new CollisionSystem(ash, factory));
 		addSystem(new MovementSystem(ash, factory));
+		addSystem(new ZombieSystem(ash, factory));
 		addSystem(new HealthSystem(ash, factory));
 		addSystem(new RenderingSystem(ash));
 		addSystem(new CameraSystem(ash, 32));
@@ -76,7 +78,7 @@ class GameWorld extends World
 		factory.addHealthHud();
 		factory.addPlayer(1, 1);
 		factory.addMap(); // causes doors and walls to be added		
-		MapService.spawnZombies(factory, 5);
+		MapService.spawnZombies(factory, 1);
 		MapService.spawnItems(factory, 10);
 	}
 

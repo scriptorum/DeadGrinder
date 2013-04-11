@@ -6,8 +6,9 @@ import ash.core.System;
 import com.grinder.node.MoveNode;
 import com.grinder.component.GridVelocity;
 import com.grinder.service.EntityService;
+import com.grinder.system.TurnBasedSystem;
 
-class MovementSystem extends System
+class MovementSystem extends TurnBasedSystem
 {
 	public var factory:EntityService;
 	public var engine:Engine;
@@ -19,7 +20,7 @@ class MovementSystem extends System
 		this.factory = factory;
 	}
 
-	override public function update(_)
+	override public function takeTurn()
 	{
 	 	for(node in engine.getNodeList(MoveNode))
 	 	{

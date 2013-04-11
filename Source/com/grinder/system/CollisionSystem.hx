@@ -11,8 +11,9 @@ import com.grinder.component.Display;
 import com.grinder.component.Grid;
 import com.grinder.component.GridVelocity;
 import com.grinder.service.EntityService;
+import com.grinder.system.TurnBasedSystem;
 
-class CollisionSystem extends System
+class CollisionSystem extends TurnBasedSystem
 {
 	public var engine:Engine;
 	public var factory:EntityService;
@@ -24,7 +25,7 @@ class CollisionSystem extends System
 		this.factory = factory;
 	}
 
-	override public function update(_)
+	override public function takeTurn()
 	{
 		var map = engine.getEntityByName("map");
 		if(map == null)

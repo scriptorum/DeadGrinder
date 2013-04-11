@@ -9,13 +9,13 @@ import ash.core.System;
 
 import com.grinder.node.HealthNode;
 import com.grinder.component.Health;
-import com.grinder.component.Name;
+import com.grinder.component.Zombie;
 import com.grinder.component.Image;
 import com.grinder.component.GridPosition;
 import com.grinder.component.Position;
 import com.grinder.service.EntityService;
 
-class HealthSystem extends System
+class HealthSystem extends TurnBasedSystem
 {
 	public var factory:EntityService;
 	public var engine:Engine;
@@ -33,7 +33,7 @@ class HealthSystem extends System
 	 	{
 	 		if(node.health.amount < 0)
  			{
-				if(node.entity.has(Name) && node.entity.get(Name).text == "zombie")
+				if(node.entity.has(Zombie))
 				{
 					factory.addMessage("It falls down and stops moving.");
 					var pos = node.entity.get(GridPosition);
