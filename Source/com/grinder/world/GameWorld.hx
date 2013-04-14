@@ -1,7 +1,17 @@
 /*
    - Add article selector to getName()
-   - Move wield/unwield/eat to actions
    - Create ActionService to handle most of these actions, leaving EntityService to handle factory stuff only
+     Or split ActionSystem into several systems.
+   - The CollisionSystem is not protecting multiple things from entering the same space simultaneously.
+     The priority should be player > people > zeds.
+   - Left the game running for an hour, came back and it was running REALLY slow, delays between arrow presses.
+     Pressed TAB to see the contents of the entities and found nothing unusual. 
+   - Perhaps neko.vm.Gc.stats()/run()? Test under flash and CPP. If no slow down, don't worry about it.
+   - Can you run Sys.println() to print to stdout from Flash? Praaaaaaahbobly not.
+   - If zombies hit an obstacle they stop moving, either the CollisionSystem or the ZombieSystem needs to allow 
+     zombies to look for a way around. First off, you should probably split ZombieSystem into an TargetSystem
+     (for updating "interests") and a TrackingSystem (for handling movement specific to tracking targets).
+   - Should the Collision System just be limited to player movement then?
 */
 
 package com.grinder.world;
@@ -23,7 +33,10 @@ import com.grinder.service.ArchiveService;
 import com.grinder.system.ActionSystem;
 import com.grinder.system.RenderingSystem;
 import com.grinder.system.MovementSystem;
-import com.grinder.system.ZombieSystem;
+import com.grinder.system.TargetingSystem;
+import com.grinder.system.FollowingSystem;
+import com.grinder.system.WanderingSystem;
+import com.grinder.system.ZombieAttackSystem;
 import com.grinder.system.CameraSystem;
 import com.grinder.system.CollisionSystem;
 import com.grinder.system.HealthSystem;
@@ -58,7 +71,10 @@ class GameWorld extends World
 		addSystem(new InputSystem(ash, factory));
 		addSystem(new ActionSystem(ash, factory));
 		addSystem(new HealthSystem(ash, factory));
-		addSystem(new ZombieSystem(ash, factory));
+		addSystem(new TargetingSystem(ash, factory));
+		addSystem(new WanderingSystem(ash, factory));
+		addSystem(new FollowingSystem(ash, factory));
+		addSystem(new ZombieAttackSystem(ash, factory));
 		addSystem(new CollisionSystem(ash, factory));
 		addSystem(new MovementSystem(ash, factory));
 		addSystem(new RenderingSystem(ash));
@@ -91,7 +107,6 @@ class GameWorld extends World
 		{
 			for(e in ash.get_entities())
 				trace(e.name + ":" + ArchiveService.serializeEntity(e));
-
 			// beginDebug();
 		}
 

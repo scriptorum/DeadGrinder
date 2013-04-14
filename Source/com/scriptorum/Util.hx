@@ -1,7 +1,9 @@
 package com.scriptorum;
 
-import com.haxepunk.HXP;
-
+/*
+ * Some general purpose Haxe functions.
+ * Notably includes integer versions of some standard float Math funcs.
+ */
 class Util
 {
 	public static function shuffle<T>(arr:Array<T>): Void
@@ -27,13 +29,40 @@ class Util
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}	
 
-	public static function sign(v:Float): Int
+	public static function fsign(v:Float): Int
 	{
 		if(v < 0.0)
 			return -1;
 		if(v > 0.0)
 			return 1;
 		return 0;
+	}
+
+	public static function sign(i:Int): Int
+	{		
+		if(i == 0)
+			return 0;
+		return i < 0 ? -1 : 1;
+	}
+
+	public static function min(a:Int, b:Int): Int
+	{
+		return (a < b ? a : b);
+	}
+
+	public static function max(a:Int, b:Int): Int
+	{
+		return (a > b ? a : b);
+	}
+
+	public static function abs(num:Int): Int
+	{
+		return (num < 0 ? -num : num);
+	}
+
+	public static function diff(a:Int, b:Int): Int
+	{
+		return (a > b ? a - b : b - a);
 	}
 
     public static function assert( cond : Bool, ?pos : haxe.PosInfos )
