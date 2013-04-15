@@ -74,7 +74,6 @@ class HealthSystem extends TurnBasedSystem
 				else if(node.entity.name == "player")
 				{
 					msg = "You feel its teeth sink into your neck. You die.";
-					engine.removeEntity(node.entity);
 					node.entity.remove(PlayerControl);
 					node.entity.add(new GameOverControl());
 			 		node.entity.remove(Health);
