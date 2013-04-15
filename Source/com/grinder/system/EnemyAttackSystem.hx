@@ -18,7 +18,7 @@ import com.grinder.component.GridVelocity;
 import com.grinder.component.Collision;
 import com.grinder.component.Interest;
 
-class ZombieAttackSystem extends TurnBasedSystem
+class EnemyAttackSystem extends TurnBasedSystem
 {
 	public var engine:Engine;
 	public var factory:EntityService;

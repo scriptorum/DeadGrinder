@@ -36,7 +36,7 @@ import com.grinder.system.MovementSystem;
 import com.grinder.system.TargetingSystem;
 import com.grinder.system.FollowingSystem;
 import com.grinder.system.WanderingSystem;
-import com.grinder.system.ZombieAttackSystem;
+import com.grinder.system.EnemyAttackSystem;
 import com.grinder.system.CameraSystem;
 import com.grinder.system.CollisionSystem;
 import com.grinder.system.HealthSystem;
@@ -68,18 +68,18 @@ class GameWorld extends World
 
 	private function initSystems()
 	{
-		addSystem(new InputSystem(ash, factory));
-		addSystem(new ActionSystem(ash, factory));
-		addSystem(new HealthSystem(ash, factory));
-		addSystem(new TargetingSystem(ash, factory));
-		addSystem(new WanderingSystem(ash, factory));
-		addSystem(new FollowingSystem(ash, factory));
-		addSystem(new ZombieAttackSystem(ash, factory));
-		addSystem(new CollisionSystem(ash, factory));
-		addSystem(new MovementSystem(ash, factory));
-		addSystem(new RenderingSystem(ash));
-		addSystem(new CameraSystem(ash, 32));
-		addSystem(new MessageSystem(ash));
+		addSystem(new InputSystem(ash, factory)); // Collect player/inventory input
+		addSystem(new ActionSystem(ash, factory)); // Resolve actions on entities
+		addSystem(new HealthSystem(ash, factory)); // Better called the DeathSystem
+		addSystem(new TargetingSystem(ash, factory));  // Zombies look for humans to chase
+		addSystem(new WanderingSystem(ash, factory)); // Zombies without targets go wandering
+		addSystem(new FollowingSystem(ash, factory)); // Zombies with targets go after them
+		addSystem(new EnemyAttackSystem(ash, factory)); // Zombies next to targets attack them
+		addSystem(new CollisionSystem(ash, factory)); // Entities whose velocity puts them into obstacles stop moving
+		addSystem(new MovementSystem(ash, factory)); // Entities with velocity move
+		addSystem(new RenderingSystem(ash)); // Display entities are created/destroyed and positions updated
+		addSystem(new CameraSystem(ash, 32)); // The camera follows the player
+		addSystem(new MessageSystem(ash)); // Messages to player are updated
 	}	
 
     public function addSystem(system:System):Void

@@ -87,6 +87,16 @@ class EntityService
 		return a;
 	}
 
+	public function getCollisionAt(x:Int, y:Int): Collision
+	{
+		for(e in getEntitiesAt(x,y))
+		{
+			if(e.has(Collision))
+				return e.get(Collision);
+		}
+		return null;
+	}
+
 	public function getLegalActions(x:Int, y:Int): Array<String>
 	{
 		var a = new Array<String>();

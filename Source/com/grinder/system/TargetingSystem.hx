@@ -45,25 +45,38 @@ class TargetingSystem extends TurnBasedSystem
 	 			{
 	 				interest = losInterest;
 	 				node.entity.add(interest);
+	 				trace("Setting new interest:" + interest);
 	 			}
 	 		}
 	 		else
 	 		{
 	 			// Lost sight of previous interest and have no new target, gradually reduce interest
 	 			if(losInterest == null)
-	 				interest.amount = Math.floor(interest.amount * 0.85);
+	 			{
+	 				interest.amount = Math.floor(interest.amount * 0.95);
+	 				// trace("Losing interest:" + interest.amount);
+	 			}
 
 	 			// Found a stronger interest, switch interests
 	 			else if(losInterest.amount > interest.amount)
+	 			{
 	 				interest.copy(losInterest);
+	 				// trace("Switching to stronger interest:" + interest.amount);
+	 			}
 
 	 			// Still interested in the same position but less so, strengthen interest slightly
 	 			else if(losInterest.target.equals(interest.target))
+	 			{
 	 				interest.amount = Util.max(Math.floor(interest.amount * 1.1), 100);
+	 				// trace("Intensifying interest:"  + interest.amount);
+	 			}
 
 	 			// If new interest is at least half as strong as the old interest, switch interests
 	 			else if(losInterest.amount >= interest.amount / 2)
+	 			{
 	 				interest.copy(losInterest);
+	 				// trace("Switching to lower interest because it's in LOS:" + interest.amount);
+	 			}
 	 		}
 
 	 		if(node.entity.has(Interest))
@@ -73,6 +86,7 @@ class TargetingSystem extends TurnBasedSystem
 	 				node.entity.remove(Interest);
 	 			else if(interest.amount > 100) // enforce max interest
 	 				interest.amount = 100;
+	 			// trace(" - Final interest:" + interest.amount);
  			}
 
 	 		// trace("Interest:" + (!node.entity.has(Interest) ? "NOPE" : node.entity.get(Interest).amount ));
