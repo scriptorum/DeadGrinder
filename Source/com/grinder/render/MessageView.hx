@@ -44,7 +44,7 @@ class MessageView extends View
 			var view = new FancyText(queue[i], 
 				(i == 0 ? 0x18ED00 : 0x11A800), size, 
 				offsetX, offsetY + i * lineOffset + (i > 0 ? 4 : 0), 0, 
-				"font/GruntReaper.ttf");
+				"font/vademecu.ttf");
 			view.setAlpha(i == 0 ? 1 : .65);
 			list.add(view);
 		}
