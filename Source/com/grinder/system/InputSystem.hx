@@ -43,6 +43,7 @@ class InputSystem extends System
 
 		handlePlayerControl(key);
 		handleInventoryControl(key);
+		// handleGameOverControl(key);
 
 		InputService.clearLastKey();
 	}
@@ -158,7 +159,7 @@ class InputSystem extends System
 				var dy = playerPos.y + pos[1];
 
 				// Right now SHIFT is only be used for an EXAMINE action
-				// I think I'm going to keep it that way for a while
+				// I think I'm going to keep it that way for a while, I might remove getLegalActions entirely
 				if(shiftIsDown)
 				{
 					// TODO put up action selector

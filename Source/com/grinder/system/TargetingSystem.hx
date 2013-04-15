@@ -66,8 +66,8 @@ class TargetingSystem extends TurnBasedSystem
 	 				// trace("Switching to stronger prey:" + prey.interest);
 	 			}
 
-	 			// Still preyed in the same position but less so, strengthen prey slightly
-	 			else if(losPrey.position.equals(prey.position))
+	 			// Caught sight of the same prey again, strengthen interest 10%, frenzy up
+	 			else if(losPrey.entity == prey.entity)
 	 			{
 	 				prey.interest = Util.max(Math.floor(prey.interest * 1.1), 100);
 	 				// trace("Intensifying prey:"  + prey.interest);

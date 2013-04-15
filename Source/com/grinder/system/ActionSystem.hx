@@ -33,9 +33,8 @@ import com.grinder.component.Nutrition;
 import com.grinder.component.Equipment;
 import com.grinder.component.Equipped;
 import com.grinder.component.Equipper;
-import com.grinder.system.TurnBasedSystem;
 
-class ActionSystem extends TurnBasedSystem
+class ActionSystem extends System
 {
 	public var engine:Engine;
 	public var factory:EntityService;
@@ -47,7 +46,7 @@ class ActionSystem extends TurnBasedSystem
 		this.factory = factory;
 	}
 
-	override public function takeTurn()
+	override public function update(_)
 	{
 	 	for(node in engine.getNodeList(ActionNode))
 	 	{

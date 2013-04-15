@@ -25,17 +25,17 @@ class MessageSystem extends System
 
 	override public function update(_)
 	{
-		var messageHud = engine.getEntityByName("messageHud");
-		if(messageHud == null || !messageHud.has(Display))
-		{
-			HXP.log("Message HUD not available");
-			return;
-		}
-
 	 	for(node in engine.getNodeList(MessageNode))
 	 	{
-			messageHud.get(Display).view.addMessage(node.message);
-			engine.removeEntity(node.entity); // message delivered, kill it
+			var messageHud = engine.getEntityByName("messageHud");
+			if(messageHud == null || !messageHud.has(Display))
+				HXP.log("Message HUD not available:" + node.message);
+
+			else
+			{
+				messageHud.get(Display).view.addMessage(node.message);
+				engine.removeEntity(node.entity); // message delivered, kill it
+			}
 		}
 	}
 }

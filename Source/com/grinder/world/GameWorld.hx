@@ -108,8 +108,8 @@ class GameWorld extends World
 
 		if(InputService.pressed(InputService.DEBUG))
 		{
-			for(e in ash.get_entities())
-				trace(e.name + ":" + ArchiveService.serializeEntity(e));
+			// for(e in ash.get_entities()) // My ash hack
+			// 	trace(e.name + ":" + ArchiveService.serializeEntity(e));
 			// beginDebug();
 		}
 
