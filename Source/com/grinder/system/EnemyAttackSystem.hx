@@ -12,11 +12,10 @@ import ash.core.Node;
 import com.scriptorum.Util;
 
 import com.grinder.service.EntityService;
-import com.grinder.node.InterestNode;
+import com.grinder.node.PreyNode;
 import com.grinder.component.GridPosition;
 import com.grinder.component.GridVelocity;
 import com.grinder.component.Collision;
-import com.grinder.component.Interest;
 
 class EnemyAttackSystem extends TurnBasedSystem
 {
@@ -32,10 +31,10 @@ class EnemyAttackSystem extends TurnBasedSystem
 
 	override public function takeTurn()
 	{
-	 	for(node in engine.getNodeList(InterestNode))
+	 	for(node in engine.getNodeList(PreyNode))
 	 	{
 	 		// Target is right here! Get'm, boys!
-	 		if(node.position.adjacent(node.interest.target))
+	 		if(node.position.adjacent(node.prey.position))
 	 		{
  				trace("TODO: Zombie attack!");
 	 		}

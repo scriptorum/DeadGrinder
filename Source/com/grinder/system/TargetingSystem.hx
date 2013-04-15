@@ -1,6 +1,7 @@
 /*
- * TODO Change from ZombieNode to HunterNode or something like that. Also
- *  change Interest to Target.
+ * TO DO:
+ *  - Change from ZombieNode to HunterNode or something like that.
+ *  - Support generic prey targets, rather than just the player
  */
 
 package com.grinder.system;
@@ -16,7 +17,7 @@ import com.grinder.service.EntityService;
 import com.grinder.node.ZombieNode;
 import com.grinder.component.GridPosition;
 import com.grinder.component.Collision;
-import com.grinder.component.Interest;
+import com.grinder.component.Prey;
 
 class TargetingSystem extends TurnBasedSystem
 {
@@ -35,65 +36,67 @@ class TargetingSystem extends TurnBasedSystem
 		var player = factory.player();
  	 	for(node in engine.getNodeList(ZombieNode))
 	 	{
-	 		// TODO loop through all sounds and living creatures...
-	 		var losInterest:Interest = getLOSInterest(node, player);
+	 		// TODO loop through all sounds, smells and living creatures...
+	 		var losPrey:Prey = getLOSPrey(node, player);
 
-	 		var interest = node.entity.get(Interest);
-	 		if(interest == null)
+	 		// Determine which prey to target and how much interest the hunter has
+	 		var prey = node.entity.get(Prey);
+	 		if(prey == null)
 	 		{
-	 			if(losInterest != null)
+	 			if(losPrey != null)
 	 			{
-	 				interest = losInterest;
-	 				node.entity.add(interest);
-	 				trace("Setting new interest:" + interest);
+	 				prey = losPrey;
+	 				node.entity.add(prey);
+	 				// trace("Setting new prey:" + prey);
 	 			}
 	 		}
 	 		else
 	 		{
-	 			// Lost sight of previous interest and have no new target, gradually reduce interest
-	 			if(losInterest == null)
+	 			// Lost sight of previous prey and have no new position, gradually reduce prey
+	 			if(losPrey == null)
 	 			{
-	 				interest.amount = Math.floor(interest.amount * 0.95);
-	 				// trace("Losing interest:" + interest.amount);
+	 				prey.interest = Math.floor(prey.interest * 0.95);
+	 				// trace("Losing prey:" + prey.interest);
 	 			}
 
-	 			// Found a stronger interest, switch interests
-	 			else if(losInterest.amount > interest.amount)
+	 			// Found a stronger prey, switch preys
+	 			else if(losPrey.interest > prey.interest)
 	 			{
-	 				interest.copy(losInterest);
-	 				// trace("Switching to stronger interest:" + interest.amount);
+	 				prey.copy(losPrey);
+	 				// trace("Switching to stronger prey:" + prey.interest);
 	 			}
 
-	 			// Still interested in the same position but less so, strengthen interest slightly
-	 			else if(losInterest.target.equals(interest.target))
+	 			// Still preyed in the same position but less so, strengthen prey slightly
+	 			else if(losPrey.position.equals(prey.position))
 	 			{
-	 				interest.amount = Util.max(Math.floor(interest.amount * 1.1), 100);
-	 				// trace("Intensifying interest:"  + interest.amount);
+	 				prey.interest = Util.max(Math.floor(prey.interest * 1.1), 100);
+	 				// trace("Intensifying prey:"  + prey.interest);
 	 			}
 
-	 			// If new interest is at least half as strong as the old interest, switch interests
-	 			else if(losInterest.amount >= interest.amount / 2)
+	 			// If new prey is at least half as strong as the old prey, switch preys
+	 			else if(losPrey.interest >= prey.interest / 2)
 	 			{
-	 				interest.copy(losInterest);
-	 				// trace("Switching to lower interest because it's in LOS:" + interest.amount);
+	 				prey.copy(losPrey);
+	 				// trace("Switching to lower prey because it's in LOS:" + prey.interest);
 	 			}
 	 		}
 
-	 		if(node.entity.has(Interest))
+	 		// Maintain interest bounds for prey (0-100)
+	 		if(node.entity.has(Prey))
 	 		{
-	 			var interest = node.entity.get(Interest);
-	 			if(interest.amount <= 0) // eliminate interest component if amount <= 0
-	 				node.entity.remove(Interest);
-	 			else if(interest.amount > 100) // enforce max interest
-	 				interest.amount = 100;
-	 			// trace(" - Final interest:" + interest.amount);
+	 			var prey = node.entity.get(Prey);
+	 			if(prey.interest <= 0) // eliminate prey component if interest <= 0
+	 				node.entity.remove(Prey);
+	 			else if(prey.interest > 100) // enforce max prey
+	 				prey.interest = 100;
+	 			// trace(" - Final prey:" + prey.interest);
  			}
 
-	 		// trace("Interest:" + (!node.entity.has(Interest) ? "NOPE" : node.entity.get(Interest).amount ));
+	 		// trace("Prey:" + (!node.entity.has(Prey) ? "NOPE" : node.entity.get(Prey).interest ));
  		}
  	}
 
- 	private function getLOSInterest(node:ZombieNode, player:Entity): Interest
+ 	private function getLOSPrey(node:ZombieNode, player:Entity): Prey
  	{
  		var blocked:Bool = false;
  		var playerPos:GridPosition = player.get(GridPosition);
@@ -113,14 +116,15 @@ class TargetingSystem extends TurnBasedSystem
  			}
  		}
 
- 		var interest = 0;
+ 		var prey = 0;
  		if(course.length < 4)
- 			interest = 100;
- 		else interest = 95 - (course.length - 4) * Math.floor(95/20);
- 		return new Interest(playerPos, interest);
+ 			prey = 100;
+ 		else prey = 95 - (course.length - 4) * Math.floor(95/20);
+ 		return new Prey(player, playerPos, prey);
  	}
 
-	// Refactor out, or better yet use someone else's already tested implementation...
+	// Refactor out, or better yet use someone else's already tested line plotter implementation...
+	// Node this plot is inclusive for the start and end points.
 	private function plotCourse(x0:Int, y0:Int, x1:Int, y1:Int): Array<GridPosition>
 	{
 		// trace("Plotting a course from " + x0 +"," + y0 + " to " + x1 + "," + y1);

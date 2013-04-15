@@ -14,7 +14,7 @@ import com.scriptorum.Util;
 import com.grinder.service.EntityService;
 import com.grinder.node.ZombieNode;
 import com.grinder.component.GridVelocity;
-import com.grinder.component.Interest;
+import com.grinder.component.Prey;
 
 class WanderingSystem extends TurnBasedSystem
 {
@@ -32,7 +32,7 @@ class WanderingSystem extends TurnBasedSystem
 	{
 	 	for(node in engine.getNodeList(ZombieNode))
 	 	{
-	 		if(!node.entity.has(Interest))
+	 		if(!node.entity.has(Prey))
 	 		{
 	 			if(Math.random() < .5) // 50% chance he doesn't do anything
 	 			{
