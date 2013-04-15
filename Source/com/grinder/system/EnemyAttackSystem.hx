@@ -17,6 +17,7 @@ import com.grinder.component.GridPosition;
 import com.grinder.component.GridVelocity;
 import com.grinder.component.Collision;
 import com.grinder.component.Health;
+import com.grinder.component.Damager;
 
 class EnemyAttackSystem extends TurnBasedSystem
 {
@@ -41,9 +42,7 @@ class EnemyAttackSystem extends TurnBasedSystem
 	 			var entity = node.prey.entity;
 	 			if(node.prey.entity.has(Health))
 	 			{
-	 				var health = node.prey.entity.get(Health);
-	 				var damage = node.damager.rand();
-	 				health.amount -= damage;
+					var damage = factory.addDamage(node.prey.entity, node.entity.get(Damager));
 	 				msg = "The " + factory.getName(node.entity) + " bites you for " + damage + " damage!";
 	 			}
 	 			else msg = "The zombie chews on the recently dead " + factory.getName(node.prey.entity) + ".";

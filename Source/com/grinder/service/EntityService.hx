@@ -16,6 +16,7 @@ import com.grinder.component.Carrier;
 import com.grinder.component.Closeable;
 import com.grinder.component.Closed;
 import com.grinder.component.Collision;
+import com.grinder.component.Damage;
 import com.grinder.component.Damager;
 import com.grinder.component.Description;
 import com.grinder.component.Display;
@@ -23,6 +24,7 @@ import com.grinder.component.Doorway;
 import com.grinder.component.Equipment;
 import com.grinder.component.Equipped;
 import com.grinder.component.Equipper;
+import com.grinder.component.GameOverControl;
 import com.grinder.component.Grid;
 import com.grinder.component.GridPosition;
 import com.grinder.component.GridSize;
@@ -44,14 +46,17 @@ import com.grinder.component.Orientation;
 import com.grinder.component.Player;
 import com.grinder.component.PlayerControl;
 import com.grinder.component.Position;
+import com.grinder.component.Prey;
 import com.grinder.component.Repeating;
 import com.grinder.component.ScrollFactor;
 import com.grinder.component.Selector;
 import com.grinder.component.Size;
+import com.grinder.component.Sound;
 import com.grinder.component.Spawn;
 import com.grinder.component.State;
 import com.grinder.component.Tile;
 import com.grinder.component.TiledImage;
+import com.grinder.component.Uninitialized;
 import com.grinder.component.Unlockable;
 import com.grinder.component.Unlocked;
 import com.grinder.component.Velocity;
@@ -147,6 +152,20 @@ class EntityService
 		return e;
 	}
 
+	public function addDamage(victim:Entity, damager:Damager): Int
+	{
+		if(victim.has(Damage))
+		{
+			var damage = victim.get(Damage);
+			damage.amount += damager.rand();
+			return damage.amount;
+		}	
+		var damage = damager.getDamage();
+		victim.add(damage);
+
+		return damage.amount;
+	}
+
 	public function addPlayer(x:Int, y:Int): Entity
 	{
 		var e = new Entity("player");
@@ -211,6 +230,7 @@ class EntityService
 		e.add(new Layer(Layer.HUD));
 		e.add(new Position(0,0)); // TODO add Registration component for aligning images
 		e.add(new ScrollFactor());
+		e.add(new Uninitialized());
 		ash.addEntity(e);
 		return e;
 	}

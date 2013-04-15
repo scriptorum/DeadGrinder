@@ -110,10 +110,9 @@ class ActionSystem extends TurnBasedSystem
 	 					var source:Entity = node.action.source;
 	 					if(source.has(Damager))
 	 					{
-	 						var damage = source.get(Damager).rand();
+	 						factory.addDamage(node.entity, source.get(Damager));
 		 					// TODO Check for weapon break
 		 					// TODO Check for knockback
-		 					node.entity.get(Health).amount -= damage;
 		 					msg = "You hit it.";
 		 				}
 		 				else msg = "You couldn't hurt a fly in your condition.";

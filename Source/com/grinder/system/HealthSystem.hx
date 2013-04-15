@@ -13,14 +13,16 @@ import com.haxepunk.HXP;
 import ash.core.Engine;
 import ash.core.System;
 
-import com.grinder.node.HealthNode;
+import com.grinder.node.DamageNode;
 import com.grinder.component.Health;
 import com.grinder.component.Zombie;
 import com.grinder.component.Image;
+import com.grinder.component.Damage;
 import com.grinder.component.GridPosition;
 import com.grinder.component.Position;
 import com.grinder.component.PlayerControl;
 import com.grinder.component.GameOverControl;
+import com.grinder.component.Uninitialized;
 import com.grinder.service.EntityService;
 
 class HealthSystem extends TurnBasedSystem
@@ -37,11 +39,27 @@ class HealthSystem extends TurnBasedSystem
 
 	override public function update(_)
 	{
-	 	for(node in engine.getNodeList(HealthNode))
-	 	{
-	 		var health:Int = (node.health.amount <= 0 ? 0 : node.health.amount);
+		// Handle one time initialization of the Health Hud ... yuck
+		var healthHud = engine.getEntityByName("healthHud");
+		var player = engine.getEntityByName("player");
+		if(player != null && healthHud != null && healthHud.has(Uninitialized))
+		{
+			healthHud.remove(Uninitialized);
+			updateHud(player.get(Health).amount);
+		}
 
-	 		if(health == 0)
+	 	for(node in engine.getNodeList(DamageNode))
+	 	{
+	 		// Apply damage
+	 		node.health.amount -= node.damage.amount;
+	 		if(node.health.amount < 0)
+	 			node.health.amount = 0;
+
+	 		// Remove damage
+	 		node.entity.remove(Damage);
+
+	 		// Check for death
+	 		if(node.health.amount == 0)
  			{
  				var msg = null;
 				if(node.entity.has(Zombie))
@@ -74,14 +92,24 @@ class HealthSystem extends TurnBasedSystem
 
  			// Update player health hud ... fugly ... TODO check for changed prop
  			if(node.entity.name == "player")
- 			{
-	 			var healthHud = engine.getEntityByName("healthHud");
-	 			var hudImage = healthHud.get(Image);
-	 			var bm = HXP.getBitmap(hudImage.path);
-	 			var hudWidth = health / 100 * bm.width;
-	 			hudImage.clip = new Rectangle(bm.width - hudWidth, 0, hudWidth, bm.height);
-	 			healthHud.add(new Position(HXP.width - hudWidth - 20, HXP.height - bm.height - 20));
-	 		}
+ 				updateHud(node.health.amount);
 	 	}
 	}
+
+	public function updateHud(amount:Int): Void
+	{
+		var healthHud = engine.getEntityByName("healthHud");
+		if(healthHud == null && amount > 0)
+			healthHud = factory.addHealthHud();
+
+		if(amount > 0)
+		{
+			var hudImage = healthHud.get(Image);
+			var bm = HXP.getBitmap(hudImage.path);
+			var hudWidth = amount / 100 * bm.width;
+			hudImage.clip = new Rectangle(bm.width - hudWidth, 0, hudWidth, bm.height);
+			healthHud.add(new Position(HXP.width - hudWidth - 20, HXP.height - bm.height - 20));
+		}
+		else engine.removeEntity(healthHud);
+	}	
 }

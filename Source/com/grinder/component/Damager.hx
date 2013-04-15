@@ -1,5 +1,7 @@
 package com.grinder.component;
 
+import com.grinder.component.Damage;
+
 class Damager
 {
 	public static inline var SLASHING:String = "slashing";
@@ -24,5 +26,10 @@ class Damager
 		else if(variableAmount == 0)
 			return amount;
 		return amount + Std.random(variableAmount);
+	}
+
+	public function getDamage(): Damage
+	{
+		return new Damage(this.rand());
 	}
 }
