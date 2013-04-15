@@ -173,6 +173,7 @@ class EntityService
 		e.add(new Collision(Collision.CREATURE));
 		e.add(new Health(Std.random(70) + 30));
 		e.add(new Description("It's hideous."));
+		e.add(new Damager(5,20)); // Zombies bite so they do a little more damage than you
 		e.add(new Name("zombie"));
 		e.add(new Zombie());
 		e.add(new Layer(Layer.ABOVE));

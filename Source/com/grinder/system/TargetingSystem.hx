@@ -1,5 +1,5 @@
 /*
- * TO DO:
+ * TODO:
  *  - Change from ZombieNode to HunterNode or something like that.
  *  - Support generic prey targets, rather than just the player
  */

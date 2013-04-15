@@ -12,6 +12,9 @@
      zombies to look for a way around. First off, you should probably split ZombieSystem into an TargetSystem
      (for updating "interests") and a TrackingSystem (for handling movement specific to tracking targets).
    - Should the Collision System just be limited to player movement then?
+   - Player movement should have priority over zombie movement, so either add the MovementSystem twice or add
+     some sort of priority system.
+   - Issue: Player disappears on death, should turn to special corpse or stay put.
 */
 
 package com.grinder.world;
