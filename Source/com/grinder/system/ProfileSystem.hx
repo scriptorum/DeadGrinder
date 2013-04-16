@@ -47,8 +47,6 @@ class ProfileSystem extends System
 		{
 			case false: // opening profile
 			profile.startTime = nme.Lib.getTimer();
-			// if(stats.get(this.profile) == "com.grinder.system.RenderingSystem")
-			// 	trace("Opening profile with time:" + profile.startTime / 1000);
 
 			case true: // closing profile
 			if(profile.startTime < 0)
@@ -58,10 +56,6 @@ class ProfileSystem extends System
 			profile.totalTime += (endTime - profile.startTime);
 			profile.totalCalls++;
 			profile.startTime = -1;
-			// if(stats.get(this.profile) == "com.grinder.system.RenderingSystem")
-			// 	trace("Closing profile with time:" + profile.startTime / 1000+ " Elapsed:"
-			// 		+ (endTime - profile.startTime) / 1000 + " Overall:" + profile.totalTime / 1000
-			// 		+ " Calls:" + profile.totalCalls);
 		}
 	}
 

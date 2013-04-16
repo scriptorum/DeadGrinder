@@ -22,37 +22,6 @@ class MapService
 	public static inline var FLOOR:Int = 35;
 	public static inline var WALL:Int = 36;
 
-	public static function generateGrid(factory:EntityService): Grid
-	{
-		var grid = new Grid(11, 11, ASPHALT);
-
-		grid.setRect(2, 2, 7, 7, WALL);
-		grid.setRect(3, 3, 5, 5, FLOOR);
-
-		grid.set(5, 2, DOOR);
-		grid.set(5, 8, DOOR);
-		grid.set(2, 5, DOOR);
-		grid.set(8, 5, DOOR);
-
-		for(y in 0...grid.height)
-		for(x in 0...grid.width)
-		{
-			var value = grid.get(x,y);
-			switch(value)
-			{
-				case WALL:
-				factory.addWall(x, y);
-				grid.set(x, y, ASPHALT);
-
-				case DOOR:
-				factory.addDoor(x, y);
-				grid.set(x, y, WALL);
-			}
-		}
-
-		return grid;			
-	}
-
 	public static function spawnZombies(factory:EntityService, count:Int, radius:Int = 3): Void
 	{
 		var player = factory.ash.getEntityByName("player");
@@ -110,5 +79,34 @@ class MapService
 			if(++fails > 1000)
 				throw "Too many zombies, too little space";
 		}
+	}
+
+	public static function spawnMapElements(factory:EntityService, grid:Grid): Grid
+	{
+		for(y in 0...grid.height)
+		for(x in 0...grid.width)
+		{
+			var value = grid.get(x,y);
+			switch(value)
+			{
+				case WALL:
+				factory.addWall(x, y);
+				grid.set(x, y, MapGenerator.ASPHALT);
+
+				case DOOR:
+				factory.addDoor(x, y);
+				grid.set(x, y, MapGenerator.WALL);
+			}
+		}
+
+		return grid;			
+	}
+
+	public static function generateGrid(factory:EntityService): Grid
+	{
+		var gen = new DemoMapGenerator();
+		var grid = gen.generate();
+		spawnMapElements(factory, grid);
+		return grid;
 	}
 }
