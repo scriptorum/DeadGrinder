@@ -74,12 +74,15 @@ class GameWorld extends World
 		addSystem(new InputSystem(ash, factory)); // Collect player/inventory input
 		addSystem(new ActionSystem(ash, factory)); // Resolve actions on entities
 		addSystem(new HealthSystem(ash, factory)); // Better called the DeathSystem
+		addSystem(new CollisionSystem(ash, factory)); // Entities whose velocity puts them into obstacles stop moving
+		addSystem(new MovementSystem(ash, factory)); // Entities with velocity move
 		addSystem(new TargetingSystem(ash, factory));  // Zombies look for humans to chase
 		addSystem(new WanderingSystem(ash, factory)); // Zombies without targets go wandering
 		addSystem(new FollowingSystem(ash, factory)); // Zombies with targets go after them
 		addSystem(new EnemyAttackSystem(ash, factory)); // Zombies next to targets attack them
 		addSystem(new CollisionSystem(ash, factory)); // Entities whose velocity puts them into obstacles stop moving
 		addSystem(new MovementSystem(ash, factory)); // Entities with velocity move
+		addSystem(new HealthSystem(ash, factory)); // Better called the DeathSystem
 		addSystem(new RenderingSystem(ash)); // Display entities are created/destroyed and positions updated
 		addSystem(new CameraSystem(ash, 32)); // The camera follows the player
 		addSystem(new MessageSystem(ash)); // Messages to player are updated
