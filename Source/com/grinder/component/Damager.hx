@@ -1,6 +1,6 @@
 package com.grinder.component;
 
-import com.grinder.component.Damage;
+import com.grinder.component.HealthMutation;
 
 class Damager
 {
@@ -28,8 +28,8 @@ class Damager
 		return amount + Std.random(variableAmount);
 	}
 
-	public function getDamage(): Damage
+	public function getDamage(): HealthMutation
 	{
-		return new Damage(this.rand());
+		return new HealthMutation(-this.rand());
 	}
 }

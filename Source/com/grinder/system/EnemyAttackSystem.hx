@@ -42,7 +42,8 @@ class EnemyAttackSystem extends TurnBasedSystem
 	 			var entity = node.prey.entity;
 	 			if(node.prey.entity.has(Health))
 	 			{
-					var damage = factory.addDamage(node.prey.entity, node.entity.get(Damager));
+	 				var damage = node.entity.get(Damager).rand();
+					factory.mutateHealth(node.prey.entity, -damage);
 	 				msg = "The " + factory.getName(node.entity) + " bites you for " + damage + " damage!";
 	 			}
 	 			else msg = "The zombie chews on the recently dead " + factory.getName(node.prey.entity) + ".";

@@ -16,7 +16,7 @@ import com.grinder.component.Carrier;
 import com.grinder.component.Closeable;
 import com.grinder.component.Closed;
 import com.grinder.component.Collision;
-import com.grinder.component.Damage;
+import com.grinder.component.Control;
 import com.grinder.component.Damager;
 import com.grinder.component.Description;
 import com.grinder.component.Display;
@@ -29,6 +29,7 @@ import com.grinder.component.GridPosition;
 import com.grinder.component.GridSize;
 import com.grinder.component.GridVelocity;
 import com.grinder.component.Health;
+import com.grinder.component.HealthMutation;
 import com.grinder.component.Image;
 import com.grinder.component.Inventory;
 import com.grinder.component.Layer;
@@ -42,7 +43,6 @@ import com.grinder.component.Open;
 import com.grinder.component.Openable;
 import com.grinder.component.Orientation;
 import com.grinder.component.Player;
-import com.grinder.component.Control;
 import com.grinder.component.Position;
 import com.grinder.component.Prey;
 import com.grinder.component.Repeating;
@@ -150,18 +150,18 @@ class EntityService
 		return e;
 	}
 
-	public function addDamage(victim:Entity, damager:Damager): Int
+	// Increase or decrease health of an entity
+	public function mutateHealth(victim:Entity, amount:Int): Int
 	{
-		if(victim.has(Damage))
+		if(victim.has(HealthMutation))
 		{
-			var damage = victim.get(Damage);
-			damage.amount += damager.rand();
-			return damage.amount;
+			var mutation = victim.get(HealthMutation);
+			mutation.amount += amount;
+			return mutation.amount;
 		}	
-		var damage = damager.getDamage();
-		victim.add(damage);
+		victim.add(new HealthMutation(amount));
 
-		return damage.amount;
+		return amount;
 	}
 
 	public function addPlayer(x:Int, y:Int): Entity

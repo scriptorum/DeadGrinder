@@ -1,8 +1,7 @@
 package com.grinder.component;
 
-import com.grinder.component.Damager;
-
-class Damage
+// Increase or lower health
+class HealthMutation
 {
 	public var amount:Int;
 

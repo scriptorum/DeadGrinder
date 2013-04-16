@@ -105,14 +105,14 @@ class ActionSystem extends System
 	 			case Action.ATTACK:
 	 				if(node.entity.has(Health))
 	 				{
-	 					// TODO Determine weapon equipped, get damage from that
 	 					var source:Entity = node.action.source;
 	 					if(source.has(Damager))
 	 					{
-	 						factory.addDamage(node.entity, source.get(Damager));
+	 						var damage = source.get(Damager).rand();
+	 						factory.mutateHealth(node.entity, -damage);
 		 					// TODO Check for weapon break
 		 					// TODO Check for knockback
-		 					msg = "You hit it.";
+		 					msg = "You hit it for " + damage + " damage.";
 		 				}
 		 				else msg = "You couldn't hurt a fly in your condition.";
 	 				}
@@ -232,20 +232,8 @@ class ActionSystem extends System
 					else
 					{
 						var nutrition = node.entity.get(Nutrition).amount;
-						var health = node.action.source.get(Health);
-						if(health == null)
-							msg = "The " + factory.getName(node.action.source) + 
-								" is trying to eat the " + factory.getName(node.entity);
-						else
-						{
-							health.amount += nutrition;
-							if(health.amount > health.max)
-							{
-								health.amount = health.max;
-								factory.addMessage("Eating the " + factory.getName(node.entity) + " brings you to full health");
-							}
-							else factory.addMessage("You eat a " + factory.getName(node.entity) + " for " + nutrition + " HP");
-						}
+						factory.mutateHealth(node.action.source, nutrition);
+						factory.addMessage("You eat a " + factory.getName(node.entity) + " for " + nutrition + " health.");
 						engine.removeEntity(node.entity);
 					}
 

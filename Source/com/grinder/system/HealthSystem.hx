@@ -1,9 +1,3 @@
-/*
- * TODO:
- *  - Do not inflict damage directly to enemy's Health, instead grnt the entity a Damage component and
- *    let this system manage it.
- */
-
 package com.grinder.system;
 
 import nme.geom.Rectangle;
@@ -13,18 +7,18 @@ import com.haxepunk.HXP;
 import ash.core.Engine;
 import ash.core.System;
 
-import com.grinder.node.DamageNode;
+import com.grinder.node.HealthMutationNode;
 import com.grinder.component.Health;
 import com.grinder.component.Zombie;
 import com.grinder.component.Image;
-import com.grinder.component.Damage;
+import com.grinder.component.HealthMutation;
 import com.grinder.component.GridPosition;
 import com.grinder.component.Position;
 import com.grinder.component.Control;
 import com.grinder.component.Uninitialized;
 import com.grinder.service.EntityService;
 
-class HealthSystem extends TurnBasedSystem
+class HealthSystem extends System
 {
 	public var factory:EntityService;
 	public var engine:Engine;
@@ -47,18 +41,20 @@ class HealthSystem extends TurnBasedSystem
 			updateHud(player.get(Health).amount);
 		}
 
-	 	for(node in engine.getNodeList(DamageNode))
+	 	for(node in engine.getNodeList(HealthMutationNode))
 	 	{
-	 		// Apply damage
-	 		node.health.amount -= node.damage.amount;
+	 		// Apply damage/healing
+	 		node.health.amount += node.mutation.amount;
 	 		if(node.health.amount < 0)
 	 			node.health.amount = 0;
+	 		else if(node.health.amount > 100)
+	 			node.health.amount = 100;	 			
 
-	 		// Remove damage
-	 		node.entity.remove(Damage);
+	 		// Remove mutation
+	 		node.entity.remove(HealthMutation);
 
 	 		// Check for death
-	 		if(node.health.amount == 0)
+	 		if(node.health.amount <= 0)
  			{
  				var msg = null;
 				if(node.entity.has(Zombie))
