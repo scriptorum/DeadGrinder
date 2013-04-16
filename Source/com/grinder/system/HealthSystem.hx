@@ -20,8 +20,7 @@ import com.grinder.component.Image;
 import com.grinder.component.Damage;
 import com.grinder.component.GridPosition;
 import com.grinder.component.Position;
-import com.grinder.component.PlayerControl;
-import com.grinder.component.GameOverControl;
+import com.grinder.component.Control;
 import com.grinder.component.Uninitialized;
 import com.grinder.service.EntityService;
 
