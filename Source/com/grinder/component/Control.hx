@@ -10,3 +10,4 @@ class Control
 class InventoryControl extends Control {}
 class GameOverControl extends Control {}
 class PlayerControl extends Control {}
+class ProfileControl extends Control {}

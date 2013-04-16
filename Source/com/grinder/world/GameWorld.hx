@@ -46,6 +46,11 @@ import com.grinder.system.HealthSystem;
 import com.grinder.system.InputSystem;
 import com.grinder.system.MessageSystem;
 
+#if profiler
+	import com.grinder.system.ProfileSystem;
+	import com.grinder.component.Control;
+#end
+
 class GameWorld extends World
 {
 	private var ash:Engine;
@@ -67,6 +72,12 @@ class GameWorld extends World
 
 		initSystems();
 		initEntities();
+
+		#if profiler
+			var e = new Entity();
+			e.add(new ProfileControl());
+			ash.addEntity(e);
+		#end
 	}
 
 	private function initSystems()
@@ -90,7 +101,17 @@ class GameWorld extends World
 
     public function addSystem(system:System):Void
     {
+    	#if profiler
+    		var starter = new ProfileSystem(system);
+    		var closer = new ProfileSystem(system, starter.profile);
+    		ash.addSystem(starter, nextSystemPriority++);
+    	#end
+
         ash.addSystem(system, nextSystemPriority++);
+
+    	#if profiler
+    		ash.addSystem(closer, nextSystemPriority++);
+    	#end
     }
 
 	private function initEntities()

@@ -18,3 +18,8 @@ class GameOverControlNode extends Node<GameOverControlNode>
 {
 	public var control:GameOverControl;
 }
+
+class ProfileControlNode extends Node<ProfileControlNode>
+{
+	public var control:ProfileControl;
+}
