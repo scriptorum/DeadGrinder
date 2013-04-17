@@ -60,6 +60,7 @@ import com.grinder.component.Unlocked;
 import com.grinder.component.Velocity;
 import com.grinder.component.Zombie;
 
+import com.grinder.render.Grimoire;
 import com.grinder.node.EquippedNode;
 import com.grinder.node.GridPositionNode;
 import com.grinder.node.CarriedNode;
@@ -170,7 +171,7 @@ class EntityService
 		e.add(new Player());
 		e.add(new GridPosition(x, y));
 		e.add(new Layer(34));
-		e.add(new Tile(ConfigService.getTiledImage(), MapService.PLAYER));
+		e.add(new Tile(ConfigService.getTiledImage(), Grimoire.PLAYER));
 		e.add(new Collision(Collision.PERSON));
 		e.add(new CameraFocus());
 		e.add(new PlayerControl());
@@ -194,7 +195,7 @@ class EntityService
 		e.add(new Name("zombie"));
 		e.add(new Zombie());
 		e.add(new Layer(Layer.ABOVE));
-		e.add(new Tile(ConfigService.getTiledImage(), MapService.ZOMBIE));
+		e.add(new Tile(ConfigService.getTiledImage(), Grimoire.ZOMBIE));
 		ash.addEntity(e);
 		return e;
 	}
@@ -206,7 +207,7 @@ class EntityService
 		e.add(new Description("It's dead. I mean really dead."));
 		e.add(new Name("corpse"));
 		e.add(new Layer(Layer.BELOW));
-		e.add(new Tile(ConfigService.getTiledImage(), MapService.CORPSE));
+		e.add(new Tile(ConfigService.getTiledImage(), Grimoire.CORPSE));
 		ash.addEntity(e);
 		return e;
 	}
@@ -362,7 +363,7 @@ class EntityService
 
 		var e = new Entity("food" + nextId++);
 		e.add(new Layer(Layer.BELOW));
-		e.add(new Tile(ConfigService.getTiledImage(), MapService.FOOD));
+		e.add(new Tile(ConfigService.getTiledImage(), Grimoire.FOOD));
 		e.add(new Description("It's a " + food));
 		e.add(new Name(food));
 		e.add(new Equipment(Equipment.FOOD));
@@ -401,7 +402,7 @@ class EntityService
 
 		var e = new Entity("weapon" + nextId++);
 		e.add(new Layer(Layer.BELOW));
-		e.add(new Tile(ConfigService.getTiledImage(), MapService.WEAPON));
+		e.add(new Tile(ConfigService.getTiledImage(), Grimoire.WEAPON));
 		e.add(new Description("It's a " + weapon));
 		e.add(new Name(weapon));
 		e.add(new Equipment(Equipment.WEAPON));

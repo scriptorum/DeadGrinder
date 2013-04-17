@@ -1,27 +1,13 @@
 package com.grinder.service;
 
 import ash.core.Engine;
+import com.grinder.render.Grimoire;
 import com.grinder.component.Grid;
 import com.grinder.component.GridPosition;
 import com.grinder.service.EntityService;
 
 class MapService
 {
-	public static inline var NOTHING:Int = 0;
-	public static inline var PLAYER:Int = 1;
-	public static inline var ZOMBIE:Int = 2;
-	public static inline var CORPSE:Int = 3;
-
-	public static inline var WEAPON:Int = 16;
-	public static inline var FOOD:Int = 17;
-	public static inline var SCRAP:Int = 18;
-
-	public static inline var ASPHALT:Int = 32;
-	public static inline var DOOR:Int = 33;
-	public static inline var DOORWAY:Int = 34;
-	public static inline var FLOOR:Int = 35;
-	public static inline var WALL:Int = 36;
-
 	public static function spawnZombies(factory:EntityService, count:Int, radius:Int = 3): Void
 	{
 		var player = factory.ash.getEntityByName("player");
@@ -89,13 +75,13 @@ class MapService
 			var value = grid.get(x,y);
 			switch(value)
 			{
-				case WALL:
+				case Grimoire.WALL:
 				factory.addWall(x, y);
-				grid.set(x, y, MapGenerator.ASPHALT);
+				grid.set(x, y, Grimoire.ASPHALT);
 
-				case DOOR:
+				case Grimoire.DOOR:
 				factory.addDoor(x, y);
-				grid.set(x, y, MapGenerator.WALL);
+				grid.set(x, y, Grimoire.WALL);
 			}
 		}
 
@@ -104,7 +90,8 @@ class MapService
 
 	public static function generateGrid(factory:EntityService): Grid
 	{
-		var gen = new DemoMapGenerator();
+		//var gen = new DemoMapGenerator();
+		var gen = new MapGenerator();
 		var grid = gen.generate();
 		spawnMapElements(factory, grid);
 		return grid;
