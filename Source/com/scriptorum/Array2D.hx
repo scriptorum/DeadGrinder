@@ -1,11 +1,11 @@
 package com.scriptorum;
 
-import com.scriptorum.Point2D;
+import com.scriptorum.Point;
 
 class Array2D<T>
 {
-	private static var ORTHONGONAL_NEIGHBORS = Point2D.makeArray([-1,0,    0,-1,  1,0,   0,1]);
-	private static var DIAGONAL_NEIGHBORS =    Point2D.makeArray([-1,-1,  1,-1,  -1,1,  1,1]);
+	private static var ORTHONGONAL_NEIGHBORS = Point.makeArray([-1,0,    0,-1,  1,0,   0,1]);
+	private static var DIAGONAL_NEIGHBORS =    Point.makeArray([-1,-1,  1,-1,  -1,1,  1,1]);
 
 	public var array:Array<T>;
 	public var width:Int;
@@ -79,11 +79,11 @@ class Array2D<T>
 		return x + y * width;
 	}
 
-	public inline function fromIndex(index:Int): { x:Int, y:Int }
+	public inline function fromIndex(index:Int): Point
 	{
 		var x = index % width;
 		var y = Math.floor(index / width);
-		return { x:x, y:y };
+		return new Point(x, y);
 	}
 
 	public function setRect(xOff:Int, yOff:Int, width:Int, height:Int, value:Dynamic): Array2D<T>

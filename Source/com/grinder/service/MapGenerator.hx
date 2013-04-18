@@ -2,9 +2,27 @@ package com.grinder.service;
 
 import haxe.EnumFlags;
 import com.scriptorum.Array2D;
+import com.scriptorum.Point;
 import com.scriptorum.Util;
 import com.grinder.render.Grimoire;
 import com.grinder.component.Grid;
+
+private enum Direction {north; east; south; west; }
+private enum Orientation {vertical; horizontal; }
+
+class BoardBlock 
+{
+	public var door:Direction; 
+	public var street:Orientation; //orientation of street if street
+	public var floor:Bool; // true = street
+
+	public function new(door:Direction, street:Orientation, floor:Bool)
+	{
+		this.door = door;
+		this.street = street;
+		this.floor = floor;
+	}
+}
 
 class MapGenerator
 {
@@ -21,6 +39,8 @@ class MapGenerator
 	public static inline var blockSize:Int = 9;
 	public static inline var boardsAcross:Int = 6;
 	public static inline var boardsDown:Int = 4;
+	public static inline var roomsAcross:Int = 5;
+	public static inline var roomsDown:Int = 5;
 
 	public var grid:Grid;
 
@@ -58,25 +78,108 @@ class MapGenerator
 		var sides = (north ? 1 : 0) + (east ? 1 : 0) + (south ? 1 : 0) + (west ? 1 : 0);
 		if(sides == 0)
 		{
-			grid.setRect(xOff, yOff, boardWidth, boardHeight, Grimoire.LAVA);
+			grid.setRect(xOff, yOff, boardWidth, boardHeight, Grimoire.ASPHALT);
 			return;
 		}
 
-		// Central road
-		grid.setRect(xOff + blockSize, yOff + blockSize, roadCrossing, roadCrossing, Grimoire.ASPHALT);
+		// Split board into 25 "blocks"
+		var blockPlan = createBoardBlocks(north, east, south, west);
 
-		// Side roads
-		if(north)
-			grid.setRect(xOff + blockSize, yOff, roadCrossing, blockSize, Grimoire.ASPHALT);
-		if(south)
-			grid.setRect(xOff + blockSize, yOff + blockSize + roadCrossing, roadCrossing, blockSize, Grimoire.ASPHALT);
-		if(west)
-			grid.setRect(xOff, yOff + blockSize, blockSize, roadCrossing, Grimoire.ASPHALT);
-		if(east)
-			grid.setRect(xOff + blockSize + roadCrossing, yOff + blockSize, blockSize, roadCrossing, Grimoire.ASPHALT);
+		// Lay out floors, streets, and walls
+		for(i in 0...blockPlan.size)
+		{
+			var plan = blockPlan.getIndex(i);
+			var pt = blockPlan.fromIndex(i);
+			var roomOffset = new Point(xOff + pt.x * 4, yOff + pt.y * 4);
 
-		// Buildings next....Sam
+			// Building room
+			if(plan.floor)
+			{
+				grid.setRect(roomOffset.x, roomOffset.y, 5, 5, Grimoire.WALL);
+				grid.setRect(roomOffset.x + 1, roomOffset.y + 1, 3, 3, Grimoire.FLOOR);
+			}
+
+			// Street
+			else
+			{
+				grid.setRect(roomOffset.x + 1, roomOffset.y + 1, 3, 3, Grimoire.ASPHALT);
+			}
+		}
+
+		// Lay out doors
+		for(i in 0...blockPlan.size)
+		{
+			var plan = blockPlan.getIndex(i);
+			var pt = blockPlan.fromIndex(i);
+			var roomOffset = new Point(xOff + pt.x * 4, yOff + pt.y * 4);
+			if(plan.door == null)
+			 	continue;
+			switch(plan.door)
+			{
+				case Direction.north: roomOffset.add(2,0);
+				case Direction.south: roomOffset.add(2,4);
+				case Direction.east:  roomOffset.add(4,2);
+				case Direction.west:  roomOffset.add(0,2);
+			}
+
+			if(plan.door != null)
+				grid.set(roomOffset.x, roomOffset.y, Grimoire.DOOR);
+		}
 	}
+
+	public function createBoardBlocks(north:Bool, east:Bool, south:Bool, west:Bool): Array2D<BoardBlock>
+	{
+		var blockPlan = new Array2D<BoardBlock>(roomsAcross, roomsDown, null);
+
+		// Handle roads		
+		var roadExitCount = 0;
+		if(north)
+		{
+			blockPlan.set(2, 0, new BoardBlock(null, Orientation.vertical, false));
+			blockPlan.set(2, 1, new BoardBlock(null, Orientation.vertical, false));
+			roadExitCount++;
+		}
+		if(south)
+		{
+			blockPlan.set(2, 3, new BoardBlock(null, Orientation.vertical, false));
+			blockPlan.set(2, 4, new BoardBlock(null, Orientation.vertical, false));
+			roadExitCount++;
+		}
+		if(east)
+		{
+			blockPlan.set(3, 2, new BoardBlock(null, Orientation.horizontal, false));
+			blockPlan.set(4, 2, new BoardBlock(null, Orientation.horizontal, false));
+			roadExitCount++;
+		}
+		if(west)
+		{
+			blockPlan.set(0, 2, new BoardBlock(null, Orientation.horizontal, false));
+			blockPlan.set(1, 2, new BoardBlock(null, Orientation.horizontal, false));
+			roadExitCount++;
+		}
+		if(roadExitCount > 0)
+			blockPlan.set(2,2, new BoardBlock(null, null, false));
+
+		// Add rooms with arbitrary doors
+		for(num in 0...blockPlan.size)
+			if(blockPlan.getIndex(num) == null)
+			{
+				switch(num)
+				{
+					case 10,15,17,18,21: 
+						blockPlan.setIndex(num, new BoardBlock(Direction.north, null, true));
+					case 3,6,7,9,12,14: 
+						blockPlan.setIndex(num, new BoardBlock(Direction.south, null, true));
+					case 0,1,2,5,11,16,20: 
+						blockPlan.setIndex(num, new BoardBlock(Direction.east, null, true));
+					case 4,8,13,19,22,23,24: 
+						blockPlan.setIndex(num, new BoardBlock(Direction.west, null, true));
+				};				
+			}
+
+		return blockPlan;
+	}
+
 
 	// Return the orientation of board i2 to board i1
 	// Assumes adjacency

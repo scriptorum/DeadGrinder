@@ -23,8 +23,8 @@
         <assets path="Assets/DebugGfx" rename="gfx" include="*.png|*.jpg" />
     </section>
 
-    <!-- 
     <haxedef name="profiler"/> 
+    <!-- 
     <haxedef name="debug"/> 
     <haxelib name="hxcpp" />
     <haxedef name="DEBUGGER" />
