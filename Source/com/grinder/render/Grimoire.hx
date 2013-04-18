@@ -17,4 +17,8 @@ class Grimoire
 	public static inline var DOORWAY:Int = 34;
 	public static inline var FLOOR:Int = 35;
 	public static inline var WALL:Int = 36;
+	public static inline var RUBBLE:Int = 37;
+	public static inline var GRASS:Int = 38;
+	public static inline var RUBBLE2:Int = 39;
+	public static inline var LAVA:Int = 40;
 }

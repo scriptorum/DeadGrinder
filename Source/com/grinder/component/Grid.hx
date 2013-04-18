@@ -4,7 +4,7 @@ import com.scriptorum.Array2D;
 
 class Grid extends Array2D<Int>
 {
-	override public function new(width:Int, height:Int, initValue:Int = 0)
+	override public function new(width:Int, height:Int, initValue:Dynamic = 0)
 	{
 		super(width, height, initValue);
 	}

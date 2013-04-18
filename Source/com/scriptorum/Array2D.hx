@@ -12,7 +12,7 @@ class Array2D<T>
 	public var height:Int;
 	public var size:Int;
 
-	public function new(width:Int, height:Int, fill:T)
+	public function new(width:Int, height:Int, fill:Dynamic)
 	{
 		this.width = width;
 		this.height = height;
@@ -21,10 +21,9 @@ class Array2D<T>
 		clear(fill);
 	}
 
-	public function clear(fill:T)
+	public function clear(fill:Dynamic)
 	{
-		for(i in 0...size)
-			array[i] = fill;
+		setRect(0, 0, width, height, fill);
 	}
 
 	private function indexWithinDomain(index:Int): Bool
@@ -87,11 +86,14 @@ class Array2D<T>
 		return { x:x, y:y };
 	}
 
-	public function setRect(x:Int, y:Int, width:Int, height:Int, value:T): Array2D<T>
+	public function setRect(xOff:Int, yOff:Int, width:Int, height:Int, value:Dynamic): Array2D<T>
 	{
-		for(xx in x...width + x)
-		for(yy in y...height + y)
-			set(xx, yy, value);
+		for(x in xOff...width + xOff)
+		for(y in yOff...height + yOff)
+		{
+			var v:T = (Std.is(value, Array) ? Util.anyOneOf(value) : value);
+			set(x, y, v);
+		}
 		return this;
 	}
 
