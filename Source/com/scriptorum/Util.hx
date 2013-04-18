@@ -79,4 +79,17 @@ class Util
     		return arr;
     	return str.split(delim);
     }
+
+    // Like Array.filter but returns an array of indeces to the array (keys), rather than the array values.
+    // Also, the comparison func receives an array index, not an array value.
+    public static function indexFilter<T>(arr:Array<T>, func:Int->Bool): Array<Int>
+    {
+    	var result = new Array<Int>();
+    	for(i in 0...arr.length)
+    	{
+    		if(func(i))
+    			result.push(i);
+    	}
+    	return result;
+    }
 }
