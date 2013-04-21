@@ -22,7 +22,7 @@ class GridView extends View
 		tileHeight = tiledImage.tileSize.height;
 
 		// TODO get standard tile dimensions from some other source than the image clipping rectangle??
-		tileMap = new Tilemap(tiledImage.imagePath, tileHeight * grid.width, tileWidth * grid.height,
+		tileMap = new Tilemap(tiledImage.imagePath, tileWidth * grid.width, tileHeight * grid.height,
 			tileWidth, tileHeight);
 		graphic = tileMap;
 
