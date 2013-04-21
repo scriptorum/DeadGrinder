@@ -19,7 +19,10 @@ import com.grinder.node.ControlNode;
 import com.grinder.service.EntityService;
 import com.grinder.service.InputService;
 import com.grinder.service.ConfigService;
-import com.grinder.system.ProfileSystem;
+
+#if profiler
+	import com.grinder.system.ProfileSystem;
+#end
 
 class InputSystem extends System
 {
@@ -40,7 +43,9 @@ class InputSystem extends System
 		if(key == 0)
 			return;
 
-		handleProfileControl(key);
+		#if profiler
+			handleProfileControl(key);
+		#end
 		handlePlayerControl(key);
 		handleInventoryControl(key);
 		// handleGameOverControl(key);
@@ -48,6 +53,7 @@ class InputSystem extends System
 		InputService.clearLastKey();
 	}
 
+#if profiler
 	public function handleProfileControl(key:Int)
 	{
 	 	for(node in engine.getNodeList(ProfileControlNode))
@@ -60,6 +66,7 @@ class InputSystem extends System
 	 	}
 
 	}
+#end
 
 	public function handleInventoryControl(key:Int)
 	{

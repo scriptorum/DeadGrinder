@@ -10,12 +10,11 @@ import com.grinder.world.GameWorld;
 
 class Main extends Engine
 {
-	public static inline var FRAME_RATE:Int = 30;
 	private var progress:Int = 1;
 
 	public function new()
 	{
-		super(800, 450, FRAME_RATE, false);
+		super(600, 600);
 	}
 
 	override public function init()

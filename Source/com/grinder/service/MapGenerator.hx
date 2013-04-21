@@ -46,35 +46,31 @@ class MapGenerator
 
 	public function new()
 	{
-		grid = new Grid(boardWidth * boardsAcross, boardHeight * boardsDown, [Grimoire.RUBBLE, Grimoire.RUBBLE2]);
+		grid = new Grid(boardWidth * boardsAcross, boardHeight * boardsDown, Grimoire.ASPHALT);
 	}
 
 	public function generate(): Grid
 	{
-		// grid.setRect(2, 2, 7, 7, Grimoire.WALL);
-		// grid.setRect(3, 3, 5, 5, Grimoire.FLOOR);
-
-		// grid.set(5, 2, Grimoire.DOOR);
-		// grid.set(5, 8, Grimoire.DOOR);
-		// grid.set(2, 5, Grimoire.DOOR);
-		// grid.set(8, 5, Grimoire.DOOR);
-
-		var plan = createPlan(6, 4);
+		var plan = createPlan(boardsAcross, boardsDown);
 		for(y in 0...plan.height)
 		for(x in 0...plan.width)
 		{
 			var board = plan.get(x, y);
+			if(board & ENTRY > 0) trace("Entry at " + x + "," + y);
 			fillBoard(grid, x * boardWidth, y * boardHeight,
 				board & NORTH > 0, board & EAST > 0, board & SOUTH > 0, board & WEST > 0, 
 				board & ENTRY > 0, board & EXIT > 0);
 		}
 
+		grid.changed = true;
 		return grid;
 	}
 
 	public function fillBoard(grid:Grid, xOff:Int, yOff:Int, north:Bool, east:Bool, south:Bool, west:Bool, 
 		entry:Bool, exit:Bool): Void
 	{
+		if(entry) trace("Entry found");
+
 		var sides = (north ? 1 : 0) + (east ? 1 : 0) + (south ? 1 : 0) + (west ? 1 : 0);
 		if(sides == 0)
 		{
@@ -106,7 +102,7 @@ class MapGenerator
 			}
 		}
 
-		// Lay out doors
+		// Lay out doors and manholes
 		for(i in 0...blockPlan.size)
 		{
 			var plan = blockPlan.getIndex(i);
@@ -124,6 +120,16 @@ class MapGenerator
 
 			if(plan.door != null)
 				grid.set(roomOffset.x, roomOffset.y, Grimoire.DOOR);
+		}
+
+		if(entry)
+		{
+			var spawnBlock = Std.random(blockPlan.size);
+			var pt = blockPlan.fromIndex(spawnBlock);
+			var pos = new Point(xOff + pt.x * 4 + 2, yOff + pt.y * 4 + 2);
+			var spawner = (grid.get(pos.x, pos.y) == Grimoire.FLOOR ? Grimoire.SPAWN_FLOOR : Grimoire.SPAWN_STREET);
+			grid.set(pos.x, pos.y, spawner);
+			trace("Adding entry spawn block to " + pos.x + "," + pos.y + " at block " + spawnBlock + " with spawner " + spawner); 
 		}
 	}
 

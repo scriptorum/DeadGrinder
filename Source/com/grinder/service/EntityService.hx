@@ -212,16 +212,6 @@ class EntityService
 		return e;
 	}
 
-	public function addBackdrop(): Entity
-	{
-		var e = new Entity("backdrop");
-		e.add(new Image("art/rubble2.png"));
-		e.add(new Repeating());
-		e.add(new Layer(1000));
-		ash.addEntity(e);
-		return e;
-	}
-
 	public function addHealthHud(): Entity
 	{
 		var e = new Entity("healthHud");
@@ -282,6 +272,16 @@ class EntityService
 		var player = ash.getEntityByName("player");
 		player.remove(InventoryControl);
 		player.add(new PlayerControl());
+	}
+
+	public function addBackdrop(): Entity
+	{
+		var e = new Entity("backdrop");
+		e.add(new Image("art/rubble2.png"));
+		e.add(new Repeating());
+		e.add(new Layer(1000));
+		ash.addEntity(e);
+		return e;
 	}
 
 	public function addMap(): Entity

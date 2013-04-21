@@ -21,4 +21,8 @@ class Grimoire
 	public static inline var GRASS:Int = 38;
 	public static inline var RUBBLE2:Int = 39;
 	public static inline var LAVA:Int = 40;
+
+	// Special constructs
+	public static inline var SPAWN_FLOOR:Int = 1000;
+	public static inline var SPAWN_STREET:Int = 1001;
 }

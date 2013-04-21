@@ -4,6 +4,8 @@ import com.scriptorum.Array2D;
 
 class Grid extends Array2D<Int>
 {
+	public var changed:Bool = true;
+
 	override public function new(width:Int, height:Int, initValue:Dynamic = 0)
 	{
 		super(width, height, initValue);

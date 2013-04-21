@@ -2,18 +2,8 @@
    - Add article selector to getName()
    - Create ActionService to handle most of these actions, leaving EntityService to handle factory stuff only
      Or split ActionSystem into several systems.
-   - The CollisionSystem is not protecting multiple things from entering the same space simultaneously.
-     The priority should be player > people > zeds.
-   - Left the game running for an hour, came back and it was running REALLY slow, delays between arrow presses.
-     Pressed TAB to see the contents of the entities and found nothing unusual. 
-   - Perhaps neko.vm.Gc.stats()/run()? Test under flash and CPP. If no slow down, don't worry about it.
+   - Issue: Zombies moving into one space collalesce into a double zombie, occuping the same space.
    - Can you run Sys.println() to print to stdout from Flash? Praaaaaaahbobly not.
-   - If zombies hit an obstacle they stop moving, either the CollisionSystem or the ZombieSystem needs to allow 
-     zombies to look for a way around. First off, you should probably split ZombieSystem into an TargetSystem
-     (for updating "interests") and a TrackingSystem (for handling movement specific to tracking targets).
-   - Should the Collision System just be limited to player movement then?
-   - Player movement should have priority over zombie movement, so either add the MovementSystem twice or add
-     some sort of priority system.
    - Issue: Player disappears on death, should turn to special corpse or stay put.
 */
 
@@ -25,6 +15,7 @@ import com.haxepunk.World;
 import ash.core.Engine;
 import ash.core.Entity;
 import ash.core.System;
+// import ash.tick.FrameTickProvider;
 
 import com.grinder.service.SoundService;
 import com.grinder.service.InputService;
@@ -45,10 +36,10 @@ import com.grinder.system.CollisionSystem;
 import com.grinder.system.HealthSystem;
 import com.grinder.system.InputSystem;
 import com.grinder.system.MessageSystem;
+import com.grinder.component.Control;
 
 #if profiler
 	import com.grinder.system.ProfileSystem;
-	import com.grinder.component.Control;
 #end
 
 class GameWorld extends World
@@ -65,8 +56,6 @@ class GameWorld extends World
 
 	override public function begin()
 	{
-		super.update();
-
 		ash = new Engine();
 		factory = new EntityService(ash);
 
@@ -78,6 +67,10 @@ class GameWorld extends World
 			e.add(new ProfileControl());
 			ash.addEntity(e);
 		#end
+
+        // var tickProvider = new FrameTickProvider(HXP.engine);
+        // tickProvider.add(ash.update);
+        // tickProvider.start();
 	}
 
 	private function initSystems()
@@ -97,6 +90,10 @@ class GameWorld extends World
 		addSystem(new RenderingSystem(ash)); // Display entities are created/destroyed and positions updated
 		addSystem(new CameraSystem(ash, 32)); // The camera follows the player
 		addSystem(new MessageSystem(ash)); // Messages to player are updated
+
+		#if profiler
+			ash.addSystem(new ProfileSystem(), nextSystemPriority++);
+		#end
 	}	
 
     public function addSystem(system:System):Void
@@ -119,25 +116,23 @@ class GameWorld extends World
 		factory.addBackdrop();
 		factory.addMessageHud();
 		factory.addHealthHud();
-		factory.addPlayer(1, 1);
+		// factory.addPlayer(1, 1);
 		factory.addMap(); // causes doors and walls to be added		
-		MapService.spawnZombies(factory, 1);
-		MapService.spawnItems(factory, 10);
+		MapService.spawnZombies(factory, 50);
+		MapService.spawnItems(factory, 30);
 	}
 
-    // Real-time update
 	override public function update()
 	{
-		super.update();
-
-		if(InputService.pressed(InputService.DEBUG))
-		{
+		// if(InputService.pressed(InputService.DEBUG))
+		// {
 			// for(e in ash.get_entities()) // My ash hack
 			// 	trace(e.name + ":" + ArchiveService.serializeEntity(e));
 			// beginDebug();
-		}
+		// }
 
 		ash.update(HXP.elapsed); // update entity system
+		//super.update(); // I'm not using HaxePunk's Entity.update(), so save some time here...
 	}
 
 	// private static function beginDebug()

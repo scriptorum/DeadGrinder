@@ -82,9 +82,18 @@ class MapService
 				case Grimoire.DOOR:
 				factory.addDoor(x, y);
 				grid.set(x, y, Grimoire.WALL);
+
+				case Grimoire.SPAWN_FLOOR:
+				factory.addPlayer(x, y);
+				grid.set(x, y, Grimoire.FLOOR);
+
+				case Grimoire.SPAWN_STREET:
+				factory.addPlayer(x, y);
+				grid.set(x, y, Grimoire.ASPHALT);
 			}
 		}
 
+		grid.changed = true;
 		return grid;			
 	}
 

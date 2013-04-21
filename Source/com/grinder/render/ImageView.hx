@@ -11,6 +11,8 @@ class ImageView extends View
 	private var tile:Tile;
 	private var image:Image;
 	private var clip:Rectangle;
+	private var gx:Int;
+	private var gy:Int;
 
 	override public function begin()
 	{
@@ -57,10 +59,16 @@ class ImageView extends View
 			if(this.tile != getComponent(Tile))
 				setTile();
 			var gpos = getComponent(GridPosition);
-			var tileSize = getComponent(Tile).tiledImage.tileSize;
-			x = gpos.x * tileSize.width;
-			y = gpos.y * tileSize.height;
-			visible = true;
+
+			if(gpos.x != gx || gpos.y != gy)
+			{
+				var tileSize = getComponent(Tile).tiledImage.tileSize;
+				gx = gpos.x;
+				gy = gpos.y;
+				x = gx * tileSize.width;
+				y = gy * tileSize.height;
+				visible = true;
+			}
 		}
 
 		// ImageNode
@@ -70,9 +78,12 @@ class ImageView extends View
 			if(this.image != nextImage || nextImage.clip != this.clip)
 				setImage();
 			var pos = getComponent(Position);
-			x = pos.x;
-			y = pos.y;
-			visible = true;
+			if(pos.x != x || pos.y != y)
+			{
+				x = pos.x;
+				y = pos.y;
+				visible = true;
+			}
 		}
 
 		else { visible = false; }

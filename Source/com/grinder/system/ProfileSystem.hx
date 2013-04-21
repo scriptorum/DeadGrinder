@@ -5,6 +5,10 @@ import ash.core.Engine;
 import ash.core.System;
 import ash.ObjectMap;
 
+import com.haxepunk.HXP;
+
+enum ProfileType { opener; closer; dual; }
+
 class Profile
 {
 	public var startTime:Int = -1;
@@ -17,12 +21,11 @@ class ProfileSystem extends System
 {
 	public static var stats:ObjectMap<Profile,String>;
 
-	public var system:System;
-	public var profile:Profile; // pass this to the second ProfileSystem
-	public var closer:Bool = false;
+	public var system:System; // Required if using bookends (opener + closer)
+	public var profile:Profile; // If using two ProfileSystems as bookends, pass this to the second ProfileSystem (the closer)
+	public var type:ProfileType; // Use dual if profiling time between calls (just one ProfileSystem)
 
-	// Pass in the tile size being used, or leave as 1 if CameraFocusNode is using GridPosition instead of Position
-	public function new(system:System, profile:Profile = null)
+	public function new(system:System = null, profile:Profile = null)
 	{
 		super();
 		this.system = system;
@@ -30,41 +33,75 @@ class ProfileSystem extends System
 		if(profile == null)
 		{
 			this.profile = new Profile();
-			closer = true;
+			type = (system == null ? ProfileType.dual : ProfileType.opener);
 
 			if(stats == null)
 				stats = new ObjectMap<Profile,String>();
 
 			if(!stats.exists(this.profile))
-				stats.set(this.profile, Type.getClassName(Type.getClass(system)));
+			{
+				var name = (system == null ? "Total" : Type.getClassName(Type.getClass(system)));
+				stats.set(this.profile, name);
+			}
 		}
-		else this.profile = profile;
+		else 
+		{
+			this.profile = profile;
+			type = ProfileType.closer;
+		}
 	}
 
 	override public function update(_)
-	{		
-		switch(closer)
+	{	
+		switch(type)
 		{
-			case false: // opening profile
-			profile.startTime = nme.Lib.getTimer();
+			case ProfileType.dual:
+			if(profile.startTime >= 0)
+				closeProfile();
+			openProfile();
 
-			case true: // closing profile
-			if(profile.startTime < 0)
-				return; // Profile not opened yet
+			case ProfileType.opener: // opening profile
+			openProfile();
 
-			var endTime = nme.Lib.getTimer();
-			profile.totalTime += (endTime - profile.startTime);
-			profile.totalCalls++;
-			profile.startTime = -1;
+			case ProfileType.closer: // closing profile
+			closeProfile();
 		}
+	}
+
+	private function openProfile(): Void
+	{
+		profile.startTime = nme.Lib.getTimer();
+	}
+
+	private function closeProfile(): Void
+	{
+		if(profile.startTime < 0)
+			return; // Profile not opened yet
+
+		var endTime = nme.Lib.getTimer();
+		profile.totalTime += (endTime - profile.startTime);
+		profile.totalCalls++;
+		profile.startTime = -1;
 	}
 
 	public static function dump()
 	{
 		for(profile in stats.keys())
 		{
-			trace(stats.get(profile) + ": " + profile.totalTime / 1000 + 
-				" overall, " + (profile.totalTime / 1000 / profile.totalCalls) + " per call");
+			trace(stats.get(profile) + ": " + 
+				format(profile.totalTime / 1000) + 
+				" sec overall, " + profile.totalCalls + 
+				" calls, " + 
+				format(profile.totalTime / profile.totalCalls) + 
+				"ms/call, " +
+				format(profile.totalCalls / profile.totalTime * 1000) +
+				" calls/sec");
 		}
+	}
+
+	public static function format(time:Float): String
+	{
+		// return cast time;
+		return cast HXP.round(time, 2);
 	}
 }

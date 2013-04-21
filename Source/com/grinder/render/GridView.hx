@@ -40,15 +40,22 @@ class GridView extends View
 	{
 		// trace("Updating grid");
 		var g = getComponent(Grid);
-		for(y in 0...g.height)
-		for(x in 0...g.width)
-			tileMap.setTile(x, y, g.get(x, y));
+		if(g.changed)
+		{
+			for(y in 0...g.height)
+			for(x in 0...g.width)
+				tileMap.setTile(x, y, g.get(x, y));
+			g.changed = false;
+		}
 	}
 
 	public function updatePosition()
 	{
 		var position = getComponent(Position);
-		x = position.x;
-		y = position.y;
+		if(position.x != x || position.y != y)
+		{
+			x = position.x;
+			y = position.y;
+		}
 	}
 }
