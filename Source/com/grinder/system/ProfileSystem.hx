@@ -86,17 +86,24 @@ class ProfileSystem extends System
 
 	public static function dump()
 	{
+		var totalTime:Int = 0;
 		for(profile in stats.keys())
-		{
-			trace(stats.get(profile) + ": " + 
-				format(profile.totalTime / 1000) + 
-				" sec overall, " + profile.totalCalls + 
-				" calls, " + 
-				format(profile.totalTime / profile.totalCalls) + 
-				"ms/call, " +
-				format(profile.totalCalls / profile.totalTime * 1000) +
-				" calls/sec");
-		}
+			totalTime += profile.totalTime;
+		
+		for(profile in stats.keys())
+			logProfile(profile, totalTime);
+	}
+
+	public static function logProfile(profile:Profile, totalTime:Int)
+	{
+		trace(stats.get(profile) + ": " + 
+			format(profile.totalTime / 1000) + 
+			" sec overall (" + format(profile.totalTime / totalTime * 100)  +  "%), " + profile.totalCalls + 
+			" calls, " + 
+			format(profile.totalTime / profile.totalCalls) + 
+			"ms/call, " +
+			format(profile.totalCalls / profile.totalTime * 1000) +
+			" calls/sec");
 	}
 
 	public static function format(time:Float): String

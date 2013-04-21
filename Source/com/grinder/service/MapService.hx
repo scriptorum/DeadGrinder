@@ -77,11 +77,11 @@ class MapService
 			{
 				case Grimoire.WALL:
 				factory.addWall(x, y);
-				grid.set(x, y, Grimoire.ASPHALT);
+				//grid.set(x, y, Grimoire.ASPHALT);
 
 				case Grimoire.DOOR:
 				factory.addDoor(x, y);
-				grid.set(x, y, Grimoire.WALL);
+				grid.set(x, y, Grimoire.FLOOR);
 
 				case Grimoire.SPAWN_FLOOR:
 				factory.addPlayer(x, y);

@@ -307,8 +307,9 @@ class EntityService
 		}
 		var e = new Entity("wall" + nextId++);
 		e.add(new GridPosition(x, y));
-		e.add(new Layer(Layer.ABOVE));
-		e.add(new Tile(ConfigService.getTiledImage(), 36));
+		// Don't add graphical elements, it is being displayed by the tilemap
+		// e.add(new Layer(Layer.ABOVE));
+		// e.add(new Tile(ConfigService.getTiledImage(), 36));
 		e.add(new Collision(Collision.SHEER));
 		e.add(com.haxepunk.HXP.choose(wallDescriptions));
 		ash.addEntity(e);

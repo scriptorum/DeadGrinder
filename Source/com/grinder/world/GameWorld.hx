@@ -5,6 +5,8 @@
    - Issue: Zombies moving into one space collalesce into a double zombie, occuping the same space.
    - Can you run Sys.println() to print to stdout from Flash? Praaaaaaahbobly not.
    - Issue: Player disappears on death, should turn to special corpse or stay put.
+   - Get the collision system to respect the game grid; then you don't have to spawn 4000 wall objects,
+     which this system obviously can't handle.
 */
 
 package com.grinder.world;
@@ -91,9 +93,9 @@ class GameWorld extends World
 		addSystem(new CameraSystem(ash, 32)); // The camera follows the player
 		addSystem(new MessageSystem(ash)); // Messages to player are updated
 
-		#if profiler
-			ash.addSystem(new ProfileSystem(), nextSystemPriority++);
-		#end
+		// #if profiler
+		// 	ash.addSystem(new ProfileSystem(), nextSystemPriority++);
+		// #end
 	}	
 
     public function addSystem(system:System):Void
@@ -124,12 +126,18 @@ class GameWorld extends World
 
 	override public function update()
 	{
-		// if(InputService.pressed(InputService.DEBUG))
-		// {
-			// for(e in ash.get_entities()) // My ash hack
-			// 	trace(e.name + ":" + ArchiveService.serializeEntity(e));
-			// beginDebug();
-		// }
+		if(InputService.pressed(InputService.DEBUG))
+		{
+			var componentCount = 0;
+			var entityCount = 0;
+			for(e in ash.get_entities()) // Ash hack
+			{
+				trace(e.name + ":" + ArchiveService.serializeEntity(e));
+				for(c in e.getAll()) componentCount++;
+				entityCount++;
+			}
+			trace(entityCount + " Entities Found Containing " + componentCount + " Components");
+		}
 
 		ash.update(HXP.elapsed); // update entity system
 		//super.update(); // I'm not using HaxePunk's Entity.update(), so save some time here...
