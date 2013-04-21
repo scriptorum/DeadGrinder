@@ -1,4 +1,8 @@
-
+/*
+ * Remove dependence on other Systems
+ * Add overall frame rate logging.
+ * Add percentage of app time not tracked by ProfileSystems 
+ */
 package com.grinder.system;
 
 import ash.core.Engine;
@@ -7,7 +11,7 @@ import ash.ObjectMap;
 
 import com.haxepunk.HXP;
 
-enum ProfileType { opener; closer; dual; }
+enum ProfileType { opener; closer; dual; } // Dual not really workin'
 
 class Profile
 {
