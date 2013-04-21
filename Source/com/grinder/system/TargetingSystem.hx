@@ -52,7 +52,7 @@ class TargetingSystem extends TurnBasedSystem
 	 		}
 	 		else
 	 		{
-	 			// Lost sight of previous prey and have no new position, gradually reduce prey
+	 			// Lost sight of previous prey and have no new position, gradually reduce interest
 	 			if(losPrey == null)
 	 			{
 	 				prey.interest = Math.floor(prey.interest * 0.95);
@@ -100,6 +100,11 @@ class TargetingSystem extends TurnBasedSystem
  	{
  		var blocked:Bool = false;
  		var playerPos:GridPosition = player.get(GridPosition);
+
+ 		if(Util.diff(node.position.x, playerPos.x) > 20 ||
+ 			Util.diff(node.position.y, playerPos.y) > 20)
+ 			return null;
+
  		var course:Array<GridPosition> = plotCourse(node.position.x, node.position.y, playerPos.x, playerPos.y);
 		course.shift(); // remove zombie's position 		
 		course.pop(); // remove player's position
