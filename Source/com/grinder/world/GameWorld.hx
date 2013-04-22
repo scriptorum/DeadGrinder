@@ -1,6 +1,7 @@
 /*
-   - When new entities with GridPosition are spawned, add them to the GridService
-   - When such entities are removed, remove them from the GridService ...
+   - Examine action is broken
+   - Neko slows down over time, not sure why yet
+   - Background doesn't show properly on CPP targets, currently turned off   
    - Add article selector to getName()
    - Create ActionService to handle most of these actions, leaving EntityService to handle factory stuff only
      Or split ActionSystem into several systems.
@@ -120,7 +121,7 @@ class GameWorld extends World
 
 	private function initEntities()
 	{
-		factory.addBackdrop();
+		// factory.addBackdrop();
 		factory.addMessageHud();
 		factory.addHealthHud();
 		factory.addMap(); // causes doors and walls to be added, sets up GridService
@@ -133,19 +134,15 @@ class GameWorld extends World
 	{
 		if(InputService.pressed(InputService.DEBUG))
 		{
-			var componentCount = 0;
-			var entityCount = 0;
-			for(e in ash.get_entities()) // Ash hack
-			{
-				trace(e.name + ":" + ArchiveService.serializeEntity(e));
-				for(c in e.getAll()) componentCount++;
-				entityCount++;
-			}
-			trace(entityCount + " Entities Found Containing " + componentCount + " Components");
+			#if flash
+				haxe.Log.clear();
+			#end
+
+			GridService.validate();
 		}
 
 		ash.update(HXP.elapsed); // update entity system
-		//super.update(); // I'm not using HaxePunk's Entity.update(), so save some time here...
+		//super.update(); // I'm not using HaxePunk's Entity.update(), so no need to call World.update()
 	}
 
 	// private static function beginDebug()

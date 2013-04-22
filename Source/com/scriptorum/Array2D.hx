@@ -97,11 +97,13 @@ class Array2D<T>
 		return this;
 	}
 
+	// TODO change to static
 	public function pointsMatch(x1:Int, y1:Int, x2:Int, y2:Int): Bool
 	{
 		return (x1 == x2 && y1 == y2);
 	}
 
+	// TODO change to static
 	// If orthogonalOnly is passed, diagonal points are not considered adjacent
 	public function pointsAreAdjacent(x1:Int, y1:Int, x2:Int, y2:Int, orthogonalOnly:Bool = false): Bool
 	{

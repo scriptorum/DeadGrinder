@@ -54,7 +54,8 @@ class GridService
 		{
 			var e = engine.getEntityByName(s);			
 			if(e == null) 
-				removeName(x, y, s); // Hrm, entity was removed from the engine, remove it from the GridService
+				throw("Found non-existant entity (" + s + ") at " + x + "," + y);
+				// removeName(x, y, s); // Hrm, entity was removed from the engine, remove it from the GridService
 			else a.push(e);
 		}
 		return a;
@@ -94,5 +95,25 @@ class GridService
 
 		remove(pos.x, pos.y, e);
 		add(x, y, e);
+	}
+
+	public static function validate(): Void
+	{
+		// Validate objects in the grid service match live entities
+		for(y in 0...grid.height)
+		for(x in 0...grid.width)
+		{
+			for(e in get(x,y))
+			{
+				if(!e.has(GridPosition))
+					trace("Entity " + e.name + " at " + x + "," + y + " does not exist in grid space.");
+				else
+				{
+					var gs = e.get(GridPosition);
+					if(!gs.matches(x,y))
+						trace("Entity " + e.name + " at " + x + "," + y + " is actually at " + gs.x + "," + gs.y);
+				}
+			}
+		}
 	}
 }

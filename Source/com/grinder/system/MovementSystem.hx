@@ -36,12 +36,11 @@ class MovementSystem extends TurnBasedSystem
 
  			var newx = node.position.x + node.velocity.x;
  			var newy = node.position.y + node.velocity.y;
-
-	 		node.position.x += node.velocity.x;
-	 		node.position.y += node.velocity.y;
+	 		GridService.move(node.entity, newx, newy);
+	 		node.position.x = newx;
+	 		node.position.y = newy;
 
 	 		node.entity.remove(GridVelocity);
-	 		GridService.move(node.entity, newx, newy);
 	 	}
 	}
 }
