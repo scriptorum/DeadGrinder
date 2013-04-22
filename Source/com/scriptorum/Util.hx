@@ -3,6 +3,7 @@ package com.scriptorum;
 /*
  * Some general purpose Haxe functions.
  * Notably includes integer versions of some standard float Math funcs.
+ * TODO Split into separate Util classes by usage or first parameter (for mixins)
  */
 class Util
 {
@@ -91,5 +92,18 @@ class Util
     			result.push(i);
     	}
     	return result;
+    }
+
+    public static function find<T>(arr:Array<T>, obj:T): Int
+    {
+    	for(i in 0...arr.length)
+    		if(arr[i] == obj)
+    			return i;
+    	return -1;
+    }
+
+    public static function contains<T>(arr:Array<T>, obj:T): Bool
+    {
+    	return (find(arr, obj) != -1);
     }
 }

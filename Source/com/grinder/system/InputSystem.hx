@@ -62,9 +62,18 @@ class InputSystem extends System
 	 		{
 	 			case Key.LEFT_SQUARE_BRACKET:
 	 			ProfileSystem.dump();
+	 			ProfileSystem.reset();
+
+				var componentCount = 0;
+				var entityCount = 0;
+				for(e in engine.get_entities()) // Ash hack
+				{
+					for(c in e.getAll()) componentCount++;
+					entityCount++;
+				}
+				trace("ASH: " + entityCount + " entities found containing " + componentCount + " components");
 	 		}
 	 	}
-
 	}
 #end
 

@@ -1,4 +1,6 @@
 /*
+   - When new entities with GridPosition are spawned, add them to the GridService
+   - When such entities are removed, remove them from the GridService ...
    - Add article selector to getName()
    - Create ActionService to handle most of these actions, leaving EntityService to handle factory stuff only
      Or split ActionSystem into several systems.
@@ -25,6 +27,7 @@ import com.grinder.service.CameraService;
 import com.grinder.service.EntityService;
 import com.grinder.service.MapService;
 import com.grinder.service.ArchiveService;
+import com.grinder.service.GridService;
 
 import com.grinder.system.ActionSystem;
 import com.grinder.system.RenderingSystem;
@@ -53,13 +56,15 @@ class GameWorld extends World
 	public function new()
 	{
 		super();
-		CameraService.init();
 	}
 
 	override public function begin()
 	{
 		ash = new Engine();
 		factory = new EntityService(ash);
+
+		CameraService.init();
+		GridService.init(ash);
 
 		initSystems();
 		initEntities();
@@ -118,8 +123,8 @@ class GameWorld extends World
 		factory.addBackdrop();
 		factory.addMessageHud();
 		factory.addHealthHud();
-		// factory.addPlayer(1, 1);
-		factory.addMap(); // causes doors and walls to be added		
+		factory.addMap(); // causes doors and walls to be added, sets up GridService
+		// factory.addPlayer(1, 1); // spawned by map service
 		MapService.spawnZombies(factory, 50);
 		MapService.spawnItems(factory, 30);
 	}

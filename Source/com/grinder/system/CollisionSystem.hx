@@ -4,9 +4,8 @@ import ash.core.Engine;
 import ash.core.System;
 import ash.core.Entity;
 
-import com.grinder.node.CollisionNode;
 import com.grinder.node.ColliderNode;
-import com.grinder.component.Display;
+import com.grinder.component.Collision;
 import com.grinder.component.Grid;
 import com.grinder.component.GridVelocity;
 import com.grinder.component.Player;
@@ -52,40 +51,40 @@ class CollisionSystem extends TurnBasedSystem
 	 			// else if(node.entity.has(Zombie)) && YouCanSeeZombie
 	 			// 	factory.addMessage("The zombie slips on the rubble.");
 	 			// else trace("Zombie tried to go out of bounds");
-				removeVelocity(node);
+				removeVelocity(node.entity);
 				continue;
 			}
 
-
-			var collision = getCollision(node, dx, dy);
+			var collision = getCollision(node.entity, dx, dy);
 			if(collision == null)
 				continue;
 			
 			if(node.entity.has(Player))
 			{
-				var message = collision.collision.type; // Ugh, refactor this
+				var message = collision.type; // Ugh, refactor this
 				factory.addMessage(message);
 			}
+
 			// else trace("Zombie collided into something:" + collision.collision.type);
-			removeVelocity(node);
+			removeVelocity(node.entity);
 		}
 	}
 
-	private function getCollision(node:ColliderNode, dx:Int, dy:Int): CollisionNode
+	// Similar to EntityService.getCollision, but excludes the specified entity
+	private function getCollision(source:Entity, tx:Int, ty:Int): Collision
 	{
-		for(candidate in engine.getNodeList(CollisionNode))
+		for(e in factory.getEntitiesAt(tx,ty))
 		{
-			// trace("Checking node " + node.entity.name + " against " + candidate.entity.name + " at pos " + dx + "," + dy);
-			if(candidate.entity != node.entity && candidate.position.matches(dx, dy))
-				return candidate;
+			if(source != e && e.has(Collision))
+				return e.get(Collision);
 		}
 		return null;
 	}
 
-	private function removeVelocity(node:ColliderNode)
+	private function removeVelocity(entity:Entity)
 	{
-		node.entity.remove(GridVelocity);
-		if(node.entity.has(GridVelocity))
+		entity.remove(GridVelocity);
+		if(entity.has(GridVelocity))
 			throw "Failed to remove velocity component";
 	}
 
@@ -93,7 +92,7 @@ class CollisionSystem extends TurnBasedSystem
 	{
 		if(node.velocity.x == 0 && node.velocity.y == 0)
 		{
-			removeVelocity(node);
+			removeVelocity(node.entity);
 			return true;
 		}
 		return false;

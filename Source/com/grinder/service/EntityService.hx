@@ -66,6 +66,7 @@ import com.grinder.node.GridPositionNode;
 import com.grinder.node.CarriedNode;
 import com.grinder.service.ConfigService;
 import com.grinder.service.MapService;
+import com.grinder.service.GridService;
 
 class EntityService
 {
@@ -82,13 +83,15 @@ class EntityService
 
 	public function getEntitiesAt(x:Int, y:Int): Array<Entity>
 	{
-		var a = new Array<Entity>();
-		for(node in ash.getNodeList(GridPositionNode))
-		{
-			if(node.position.matches(x,y))
-				a.push(node.entity);
-		}
-		return a;
+		// // Brute force way
+		// var a = new Array<Entity>();
+		// for(node in ash.getNodeList(GridPositionNode))
+		// {
+		// 	if(node.position.matches(x,y))
+		// 		a.push(node.entity);
+		// }
+		// return a;
+		return GridService.get(x,y);
 	}
 
 	public function getCollisionAt(x:Int, y:Int): Collision
@@ -99,6 +102,15 @@ class EntityService
 				return e.get(Collision);
 		}
 		return null;
+	}
+
+	// Adds the entity to the engine, assigns it a position on the grid, and registers itself with the grid service
+	public function addTo(e:Entity, x:Int, y:Int): Entity
+	{
+		e.add(new GridPosition(x, y));
+		ash.addEntity(e);
+		GridService.add(x, y, e);
+		return e;
 	}
 
 	public function getLegalActions(x:Int, y:Int): Array<String>
@@ -169,7 +181,6 @@ class EntityService
 	{
 		var e = new Entity("player");
 		e.add(new Player());
-		e.add(new GridPosition(x, y));
 		e.add(new Layer(34));
 		e.add(new Tile(ConfigService.getTiledImage(), Grimoire.PLAYER));
 		e.add(new Collision(Collision.PERSON));
@@ -180,14 +191,12 @@ class EntityService
 		e.add(new Damager(5,15)); // You can do very little damage without a weapon
 		e.add(new Equipper({ weapon:1, armor:0 }));
 		e.add(new Description("You have looked better."));
-		ash.addEntity(e);
-		return e;
+		return addTo(e, x, y);
 	}
 
 	public function addZombie(x:Int, y:Int): Entity
 	{
 		var e = new Entity("zombie" + nextId++);
-		e.add(new GridPosition(x, y));
 		e.add(new Collision(Collision.CREATURE));
 		e.add(new Health(Std.random(70) + 30));
 		e.add(new Description("It's hideous."));
@@ -196,20 +205,17 @@ class EntityService
 		e.add(new Zombie());
 		e.add(new Layer(Layer.ABOVE));
 		e.add(new Tile(ConfigService.getTiledImage(), Grimoire.ZOMBIE));
-		ash.addEntity(e);
-		return e;
+		return addTo(e, x, y);
 	}
 
 	public function addCorpse(x:Int, y:Int): Entity
 	{
 		var e = new Entity("corpse" + nextId++);
-		e.add(new GridPosition(x,y));
 		e.add(new Description("It's dead. I mean really dead."));
 		e.add(new Name("corpse"));
 		e.add(new Layer(Layer.BELOW));
 		e.add(new Tile(ConfigService.getTiledImage(), Grimoire.CORPSE));
-		ash.addEntity(e);
-		return e;
+		return addTo(e, x, y);
 	}
 
 	public function addHealthHud(): Entity
@@ -306,14 +312,12 @@ class EntityService
 			wallDescriptions.push(new Description("It's just a wall. Holds up the building."));
 		}
 		var e = new Entity("wall" + nextId++);
-		e.add(new GridPosition(x, y));
-		// Don't add graphical elements, it is being displayed by the tilemap
+		// Don't add graphical elements, they are displayed by the tilemap
 		// e.add(new Layer(Layer.ABOVE));
 		// e.add(new Tile(ConfigService.getTiledImage(), 36));
 		e.add(new Collision(Collision.SHEER));
 		e.add(com.haxepunk.HXP.choose(wallDescriptions));
-		ash.addEntity(e);
-		return e;
+		return addTo(e, x, y);
 	}
 
 	public function addDoor(x:Int, y:Int, state:String = "closed"): Entity
@@ -354,10 +358,11 @@ class EntityService
 			.add(Description).withInstance(new Description("You see a closed door. It's locked."));
 		fsm.changeState(state);
 		ash.addEntity(e);
+		GridService.add(x, y, e);
 		return e;
 	}
 
-	public function addFood(): Entity
+	public function makeFoodEntity(): Entity
 	{
 		var foods = ["candy bar", "bag of potato chips", "cookies", "can of soup", "can of stew", "spoiled food"];
 		var food = HXP.choose(foods);
@@ -370,15 +375,12 @@ class EntityService
 		e.add(new Equipment(Equipment.FOOD));
 		e.add(new Nutrition(20)); // 100 = miracle total heal
 		e.add(new Carriable(.4));
-		ash.addEntity(e);
 		return e;
 	}
 
 	public function addFoodTo(x:Int, y:Int): Entity
 	{
-		var e = addFood();
-		e.add(new GridPosition(x, y));
-		return e;
+		return addTo(makeFoodEntity(), x, y);
 	}
 
 	public function getName(e:Entity, def:String = "thing"): String
@@ -395,7 +397,7 @@ class EntityService
 		return ash.getEntityByName("player");
 	}
 
-	public function addWeapon(): Entity
+	public function makeWeaponEntity(): Entity
 	{
 		var weapons = ["wooden bat", "tree branch", "aluminum bat", "hammer",
 			"crowbar", "knife", "axe", "pipe wrench", "rolling pin", "shovel"];
@@ -409,15 +411,12 @@ class EntityService
 		e.add(new Equipment(Equipment.WEAPON));
 		e.add(new Damager(15, 35));
 		e.add(new Carriable(1.8));
-		ash.addEntity(e);
 		return e;
 	}
 
 	public function addWeaponTo(x:Int, y:Int): Entity
 	{
-		var e = addWeapon();
-		e.add(new GridPosition(x, y));
-		return e;
+		return addTo(makeWeaponEntity(), x, y);
 	}
 
 	// Returns equipment that is equipped for a given equipper (usually the player) and an optional equipment type (e.g., weapon)

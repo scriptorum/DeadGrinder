@@ -7,6 +7,7 @@ import ash.core.System;
 
 import com.grinder.node.MoveNode;
 import com.grinder.component.GridVelocity;
+import com.grinder.service.GridService;
 import com.grinder.service.EntityService;
 import com.grinder.system.TurnBasedSystem;
 
@@ -32,10 +33,15 @@ class MovementSystem extends TurnBasedSystem
 	 	for(node in engine.getNodeList(MoveNode))
 	 	{
 	 		// trace("Adjusting movement for " + node.entity.name + " pos:" + node.position + " vel:" + node.velocity);
+
+ 			var newx = node.position.x + node.velocity.x;
+ 			var newy = node.position.y + node.velocity.y;
+
 	 		node.position.x += node.velocity.x;
 	 		node.position.y += node.velocity.y;
 
 	 		node.entity.remove(GridVelocity);
+	 		GridService.move(node.entity, newx, newy);
 	 	}
 	}
 }

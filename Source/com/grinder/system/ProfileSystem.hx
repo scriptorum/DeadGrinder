@@ -88,12 +88,23 @@ class ProfileSystem extends System
 		profile.startTime = -1;
 	}
 
+	public static function reset(): Void
+	{
+		for(profile in stats.keys())
+		{
+			profile.startTime = -1;
+			profile.totalTime = 0;
+			profile.totalCalls = 0;
+		}		
+	}
+
 	public static function dump()
 	{
 		var totalTime:Int = 0;
 		for(profile in stats.keys())
 			totalTime += profile.totalTime;
 		
+		trace("PROFILE:");
 		for(profile in stats.keys())
 			logProfile(profile, totalTime);
 	}

@@ -5,6 +5,7 @@ import com.grinder.render.Grimoire;
 import com.grinder.component.Grid;
 import com.grinder.component.GridPosition;
 import com.grinder.service.EntityService;
+import com.grinder.service.GridService;
 
 class MapService
 {
@@ -102,6 +103,7 @@ class MapService
 		//var gen = new DemoMapGenerator();
 		var gen = new MapGenerator();
 		var grid = gen.generate();
+		GridService.clear(grid.width, grid.height);
 		spawnMapElements(factory, grid);
 		return grid;
 	}
