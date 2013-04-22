@@ -113,6 +113,26 @@ class EntityService
 		return e;
 	}
 
+	public function remove(e:Entity): Void
+	{
+		if(e.has(GridPosition))
+		{
+			var gp = e.get(GridPosition);
+			GridService.remove(gp.x, gp.y, e);
+		}
+		ash.removeEntity(e);
+	}
+
+	public function removeFromGrid(e:Entity): Void
+	{
+		if(e.has(GridPosition))
+		{
+			var gp = e.get(GridPosition);
+			GridService.remove(gp.x, gp.y, e);
+		}
+		e.remove(GridPosition); // not on the grid any more
+	}
+
 	public function getLegalActions(x:Int, y:Int): Array<String>
 	{
 		var a = new Array<String>();

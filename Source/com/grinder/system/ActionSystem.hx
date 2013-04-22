@@ -146,7 +146,7 @@ class ActionSystem extends System
 	 						else
 	 						{
 		 						node.entity.add(new Carried(carrier.id)); // now being carried
-		 						node.entity.remove(GridPosition); // not on the grid any more
+		 						factory.removeFromGrid(node.entity); // not on the grid any more
 		 						node.entity.remove(Display); // not displayed any more
 		 						var name = factory.getName(node.entity,null);
 		 						msg = (name == null ? "You pick it up." : "You pick up a " + name);

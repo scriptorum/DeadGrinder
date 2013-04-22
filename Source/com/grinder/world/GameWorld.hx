@@ -1,6 +1,7 @@
 /*
    - Examine action is broken
    - Neko slows down over time, not sure why yet
+   - Add Spawn and Despawn components and use Systems to track changes to GridService
    - Background doesn't show properly on CPP targets, currently turned off   
    - Add article selector to getName()
    - Create ActionService to handle most of these actions, leaving EntityService to handle factory stuff only
