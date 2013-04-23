@@ -21,7 +21,7 @@ import com.grinder.service.InputService;
 import com.grinder.service.ConfigService;
 
 #if profiler
-	import com.grinder.system.ProfileSystem;
+	import com.grinder.service.ProfileService;
 #end
 
 class InputSystem extends System
@@ -61,8 +61,8 @@ class InputSystem extends System
 	 		switch(key)
 	 		{
 	 			case Key.LEFT_SQUARE_BRACKET:
-	 			ProfileSystem.dump();
-	 			ProfileSystem.reset();
+	 			ProfileService.dump();
+	 			ProfileService.reset();
 
 				var componentCount = 0;
 				var entityCount = 0;

@@ -1,8 +1,13 @@
 /*
-   - Examine action is broken
-   - Neko slows down over time, not sure why yet
+   - Attacking an empty space causes an exception, non-existent entity
+   - Neko slows down over time, not sure why yet. Should you roll back neko?
+   - NME 3.5.5 is not compatible with Neko 2, which you seem to still have despite trying to roll back.
+     This definitely prevents you from targeting mobile. Fix!!! Either move to Git NME or try to
+     manually remove Neko 2. See: http://www.nme.io/community/forums/installing-nme/uncaught-exception-failed-load-library/
+   - Refactor profiling stuff into separate classes from ProfileSystem. Added profiling to GameWorld.render().
+   - Examine action is broken, fix and remove getLegalActions() thing for now
    - Add Spawn and Despawn components and use Systems to track changes to GridService
-   - Background doesn't show properly on CPP targets, currently turned off   
+   - Background doesn't show properly on CPP targets, currently turned off
    - Add article selector to getName()
    - Create ActionService to handle most of these actions, leaving EntityService to handle factory stuff only
      Or split ActionSystem into several systems.
@@ -47,6 +52,7 @@ import com.grinder.component.Control;
 
 #if profiler
 	import com.grinder.system.ProfileSystem;
+	import com.grinder.service.ProfileService;
 #end
 
 class GameWorld extends World
@@ -64,6 +70,10 @@ class GameWorld extends World
 	{
 		ash = new Engine();
 		factory = new EntityService(ash);
+
+		#if profiler
+			ProfileService.init();
+		#end
 
 		CameraService.init();
 		GridService.init(ash);
@@ -99,24 +109,19 @@ class GameWorld extends World
 		addSystem(new RenderingSystem(ash)); // Display entities are created/destroyed and positions updated
 		addSystem(new CameraSystem(ash, 32)); // The camera follows the player
 		addSystem(new MessageSystem(ash)); // Messages to player are updated
-
-		// #if profiler
-		// 	ash.addSystem(new ProfileSystem(), nextSystemPriority++);
-		// #end
 	}	
 
     public function addSystem(system:System):Void
     {
     	#if profiler
-    		var starter = new ProfileSystem(system);
-    		var closer = new ProfileSystem(system, starter.profile);
-    		ash.addSystem(starter, nextSystemPriority++);
+    		var name = Type.getClassName(Type.getClass(system));
+    		ash.addSystem(new ProfileSystem(name, true), nextSystemPriority++);
     	#end
 
         ash.addSystem(system, nextSystemPriority++);
 
     	#if profiler
-    		ash.addSystem(closer, nextSystemPriority++);
+    		ash.addSystem(new ProfileSystem(name, false), nextSystemPriority++);
     	#end
     }
 
@@ -145,6 +150,17 @@ class GameWorld extends World
 		ash.update(HXP.elapsed); // update entity system
 		//super.update(); // I'm not using HaxePunk's Entity.update(), so no need to call World.update()
 	}
+
+	#if profiler
+		override public function render()
+		{		
+			var prof = ProfileService.getOrCreate("World.render()"); // [ to dump log and reset profiles
+			
+			prof.open();
+			super.render();
+			prof.close();
+		}
+	#end
 
 	// private static function beginDebug()
 	// {
