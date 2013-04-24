@@ -1,4 +1,8 @@
 /*
+   - NEXT STEP: Put in some live animation, make an Animation component that creates a AnimationView with a Spritemap.
+     Put a bunch on the screen, and then you can see if that causes a slowdown over time, or if it's tied to the
+     input/turns.
+
    - Attacking an empty space causes an exception, non-existent entity
    - Neko slows down over time, not sure why yet. Should you roll back neko?
    - NME 3.5.5 is not compatible with Neko 2, which you seem to still have despite trying to roll back.
@@ -155,7 +159,7 @@ class GameWorld extends World
 		override public function render()
 		{		
 			var prof = ProfileService.getOrCreate("World.render()"); // [ to dump log and reset profiles
-			
+
 			prof.open();
 			super.render();
 			prof.close();
