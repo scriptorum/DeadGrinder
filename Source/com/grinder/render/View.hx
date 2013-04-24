@@ -32,8 +32,10 @@ class View extends com.haxepunk.Entity
 	{
 		if(hasComponent(ScrollFactor))
 		{
+			var amount = getComponent(ScrollFactor).amount;
 			var graphic = cast(graphic, com.haxepunk.Graphic);
-			graphic.scrollX = graphic.scrollY = getComponent(ScrollFactor).amount;
+			if(amount != graphic.scrollX || amount != graphic.scrollY)
+				graphic.scrollX = graphic.scrollY = amount;
 		}
 	}
 

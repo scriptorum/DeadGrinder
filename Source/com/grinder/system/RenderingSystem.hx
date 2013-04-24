@@ -12,6 +12,7 @@ import com.haxepunk.HXP;
 import com.grinder.service.ConfigService;
 
 import com.grinder.render.ImageView;
+import com.grinder.render.AnimationView;
 import com.grinder.render.BackdropView;
 import com.grinder.render.GridView;
 import com.grinder.render.MessageView;
@@ -19,6 +20,7 @@ import com.grinder.render.InventoryView;
 import com.grinder.render.View;
 
 import com.grinder.node.ImageNode;
+import com.grinder.node.AnimationNode;
 import com.grinder.node.TileNode;
 import com.grinder.node.BackdropNode;
 import com.grinder.node.InventoryNode;
@@ -57,6 +59,7 @@ class RenderingSystem extends System
 		updateViews(GridNode, GridView);
 		updateViews(TileNode, ImageView);
 		updateViews(ImageNode, ImageView);
+		updateViews(AnimationNode, AnimationView);
 		updateViews(InventoryNode, InventoryView);
 		updateViews(MessageHudNode, MessageView);
 	}

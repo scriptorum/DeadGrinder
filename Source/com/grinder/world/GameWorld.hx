@@ -39,6 +39,7 @@ import com.grinder.service.EntityService;
 import com.grinder.service.MapService;
 import com.grinder.service.ArchiveService;
 import com.grinder.service.GridService;
+import com.grinder.service.AnimationService;
 
 import com.grinder.system.ActionSystem;
 import com.grinder.system.RenderingSystem;
@@ -80,6 +81,7 @@ class GameWorld extends World
 		#end
 
 		CameraService.init();
+		AnimationService.init();
 		GridService.init(ash);
 
 		initSystems();
@@ -151,8 +153,8 @@ class GameWorld extends World
 			GridService.validate();
 		}
 
-		ash.update(HXP.elapsed); // update entity system
-		//super.update(); // I'm not using HaxePunk's Entity.update(), so no need to call World.update()
+		ash.update(HXP.elapsed); // Update Ash (entity system)
+		super.update(); // Update HaxePunk (game library)
 	}
 
 	#if profiler

@@ -9,6 +9,7 @@ import ash.fsm.EntityStateMachine;
 
 import com.grinder.component.Action;
 import com.grinder.component.Actionable;
+import com.grinder.component.Animation;
 import com.grinder.component.CameraFocus;
 import com.grinder.component.Carriable;
 import com.grinder.component.Carried;
@@ -67,6 +68,7 @@ import com.grinder.node.CarriedNode;
 import com.grinder.service.ConfigService;
 import com.grinder.service.MapService;
 import com.grinder.service.GridService;
+import com.grinder.service.AnimationService;
 
 class EntityService
 {
@@ -224,7 +226,8 @@ class EntityService
 		e.add(new Name("zombie"));
 		e.add(new Zombie());
 		e.add(new Layer(Layer.ABOVE));
-		e.add(new Tile(ConfigService.getTiledImage(), Grimoire.ZOMBIE));
+		e.add(AnimationService.get("boxMorphing"));
+		// e.add(new Tile(ConfigService.getTiledImage(), Grimoire.ZOMBIE));
 		return addTo(e, x, y);
 	}
 
@@ -249,6 +252,14 @@ class EntityService
 		ash.addEntity(e);
 		return e;
 	}
+
+	// public function addBox(x:Int, y:Int): Entity
+	// {
+	// 	var e = new Entity();
+	// 	e.add(AnimationService.get("boxMorphing");
+	// 	e.add(new Layer(Layer.ABOVE));
+	// 	return addTo(e, x, y);
+	// }
 
    	public function popupInventory(actionType:String = null, equipmentType:String = null): Void
 	{

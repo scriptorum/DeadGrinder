@@ -26,8 +26,8 @@ class GridView extends View
 			tileWidth, tileHeight);
 		graphic = tileMap;
 
-		trace("Made a tilemap with tileDim:" + tileWidth + "x" + tileHeight + " gridDim:" + grid.width + "x" + grid.height +
-			" image:" + tiledImage.imagePath + " MapDim:" + tileMap.width + "x" + tileMap.height);
+		// trace("Made a tilemap with tileDim:" + tileWidth + "x" + tileHeight + " gridDim:" + grid.width + "x" + grid.height +
+		// 	" image:" + tiledImage.imagePath + " MapDim:" + tileMap.width + "x" + tileMap.height);
 	}
 
 	override public function nodeUpdate()
