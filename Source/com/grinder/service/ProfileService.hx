@@ -46,7 +46,6 @@ class ProfileService
 
 	public static function create(name:String): Profile
 	{
-		trace("Creating " + name);
 		var profile = new Profile(name);
 		stats.set(name, profile);
 

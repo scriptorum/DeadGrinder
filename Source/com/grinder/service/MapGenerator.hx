@@ -56,7 +56,7 @@ class MapGenerator
 		for(x in 0...plan.width)
 		{
 			var board = plan.get(x, y);
-			if(board & ENTRY > 0) trace("Entry at " + x + "," + y);
+			// if(board & ENTRY > 0) trace("Entry at " + x + "," + y);
 			fillBoard(grid, x * boardWidth, y * boardHeight,
 				board & NORTH > 0, board & EAST > 0, board & SOUTH > 0, board & WEST > 0, 
 				board & ENTRY > 0, board & EXIT > 0);
@@ -69,7 +69,7 @@ class MapGenerator
 	public function fillBoard(grid:Grid, xOff:Int, yOff:Int, north:Bool, east:Bool, south:Bool, west:Bool, 
 		entry:Bool, exit:Bool): Void
 	{
-		if(entry) trace("Entry found");
+		// if(entry) trace("Entry found");
 
 		var sides = (north ? 1 : 0) + (east ? 1 : 0) + (south ? 1 : 0) + (west ? 1 : 0);
 		if(sides == 0)
@@ -129,7 +129,7 @@ class MapGenerator
 			var pos = new Point(xOff + pt.x * 4 + 2, yOff + pt.y * 4 + 2);
 			var spawner = (grid.get(pos.x, pos.y) == Grimoire.FLOOR ? Grimoire.SPAWN_FLOOR : Grimoire.SPAWN_STREET);
 			grid.set(pos.x, pos.y, spawner);
-			trace("Adding entry spawn block to " + pos.x + "," + pos.y + " at block " + spawnBlock + " with spawner " + spawner); 
+			// trace("Adding entry spawn block to " + pos.x + "," + pos.y + " at block " + spawnBlock + " with spawner " + spawner); 
 		}
 	}
 
@@ -253,7 +253,7 @@ class MapGenerator
 		// Add exit manhole
 		plan.setIndex(pick, plan.getIndex(pick) | EXIT);
 
-		debugPrintPlan(plan);
+		// debugPrintPlan(plan);
 
 		return plan;
 	}

@@ -1,25 +1,22 @@
 /*
-   - NEXT STEP: Put in some live animation, make an Animation component that creates a AnimationView with a Spritemap.
-     Put a bunch on the screen, and then you can see if that causes a slowdown over time, or if it's tied to the
-     input/turns.
-
-   - Attacking an empty space causes an exception, non-existent entity
-   - Neko slows down over time, not sure why yet. Should you roll back neko?
-   - NME 3.5.5 is not compatible with Neko 2, which you seem to still have despite trying to roll back.
-     This definitely prevents you from targeting mobile. Fix!!! Either move to Git NME or try to
-     manually remove Neko 2. See: http://www.nme.io/community/forums/installing-nme/uncaught-exception-failed-load-library/
-   - Refactor profiling stuff into separate classes from ProfileSystem. Added profiling to GameWorld.render().
+   - GridService is not being kept updated. Killing a zombie can result in:
+			Called from com/grinder/system/TurnBasedSystem.hx line 23
+			Called from com/grinder/system/TargetingSystem.hx line 40
+			Called from com/grinder/system/TargetingSystem.hx line 113
+			Called from com/grinder/service/EntityService.hx line 96
+			Called from com/grinder/service/GridService.hx line 57
+			Uncaught exception - Found non-existant entity (zombie4889) at 65,54
+	 This should probably be changed to a regular TRACE, since it can fixed programatically.
    - Examine action is broken, fix and remove getLegalActions() thing for now
    - Add Spawn and Despawn components and use Systems to track changes to GridService
    - Background doesn't show properly on CPP targets, currently turned off
-   - Add article selector to getName()
+   - Add article selector to getName(). Or add ProseService.
    - Create ActionService to handle most of these actions, leaving EntityService to handle factory stuff only
      Or split ActionSystem into several systems.
    - Issue: Zombies moving into one space collalesce into a double zombie, occuping the same space.
    - Can you run Sys.println() to print to stdout from Flash? Praaaaaaahbobly not.
    - Issue: Player disappears on death, should turn to special corpse or stay put.
-   - Get the collision system to respect the game grid; then you don't have to spawn 4000 wall objects,
-     which this system obviously can't handle.
+   - Get the collision system to respect the game grid, then you can remove some entities.
 */
 
 package com.grinder.world;
@@ -138,7 +135,10 @@ class GameWorld extends World
 		factory.addHealthHud();
 		factory.addMap(); // causes doors and walls to be added, sets up GridService
 		// factory.addPlayer(1, 1); // spawned by map service
-		MapService.spawnZombies(factory, 50);
+		// var playerPos = ash.getEntityByName("player").get(com.grinder.component.GridPosition);
+		// factory.addZombie(playerPos.x + 5, playerPos.y );
+		// factory.addZombie(1, 1);
+		MapService.spawnZombies(factory, 300);
 		MapService.spawnItems(factory, 30);
 	}
 

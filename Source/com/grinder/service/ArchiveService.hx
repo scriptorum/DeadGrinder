@@ -41,13 +41,12 @@ class ArchiveService
 		return internalDump(o, recursed, depth);
 	}
 
-	// TODO add depth limiter
 	public static function internalDump(o:Dynamic, recursed:Array<Dynamic>, depth:Int): String
 	{
 		if (o == null)
 			return "<null>";
 
-		if(Std.is(o, Int) || Std.is(o, Float) || Std.is(o, Bool))
+		if(Std.is(o, Int) || Std.is(o, Float) || Std.is(o, Bool) || Std.is(o, String))
 			return Std.string(o);
 
 		if(recursed != null && Util.find(recursed, o) != -1)
@@ -63,7 +62,7 @@ class ArchiveService
 		if(depth == 0)
 			return "<limit>";
 
-		var result = Type.getClassName(clazz) + ":{ ";
+		var result = Type.getClassName(clazz) + ":{";
 		var sep = "";
 
 		for(f in Reflect.fields(o))
