@@ -10,7 +10,7 @@ import com.grinder.world.GameWorld;
 
 class Main extends Engine
 {
-	private var progress:Int = 1;
+	private var progress:Int = 0;
 
 	public function new()
 	{
@@ -40,7 +40,7 @@ class Main extends Engine
 	{
 		switch(++progress)
 		{
-			case 2: HXP.world = new GameWorld();
+			case 1: HXP.world = new GameWorld();
 			// Change progression here
 			default: trace("WTF");
 		}
