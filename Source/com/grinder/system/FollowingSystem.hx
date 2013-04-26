@@ -46,7 +46,10 @@ class FollowingSystem extends TurnBasedSystem
 	 		var dx = Util.diff(prey.position.x, node.position.x);
 	 		var dy = Util.diff(prey.position.y, node.position.y);
 			if (dx <= 1 && dy <= 1)
+			{
+				// trace("Adjacent to prey");
 				continue; // adjacent to target, you're there
+			}
 
 	 		var roll = Math.random() * 100;
  			if(roll <= prey.interest) // chance he shuffles towards you based on prey
@@ -73,8 +76,6 @@ class FollowingSystem extends TurnBasedSystem
 					return 0;
 				});
 
-				// Try the top three directions
-				// trace("Best avenues are:" + best);
 				for(o in best)
 				{
 					// Nah, this move is suboptimal, so the others must be as well because the list is sorted
@@ -86,8 +87,8 @@ class FollowingSystem extends TurnBasedSystem
 					if(collision == null)
 					{						
 						node.entity.add(new GridVelocity(o.rx, o.ry));
-						// trace(" - Determined best follow dir is " + o.rx + "," + o.ry);
-						break;
+						//trace(" - Determined best follow dir is " + o.rx + "," + o.ry);
+						return;
 					}
 				}
 
