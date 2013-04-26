@@ -10,7 +10,7 @@
     <assets path="Assets/Font" rename="font" type="font" include="*.ttf" />
     <icon  path="Assets/Art/icon.svg" />
 
-    <window width="600" height="600" orientation="landscape" background="0x000000" resizable="false" />
+    <window width="800" height="450" orientation="landscape" background="0x000000" resizable="false" />
 
     <set name="BUILD_DIR" value="Export" /> 
     <classpath name="Source" />

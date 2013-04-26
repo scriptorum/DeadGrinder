@@ -17,6 +17,7 @@
    - Can you run Sys.println() to print to stdout from Flash? Praaaaaaahbobly not.
    - Issue: Player disappears on death, should turn to special corpse or stay put.
    - Get the collision system to respect the game grid, then you can remove some entities.
+   - Preloader assets should be added even if not in debug.
 */
 
 package com.grinder.world;

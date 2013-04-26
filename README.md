@@ -18,6 +18,7 @@ Move with the arrow keys or a numeric keypad, so you can go diagonally. with 7/9
 (e)at food
 . = wait
 Shift + Direction = examine
+TAB = on flash, erase log
 
 The map is procedurally generated like crap, using my proprietary "make a map look like crap - instantly!" technology. I'm working on some better designs. The weapons and food have the capability to use different stats, but right now they're identical. 
 
