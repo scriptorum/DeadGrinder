@@ -33,4 +33,4 @@ One thing I like about this setup is I can just add an Image component and a Pos
 I put in a basic profiler in there. To enable it, add the profiler definition to the nmml and use the [ key to dump the profile results to console (or to screen for flash). You can add any arbitrary block of code to the ProfileService, which was helpful in tracking down some performance issues.
 
 ## See Also
-If this kind of thing is interesting to you, be sure to check out Dan Korostelev's Haxe Dungeons (https://github.com/nadako/Ash-HaXe), the author of the Ash Haxe port, which is also a roguelike game. (And a fair bit more playable than mine.)
+If this kind of thing is interesting to you, be sure to check out Dan Korostelev's Haxe Dungeons (https://github.com/nadako/HaxeDungeons), the author of the Ash Haxe port, which is also a roguelike game. (And a fair bit more playable than mine.)
