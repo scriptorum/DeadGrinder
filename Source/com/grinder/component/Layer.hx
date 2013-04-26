@@ -2,6 +2,7 @@ package com.grinder.component;
 
 class Layer
 {
+	public static var BACKDROP:Int = 70;
 	public static var MAP:Int = 60;
 	public static var BELOW:Int = 50;
 	public static var PLAYER:Int = 40;

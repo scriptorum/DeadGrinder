@@ -316,7 +316,7 @@ class EntityService
 		var e = new Entity("backdrop");
 		e.add(new Image("art/rubble2.png"));
 		e.add(new Repeating());
-		e.add(new Layer(1000));
+		e.add(new Layer(Layer.BACKDROP));
 		ash.addEntity(e);
 		return e;
 	}

@@ -55,7 +55,7 @@ class GridService
 			var e = engine.getEntityByName(s);			
 			if(e == null) 
 			{
-				trace "Found non-existant entity (" + s + ") at " + x + "," + y;
+				trace("Found non-existant entity (" + s + ") at " + x + "," + y);
 				removeName(x, y, s); // Hrm, entity was removed from the engine, remove it from the GridService
 			}
 			else a.push(e);
@@ -93,7 +93,7 @@ class GridService
 	{
 		var pos = e.get(GridPosition);
 		if(pos == null)
-			trace "Cannot move entity " + e.name + " because it doesn't exist in grid space; adding instead";
+			trace("Cannot move entity " + e.name + " because it doesn't exist in grid space; adding instead");
 		else remove(pos.x, pos.y, e);
 
 		add(x, y, e);

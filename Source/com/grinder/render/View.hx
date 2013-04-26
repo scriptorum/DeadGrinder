@@ -1,7 +1,6 @@
 package com.grinder.render;
 
 import com.grinder.component.Layer;
-import com.grinder.node.DisplayNode;
 import com.grinder.component.ScrollFactor;
 
 import ash.core.Entity;
@@ -15,13 +14,10 @@ class View extends com.haxepunk.Entity
 		super();
 
 		this.entity = entity;
-
-		var c = entity.get(Layer);
-		if(c != null)
-			this.layer = c.layer;
-		// trace("View created. " + (c == null ? "Using default layer." : "Using supplied Layer:" + c.layer));
+		updateLayer();
 
 		begin();
+
 		updateScrollFactor();
 		nodeUpdate();
 
@@ -32,10 +28,23 @@ class View extends com.haxepunk.Entity
 	{
 		if(hasComponent(ScrollFactor))
 		{
-			var amount = getComponent(ScrollFactor).amount;
-			var graphic = cast(graphic, com.haxepunk.Graphic);
-			if(amount != graphic.scrollX || amount != graphic.scrollY)
-				graphic.scrollX = graphic.scrollY = amount;
+			if(graphic != null)
+			{
+				var amount = getComponent(ScrollFactor).amount;
+				var graphic = cast(graphic, com.haxepunk.Graphic);
+				if(amount != graphic.scrollX || amount != graphic.scrollY)
+					graphic.scrollX = graphic.scrollY = amount;
+			}
+		}
+	}
+
+	public function updateLayer(): Void
+	{
+		if(hasComponent(Layer))
+		{
+			var newLayer = getComponent(Layer).layer;
+			if(newLayer != this.layer)
+				this.layer = newLayer;
 		}
 	}
 

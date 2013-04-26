@@ -9,7 +9,7 @@
 	 This should probably be changed to a regular TRACE, since it can fixed programatically.
    - Examine action is broken, fix and remove getLegalActions() thing for now
    - Add Spawn and Despawn components and use Systems to track changes to GridService
-   - Background doesn't show properly on CPP targets, currently turned off
+   - Backdrop doesn't show properly on CPP targets (layers in front), at least on HXP 172a
    - Add article selector to getName(). Or add ProseService.
    - Create ActionService to handle most of these actions, leaving EntityService to handle factory stuff only
      Or split ActionSystem into several systems.
@@ -27,7 +27,6 @@ import com.haxepunk.World;
 import ash.core.Engine;
 import ash.core.Entity;
 import ash.core.System;
-// import ash.tick.FrameTickProvider;
 
 import com.grinder.service.SoundService;
 import com.grinder.service.InputService;
@@ -89,10 +88,6 @@ class GameWorld extends World
 			e.add(new ProfileControl());
 			ash.addEntity(e);
 		#end
-
-        // var tickProvider = new FrameTickProvider(HXP.engine);
-        // tickProvider.add(ash.update);
-        // tickProvider.start();
 	}
 
 	private function initSystems()
@@ -130,14 +125,10 @@ class GameWorld extends World
 
 	private function initEntities()
 	{
-		// factory.addBackdrop();
+		factory.addBackdrop();
 		factory.addMessageHud();
 		factory.addHealthHud();
 		factory.addMap(); // causes doors and walls to be added, sets up GridService
-		// factory.addPlayer(1, 1); // spawned by map service
-		// var playerPos = ash.getEntityByName("player").get(com.grinder.component.GridPosition);
-		// factory.addZombie(playerPos.x + 5, playerPos.y );
-		// factory.addZombie(1, 1);
 		MapService.spawnZombies(factory, 300);
 		MapService.spawnItems(factory, 30);
 	}
@@ -157,16 +148,16 @@ class GameWorld extends World
 		super.update(); // Update HaxePunk (game library)
 	}
 
-	#if profiler
-		override public function render()
-		{		
-			var prof = ProfileService.getOrCreate("World.render()"); // [ to dump log and reset profiles
+	// #if profiler
+	// 	override public function render()
+	// 	{		
+	// 		var prof = ProfileService.getOrCreate("World.render()"); // [ to dump log and reset profiles
 
-			prof.open();
-			super.render();
-			prof.close();
-		}
-	#end
+	// 		prof.open();
+	// 		super.render();
+	// 		prof.close();
+	// 	}
+	// #end
 
 	// private static function beginDebug()
 	// {
