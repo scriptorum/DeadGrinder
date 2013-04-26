@@ -100,7 +100,7 @@ class MapService
 
 	public static function generateGrid(factory:EntityService): Grid
 	{
-		//var gen = new DemoMapGenerator();
+		// var gen = new DemoMapGenerator();
 		var gen = new MapGenerator();
 		var grid = gen.generate();
 		GridService.clear(grid.width, grid.height);

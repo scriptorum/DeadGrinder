@@ -35,6 +35,9 @@ class EnemyAttackSystem extends TurnBasedSystem
 	{
 	 	for(node in engine.getNodeList(PreyNode))
 	 	{
+	 		if(node.entity.has(GridVelocity))
+	 			continue; // Zombie already got an action
+
 	 		// Target is right here! Get'm, boys!
 	 		if(node.position.adjacent(node.prey.position))
 	 		{

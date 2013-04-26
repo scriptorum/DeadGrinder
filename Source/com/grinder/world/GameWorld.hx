@@ -2,7 +2,7 @@
    - GridService is not being kept updated. Killing a zombie can result in:
 			Called from com/grinder/system/TurnBasedSystem.hx line 23
 			Called from com/grinder/system/TargetingSystem.hx line 40
-			Called from com/grinder/system/TargetingSystem.hx line 113
+		Called from com/grinder/system/TargetingSystem.hx line 113
 			Called from com/grinder/service/EntityService.hx line 96
 			Called from com/grinder/service/GridService.hx line 57
 			Uncaught exception - Found non-existant entity (zombie4889) at 65,54
@@ -13,11 +13,21 @@
    - Add article selector to getName(). Or add ProseService.
    - Create ActionService to handle most of these actions, leaving EntityService to handle factory stuff only
      Or split ActionSystem into several systems.
-   - Issue: Zombies moving into one space collalesce into a double zombie, occuping the same space.
    - Can you run Sys.println() to print to stdout from Flash? Praaaaaaahbobly not.
    - Issue: Player disappears on death, should turn to special corpse or stay put.
    - Get the collision system to respect the game grid, then you can remove some entities.
    - Preloader assets should be added even if not in debug.
+   - Add more rigorous turn/phase handler.  All results post-user-input happen simultaneously, but we 
+     should be able to break it down into each acting entity getting a turn. As it is, it's possible 
+     for the player to get one more move in after should be killed. PlayerControls should be removed
+     while non-player turns are being resolved.
+   - Solving the zombie-into-zombie collision problem caused some indifference on some of zed's part.
+     Sometimes a zed will ignore you and go into wandering mode even though you have a clear line of
+     sight. This is either an issue with the GridService not removing stale entities (quite possible),
+     or a logic problem in one or more of the systems.
+   - Also zombies whose line of sight is broken by other zombies are jerks. Stupid zombies. However
+     maybe this is not an issue when you add the sound system later, as they'll be interested in
+     the noise commotion.
 */
 
 package com.grinder.world;
@@ -40,16 +50,17 @@ import com.grinder.service.AnimationService;
 
 import com.grinder.system.ActionSystem;
 import com.grinder.system.RenderingSystem;
-import com.grinder.system.MovementSystem;
+import com.grinder.system.TurnMovementSystem;
 import com.grinder.system.TargetingSystem;
 import com.grinder.system.FollowingSystem;
 import com.grinder.system.WanderingSystem;
 import com.grinder.system.EnemyAttackSystem;
 import com.grinder.system.CameraSystem;
-import com.grinder.system.CollisionSystem;
 import com.grinder.system.HealthSystem;
+import com.grinder.system.MovementSystem;
 import com.grinder.system.InputSystem;
 import com.grinder.system.MessageSystem;
+import com.grinder.system.TurnMovementHaltingSystem;
 import com.grinder.component.Control;
 
 #if profiler
@@ -95,19 +106,19 @@ class GameWorld extends World
 	{
 		addSystem(new InputSystem(ash, factory)); // Collect player/inventory input
 		addSystem(new ActionSystem(ash, factory)); // Resolve actions on entities
-		addSystem(new HealthSystem(ash, factory)); // Better called the DeathSystem
-		addSystem(new CollisionSystem(ash, factory)); // Entities whose velocity puts them into obstacles stop moving
-		addSystem(new MovementSystem(ash, factory)); // Entities with velocity move
+		addSystem(new HealthSystem(ash, factory)); // x1 Healing from food and damage from attacks
+		addSystem(new PlayerMovementSystem(ash, factory)); // Player moves/collides
 		addSystem(new TargetingSystem(ash, factory));  // Zombies look for humans to chase
 		addSystem(new WanderingSystem(ash, factory)); // Zombies without targets go wandering
 		addSystem(new FollowingSystem(ash, factory)); // Zombies with targets go after them
-		addSystem(new EnemyAttackSystem(ash, factory)); // Zombies next to targets attack them
-		addSystem(new CollisionSystem(ash, factory)); // DUPLICATE SYSTEM for enemies
-		addSystem(new MovementSystem(ash, factory)); // DUPLICATE SYSTEM for enemies
-		addSystem(new HealthSystem(ash, factory)); // DUPLICATE SYSTEM for enemies
-		addSystem(new RenderingSystem(ash)); // Display entities are created/destroyed and positions updated
+		addSystem(new ZombieMovementSystem(ash, factory)); // Zombies move/collide
+		addSystem(new EnemyAttackSystem(ash, factory)); // Zombies who didn't move and next to targets attack them
+		addSystem(new HealthSystem(ash, factory)); // x2 Healing from food and damage from attacks
+		addSystem(new MovementSystem(ash, factory)); // Real-time entity movement
+		addSystem(new RenderingSystem(ash)); // Display entities are created/destroyed/updated
 		addSystem(new CameraSystem(ash, 32)); // The camera follows the player
 		addSystem(new MessageSystem(ash)); // Messages to player are updated
+		addSystem(new TurnMovementHaltingSystem(ash)); // Stop grid velocity on turn-based entities
 	}	
 
     public function addSystem(system:System):Void

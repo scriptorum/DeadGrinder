@@ -79,7 +79,10 @@ class GridService
 	{
 		var arr = grid.get(x, y);
 		if(arr == null)
+		{
+			trace("Can't remove missing entity " + str + " from " + x + " ," + y);
 			return;
+		}
 
 		arr.remove(str);
 	}

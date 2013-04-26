@@ -23,6 +23,8 @@ class DemoMapGenerator
 		grid.set(8, 5, Grimoire.DOOR);
 
 		grid.changed = true;
+		grid.set(5, 5, Grimoire.SPAWN_FLOOR);
+
 		return grid;
 	}
 }
